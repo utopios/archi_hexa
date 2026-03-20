@@ -1,0 +1,9 @@
+com/bibliotech/model/Book.class
+com/bibliotech/BiblioTechApplication.class
+com/bibliotech/service/BookService.class
+com/bibliotech/controller/BookController.class
+com/bibliotech/model/BorrowingRecord.class
+com/bibliotech/model/Member.class
+com/bibliotech/repository/MemberRepository.class
+com/bibliotech/repository/BookRepository.class
+com/bibliotech/repository/BorrowingRecordRepository.class

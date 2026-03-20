@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.bibliotech.BiblioTechApplicationTest" time="4.324" tests="5" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="java.specification.version" value="23"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.class.path" value="/Users/ihababadi/Library/CloudStorage/OneDrive-utopios/supports_markdown/theme/architecture_hexagonale/exercices/bibliotech-monolithe/target/test-classes:/Users/ihababadi/Library/CloudStorage/OneDrive-utopios/supports_markdown/theme/architecture_hexagonale/exercices/bibliotech-monolithe/target/classes:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-starter-web/3.2.0/spring-boot-starter-web-3.2.0.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-starter/3.2.0/spring-boot-starter-3.2.0.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot/3.2.0/spring-boot-3.2.0.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-autoconfigure/3.2.0/spring-boot-autoconfigure-3.2.0.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-starter-logging/3.2.0/spring-boot-starter-logging-3.2.0.jar:/Users/ihababadi/.m2/repository/ch/qos/logback/logback-classic/1.4.11/logback-classic-1.4.11.jar:/Users/ihababadi/.m2/repository/ch/qos/logback/logback-core/1.4.11/logback-core-1.4.11.jar:/Users/ihababadi/.m2/repository/org/apache/logging/log4j/log4j-to-slf4j/2.21.1/log4j-to-slf4j-2.21.1.jar:/Users/ihababadi/.m2/repository/org/apache/logging/log4j/log4j-api/2.21.1/log4j-api-2.21.1.jar:/Users/ihababadi/.m2/repository/org/slf4j/jul-to-slf4j/2.0.9/jul-to-slf4j-2.0.9.jar:/Users/ihababadi/.m2/repository/jakarta/annotation/jakarta.annotation-api/2.1.1/jakarta.annotation-api-2.1.1.jar:/Users/ihababadi/.m2/repository/org/yaml/snakeyaml/2.2/snakeyaml-2.2.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-starter-json/3.2.0/spring-boot-starter-json-3.2.0.jar:/Users/ihababadi/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.15.3/jackson-databind-2.15.3.jar:/Users/ihababadi/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.15.3/jackson-annotations-2.15.3.jar:/Users/ihababadi/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.15.3/jackson-core-2.15.3.jar:/Users/ihababadi/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.15.3/jackson-datatype-jdk8-2.15.3.jar:/Users/ihababadi/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.15.3/jackson-datatype-jsr310-2.15.3.jar:/Users/ihababadi/.m2/repository/com/fasterxml/jackson/module/jackson-module-parameter-names/2.15.3/jackson-module-parameter-names-2.15.3.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-starter-tomcat/3.2.0/spring-boot-starter-tomcat-3.2.0.jar:/Users/ihababadi/.m2/repository/org/apache/tomcat/embed/tomcat-embed-core/10.1.16/tomcat-embed-core-10.1.16.jar:/Users/ihababadi/.m2/repository/org/apache/tomcat/embed/tomcat-embed-el/10.1.16/tomcat-embed-el-10.1.16.jar:/Users/ihababadi/.m2/repository/org/apache/tomcat/embed/tomcat-embed-websocket/10.1.16/tomcat-embed-websocket-10.1.16.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-web/6.1.1/spring-web-6.1.1.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-beans/6.1.1/spring-beans-6.1.1.jar:/Users/ihababadi/.m2/repository/io/micrometer/micrometer-observation/1.12.0/micrometer-observation-1.12.0.jar:/Users/ihababadi/.m2/repository/io/micrometer/micrometer-commons/1.12.0/micrometer-commons-1.12.0.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-webmvc/6.1.1/spring-webmvc-6.1.1.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-aop/6.1.1/spring-aop-6.1.1.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-context/6.1.1/spring-context-6.1.1.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-expression/6.1.1/spring-expression-6.1.1.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-starter-data-jpa/3.2.0/spring-boot-starter-data-jpa-3.2.0.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-starter-aop/3.2.0/spring-boot-starter-aop-3.2.0.jar:/Users/ihababadi/.m2/repository/org/aspectj/aspectjweaver/1.9.20.1/aspectjweaver-1.9.20.1.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-starter-jdbc/3.2.0/spring-boot-starter-jdbc-3.2.0.jar:/Users/ihababadi/.m2/repository/com/zaxxer/HikariCP/5.0.1/HikariCP-5.0.1.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-jdbc/6.1.1/spring-jdbc-6.1.1.jar:/Users/ihababadi/.m2/repository/org/hibernate/orm/hibernate-core/6.3.1.Final/hibernate-core-6.3.1.Final.jar:/Users/ihababadi/.m2/repository/jakarta/persistence/jakarta.persistence-api/3.1.0/jakarta.persistence-api-3.1.0.jar:/Users/ihababadi/.m2/repository/jakarta/transaction/jakarta.transaction-api/2.0.1/jakarta.transaction-api-2.0.1.jar:/Users/ihababadi/.m2/repository/org/jboss/logging/jboss-logging/3.5.3.Final/jboss-logging-3.5.3.Final.jar:/Users/ihababadi/.m2/repository/org/hibernate/common/hibernate-commons-annotations/6.0.6.Final/hibernate-commons-annotations-6.0.6.Final.jar:/Users/ihababadi/.m2/repository/io/smallrye/jandex/3.1.2/jandex-3.1.2.jar:/Users/ihababadi/.m2/repository/com/fasterxml/classmate/1.6.0/classmate-1.6.0.jar:/Users/ihababadi/.m2/repository/net/bytebuddy/byte-buddy/1.14.10/byte-buddy-1.14.10.jar:/Users/ihababadi/.m2/repository/org/glassfish/jaxb/jaxb-runtime/4.0.4/jaxb-runtime-4.0.4.jar:/Users/ihababadi/.m2/repository/org/glassfish/jaxb/jaxb-core/4.0.4/jaxb-core-4.0.4.jar:/Users/ihababadi/.m2/repository/org/glassfish/jaxb/txw2/4.0.4/txw2-4.0.4.jar:/Users/ihababadi/.m2/repository/com/sun/istack/istack-commons-runtime/4.1.2/istack-commons-runtime-4.1.2.jar:/Users/ihababadi/.m2/repository/jakarta/inject/jakarta.inject-api/2.0.1/jakarta.inject-api-2.0.1.jar:/Users/ihababadi/.m2/repository/org/antlr/antlr4-runtime/4.10.1/antlr4-runtime-4.10.1.jar:/Users/ihababadi/.m2/repository/org/springframework/data/spring-data-jpa/3.2.0/spring-data-jpa-3.2.0.jar:/Users/ihababadi/.m2/repository/org/springframework/data/spring-data-commons/3.2.0/spring-data-commons-3.2.0.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-orm/6.1.1/spring-orm-6.1.1.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-tx/6.1.1/spring-tx-6.1.1.jar:/Users/ihababadi/.m2/repository/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-aspects/6.1.1/spring-aspects-6.1.1.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-starter-mail/3.2.0/spring-boot-starter-mail-3.2.0.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-context-support/6.1.1/spring-context-support-6.1.1.jar:/Users/ihababadi/.m2/repository/org/eclipse/angus/jakarta.mail/2.0.2/jakarta.mail-2.0.2.jar:/Users/ihababadi/.m2/repository/jakarta/activation/jakarta.activation-api/2.1.2/jakarta.activation-api-2.1.2.jar:/Users/ihababadi/.m2/repository/org/eclipse/angus/angus-activation/2.0.1/angus-activation-2.0.1.jar:/Users/ihababadi/.m2/repository/com/h2database/h2/2.2.224/h2-2.2.224.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-starter-test/3.2.0/spring-boot-starter-test-3.2.0.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-test/3.2.0/spring-boot-test-3.2.0.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-test-autoconfigure/3.2.0/spring-boot-test-autoconfigure-3.2.0.jar:/Users/ihababadi/.m2/repository/com/jayway/jsonpath/json-path/2.8.0/json-path-2.8.0.jar:/Users/ihababadi/.m2/repository/jakarta/xml/bind/jakarta.xml.bind-api/4.0.1/jakarta.xml.bind-api-4.0.1.jar:/Users/ihababadi/.m2/repository/net/minidev/json-smart/2.5.0/json-smart-2.5.0.jar:/Users/ihababadi/.m2/repository/net/minidev/accessors-smart/2.5.0/accessors-smart-2.5.0.jar:/Users/ihababadi/.m2/repository/org/ow2/asm/asm/9.3/asm-9.3.jar:/Users/ihababadi/.m2/repository/org/assertj/assertj-core/3.24.2/assertj-core-3.24.2.jar:/Users/ihababadi/.m2/repository/org/awaitility/awaitility/4.2.0/awaitility-4.2.0.jar:/Users/ihababadi/.m2/repository/org/hamcrest/hamcrest/2.2/hamcrest-2.2.jar:/Users/ihababadi/.m2/repository/org/junit/jupiter/junit-jupiter/5.10.1/junit-jupiter-5.10.1.jar:/Users/ihababadi/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.10.1/junit-jupiter-api-5.10.1.jar:/Users/ihababadi/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/Users/ihababadi/.m2/repository/org/junit/platform/junit-platform-commons/1.10.1/junit-platform-commons-1.10.1.jar:/Users/ihababadi/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/ihababadi/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.10.1/junit-jupiter-params-5.10.1.jar:/Users/ihababadi/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.10.1/junit-jupiter-engine-5.10.1.jar:/Users/ihababadi/.m2/repository/org/junit/platform/junit-platform-engine/1.10.1/junit-platform-engine-1.10.1.jar:/Users/ihababadi/.m2/repository/org/mockito/mockito-core/5.7.0/mockito-core-5.7.0.jar:/Users/ihababadi/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.10/byte-buddy-agent-1.14.10.jar:/Users/ihababadi/.m2/repository/org/objenesis/objenesis/3.3/objenesis-3.3.jar:/Users/ihababadi/.m2/repository/org/mockito/mockito-junit-jupiter/5.7.0/mockito-junit-jupiter-5.7.0.jar:/Users/ihababadi/.m2/repository/org/skyscreamer/jsonassert/1.5.1/jsonassert-1.5.1.jar:/Users/ihababadi/.m2/repository/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-core/6.1.1/spring-core-6.1.1.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-jcl/6.1.1/spring-jcl-6.1.1.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-test/6.1.1/spring-test-6.1.1.jar:/Users/ihababadi/.m2/repository/org/xmlunit/xmlunit-core/2.9.1/xmlunit-core-2.9.1.jar:"/>
+    <property name="java.vm.vendor" value="Homebrew"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.vendor.url" value="https://github.com/Homebrew/homebrew-core/issues"/>
+    <property name="user.timezone" value="Europe/Paris"/>
+    <property name="org.jboss.logging.provider" value="slf4j"/>
+    <property name="os.name" value="Mac OS X"/>
+    <property name="java.vm.specification.version" value="23"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="user.country" value="FR"/>
+    <property name="sun.boot.library.path" value="/opt/homebrew/Cellar/openjdk/23/libexec/openjdk.jdk/Contents/Home/lib"/>
+    <property name="sun.java.command" value="/Users/ihababadi/Library/CloudStorage/OneDrive-utopios/supports_markdown/theme/architecture_hexagonale/exercices/bibliotech-monolithe/target/surefire/surefirebooter-20260320065156613_3.jar /Users/ihababadi/Library/CloudStorage/OneDrive-utopios/supports_markdown/theme/architecture_hexagonale/exercices/bibliotech-monolithe/target/surefire 2026-03-20T06-51-56_559-jvmRun1 surefire-20260320065156613_1tmp surefire_0-20260320065156613_2tmp"/>
+    <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="surefire.test.class.path" value="/Users/ihababadi/Library/CloudStorage/OneDrive-utopios/supports_markdown/theme/architecture_hexagonale/exercices/bibliotech-monolithe/target/test-classes:/Users/ihababadi/Library/CloudStorage/OneDrive-utopios/supports_markdown/theme/architecture_hexagonale/exercices/bibliotech-monolithe/target/classes:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-starter-web/3.2.0/spring-boot-starter-web-3.2.0.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-starter/3.2.0/spring-boot-starter-3.2.0.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot/3.2.0/spring-boot-3.2.0.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-autoconfigure/3.2.0/spring-boot-autoconfigure-3.2.0.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-starter-logging/3.2.0/spring-boot-starter-logging-3.2.0.jar:/Users/ihababadi/.m2/repository/ch/qos/logback/logback-classic/1.4.11/logback-classic-1.4.11.jar:/Users/ihababadi/.m2/repository/ch/qos/logback/logback-core/1.4.11/logback-core-1.4.11.jar:/Users/ihababadi/.m2/repository/org/apache/logging/log4j/log4j-to-slf4j/2.21.1/log4j-to-slf4j-2.21.1.jar:/Users/ihababadi/.m2/repository/org/apache/logging/log4j/log4j-api/2.21.1/log4j-api-2.21.1.jar:/Users/ihababadi/.m2/repository/org/slf4j/jul-to-slf4j/2.0.9/jul-to-slf4j-2.0.9.jar:/Users/ihababadi/.m2/repository/jakarta/annotation/jakarta.annotation-api/2.1.1/jakarta.annotation-api-2.1.1.jar:/Users/ihababadi/.m2/repository/org/yaml/snakeyaml/2.2/snakeyaml-2.2.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-starter-json/3.2.0/spring-boot-starter-json-3.2.0.jar:/Users/ihababadi/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.15.3/jackson-databind-2.15.3.jar:/Users/ihababadi/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.15.3/jackson-annotations-2.15.3.jar:/Users/ihababadi/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.15.3/jackson-core-2.15.3.jar:/Users/ihababadi/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.15.3/jackson-datatype-jdk8-2.15.3.jar:/Users/ihababadi/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.15.3/jackson-datatype-jsr310-2.15.3.jar:/Users/ihababadi/.m2/repository/com/fasterxml/jackson/module/jackson-module-parameter-names/2.15.3/jackson-module-parameter-names-2.15.3.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-starter-tomcat/3.2.0/spring-boot-starter-tomcat-3.2.0.jar:/Users/ihababadi/.m2/repository/org/apache/tomcat/embed/tomcat-embed-core/10.1.16/tomcat-embed-core-10.1.16.jar:/Users/ihababadi/.m2/repository/org/apache/tomcat/embed/tomcat-embed-el/10.1.16/tomcat-embed-el-10.1.16.jar:/Users/ihababadi/.m2/repository/org/apache/tomcat/embed/tomcat-embed-websocket/10.1.16/tomcat-embed-websocket-10.1.16.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-web/6.1.1/spring-web-6.1.1.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-beans/6.1.1/spring-beans-6.1.1.jar:/Users/ihababadi/.m2/repository/io/micrometer/micrometer-observation/1.12.0/micrometer-observation-1.12.0.jar:/Users/ihababadi/.m2/repository/io/micrometer/micrometer-commons/1.12.0/micrometer-commons-1.12.0.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-webmvc/6.1.1/spring-webmvc-6.1.1.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-aop/6.1.1/spring-aop-6.1.1.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-context/6.1.1/spring-context-6.1.1.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-expression/6.1.1/spring-expression-6.1.1.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-starter-data-jpa/3.2.0/spring-boot-starter-data-jpa-3.2.0.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-starter-aop/3.2.0/spring-boot-starter-aop-3.2.0.jar:/Users/ihababadi/.m2/repository/org/aspectj/aspectjweaver/1.9.20.1/aspectjweaver-1.9.20.1.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-starter-jdbc/3.2.0/spring-boot-starter-jdbc-3.2.0.jar:/Users/ihababadi/.m2/repository/com/zaxxer/HikariCP/5.0.1/HikariCP-5.0.1.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-jdbc/6.1.1/spring-jdbc-6.1.1.jar:/Users/ihababadi/.m2/repository/org/hibernate/orm/hibernate-core/6.3.1.Final/hibernate-core-6.3.1.Final.jar:/Users/ihababadi/.m2/repository/jakarta/persistence/jakarta.persistence-api/3.1.0/jakarta.persistence-api-3.1.0.jar:/Users/ihababadi/.m2/repository/jakarta/transaction/jakarta.transaction-api/2.0.1/jakarta.transaction-api-2.0.1.jar:/Users/ihababadi/.m2/repository/org/jboss/logging/jboss-logging/3.5.3.Final/jboss-logging-3.5.3.Final.jar:/Users/ihababadi/.m2/repository/org/hibernate/common/hibernate-commons-annotations/6.0.6.Final/hibernate-commons-annotations-6.0.6.Final.jar:/Users/ihababadi/.m2/repository/io/smallrye/jandex/3.1.2/jandex-3.1.2.jar:/Users/ihababadi/.m2/repository/com/fasterxml/classmate/1.6.0/classmate-1.6.0.jar:/Users/ihababadi/.m2/repository/net/bytebuddy/byte-buddy/1.14.10/byte-buddy-1.14.10.jar:/Users/ihababadi/.m2/repository/org/glassfish/jaxb/jaxb-runtime/4.0.4/jaxb-runtime-4.0.4.jar:/Users/ihababadi/.m2/repository/org/glassfish/jaxb/jaxb-core/4.0.4/jaxb-core-4.0.4.jar:/Users/ihababadi/.m2/repository/org/glassfish/jaxb/txw2/4.0.4/txw2-4.0.4.jar:/Users/ihababadi/.m2/repository/com/sun/istack/istack-commons-runtime/4.1.2/istack-commons-runtime-4.1.2.jar:/Users/ihababadi/.m2/repository/jakarta/inject/jakarta.inject-api/2.0.1/jakarta.inject-api-2.0.1.jar:/Users/ihababadi/.m2/repository/org/antlr/antlr4-runtime/4.10.1/antlr4-runtime-4.10.1.jar:/Users/ihababadi/.m2/repository/org/springframework/data/spring-data-jpa/3.2.0/spring-data-jpa-3.2.0.jar:/Users/ihababadi/.m2/repository/org/springframework/data/spring-data-commons/3.2.0/spring-data-commons-3.2.0.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-orm/6.1.1/spring-orm-6.1.1.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-tx/6.1.1/spring-tx-6.1.1.jar:/Users/ihababadi/.m2/repository/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-aspects/6.1.1/spring-aspects-6.1.1.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-starter-mail/3.2.0/spring-boot-starter-mail-3.2.0.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-context-support/6.1.1/spring-context-support-6.1.1.jar:/Users/ihababadi/.m2/repository/org/eclipse/angus/jakarta.mail/2.0.2/jakarta.mail-2.0.2.jar:/Users/ihababadi/.m2/repository/jakarta/activation/jakarta.activation-api/2.1.2/jakarta.activation-api-2.1.2.jar:/Users/ihababadi/.m2/repository/org/eclipse/angus/angus-activation/2.0.1/angus-activation-2.0.1.jar:/Users/ihababadi/.m2/repository/com/h2database/h2/2.2.224/h2-2.2.224.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-starter-test/3.2.0/spring-boot-starter-test-3.2.0.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-test/3.2.0/spring-boot-test-3.2.0.jar:/Users/ihababadi/.m2/repository/org/springframework/boot/spring-boot-test-autoconfigure/3.2.0/spring-boot-test-autoconfigure-3.2.0.jar:/Users/ihababadi/.m2/repository/com/jayway/jsonpath/json-path/2.8.0/json-path-2.8.0.jar:/Users/ihababadi/.m2/repository/jakarta/xml/bind/jakarta.xml.bind-api/4.0.1/jakarta.xml.bind-api-4.0.1.jar:/Users/ihababadi/.m2/repository/net/minidev/json-smart/2.5.0/json-smart-2.5.0.jar:/Users/ihababadi/.m2/repository/net/minidev/accessors-smart/2.5.0/accessors-smart-2.5.0.jar:/Users/ihababadi/.m2/repository/org/ow2/asm/asm/9.3/asm-9.3.jar:/Users/ihababadi/.m2/repository/org/assertj/assertj-core/3.24.2/assertj-core-3.24.2.jar:/Users/ihababadi/.m2/repository/org/awaitility/awaitility/4.2.0/awaitility-4.2.0.jar:/Users/ihababadi/.m2/repository/org/hamcrest/hamcrest/2.2/hamcrest-2.2.jar:/Users/ihababadi/.m2/repository/org/junit/jupiter/junit-jupiter/5.10.1/junit-jupiter-5.10.1.jar:/Users/ihababadi/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.10.1/junit-jupiter-api-5.10.1.jar:/Users/ihababadi/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/Users/ihababadi/.m2/repository/org/junit/platform/junit-platform-commons/1.10.1/junit-platform-commons-1.10.1.jar:/Users/ihababadi/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/ihababadi/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.10.1/junit-jupiter-params-5.10.1.jar:/Users/ihababadi/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.10.1/junit-jupiter-engine-5.10.1.jar:/Users/ihababadi/.m2/repository/org/junit/platform/junit-platform-engine/1.10.1/junit-platform-engine-1.10.1.jar:/Users/ihababadi/.m2/repository/org/mockito/mockito-core/5.7.0/mockito-core-5.7.0.jar:/Users/ihababadi/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.10/byte-buddy-agent-1.14.10.jar:/Users/ihababadi/.m2/repository/org/objenesis/objenesis/3.3/objenesis-3.3.jar:/Users/ihababadi/.m2/repository/org/mockito/mockito-junit-jupiter/5.7.0/mockito-junit-jupiter-5.7.0.jar:/Users/ihababadi/.m2/repository/org/skyscreamer/jsonassert/1.5.1/jsonassert-1.5.1.jar:/Users/ihababadi/.m2/repository/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-core/6.1.1/spring-core-6.1.1.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-jcl/6.1.1/spring-jcl-6.1.1.jar:/Users/ihababadi/.m2/repository/org/springframework/spring-test/6.1.1/spring-test-6.1.1.jar:/Users/ihababadi/.m2/repository/org/xmlunit/xmlunit-core/2.9.1/xmlunit-core-2.9.1.jar:"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="/Users/ihababadi"/>
+    <property name="user.language" value="fr"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.version.date" value="2024-09-17"/>
+    <property name="java.home" value="/opt/homebrew/Cellar/openjdk/23/libexec/openjdk.jdk/Contents/Home"/>
+    <property name="file.separator" value="/"/>
+    <property name="basedir" value="/Users/ihababadi/Library/CloudStorage/OneDrive-utopios/supports_markdown/theme/architecture_hexagonale/exercices/bibliotech-monolithe"/>
+    <property name="java.vm.compressedOopsMode" value="Zero based"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="FILE_LOG_CHARSET" value="UTF-8"/>
+    <property name="java.awt.headless" value="true"/>
+    <property name="apple.awt.application.name" value="ForkedBooter"/>
+    <property name="surefire.real.class.path" value="/Users/ihababadi/Library/CloudStorage/OneDrive-utopios/supports_markdown/theme/architecture_hexagonale/exercices/bibliotech-monolithe/target/surefire/surefirebooter-20260320065156613_3.jar"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="java.runtime.version" value="23"/>
+    <property name="user.name" value="ihababadi"/>
+    <property name="stdout.encoding" value="UTF-8"/>
+    <property name="path.separator" value=":"/>
+    <property name="os.version" value="14.5"/>
+    <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
+    <property name="java.vendor.version" value="Homebrew"/>
+    <property name="localRepository" value="/Users/ihababadi/.m2/repository"/>
+    <property name="java.vendor.url.bug" value="https://github.com/Homebrew/homebrew-core/issues"/>
+    <property name="java.io.tmpdir" value="/var/folders/bz/pcm73lx90nz_zws31nl8_rn00000gn/T/"/>
+    <property name="com.zaxxer.hikari.pool_number" value="1"/>
+    <property name="java.version" value="23"/>
+    <property name="user.dir" value="/Users/ihababadi/Library/CloudStorage/OneDrive-utopios/supports_markdown/theme/architecture_hexagonale/exercices/bibliotech-monolithe"/>
+    <property name="os.arch" value="aarch64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="PID" value="52768"/>
+    <property name="CONSOLE_LOG_CHARSET" value="UTF-8"/>
+    <property name="native.encoding" value="UTF-8"/>
+    <property name="java.library.path" value="/Users/ihababadi/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:."/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="stderr.encoding" value="UTF-8"/>
+    <property name="java.vendor" value="Homebrew"/>
+    <property name="java.vm.version" value="23"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeBig"/>
+    <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="java.class.version" value="67.0"/>
+    <property name="LOGGED_APPLICATION_NAME" value="[bibliotech-monolithe] "/>
+  </properties>
+  <testcase name="shouldRejectBorrowWhenLimitReached" classname="com.bibliotech.BiblioTechApplicationTest" time="0.176">
+    <system-out><![CDATA[06:51:57.216 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.bibliotech.BiblioTechApplicationTest]: BiblioTechApplicationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+06:51:57.312 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.bibliotech.BiblioTechApplication for test class com.bibliotech.BiblioTechApplicationTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+&amp#27;[32m :: Spring Boot :: &amp#27;[39m              &amp#27;[2m (v3.2.0)&amp#27;[0;39m
+
+&amp#27;[2m2026-03-20T06:51:57.566+01:00&amp#27;[0;39m &amp#27;[32m INFO&amp#27;[0;39m &amp#27;[35m52768&amp#27;[0;39m &amp#27;[2m---&amp#27;[0;39m &amp#27;[2m[bibliotech-monolithe] [           main]&amp#27;[0;39m &amp#27;[2m&amp#27;[0;39m&amp#27;[36mc.bibliotech.BiblioTechApplicationTest  &amp#27;[0;39m &amp#27;[2m:&amp#27;[0;39m Starting BiblioTechApplicationTest using Java 23 with PID 52768 (started by ihababadi in /Users/ihababadi/Library/CloudStorage/OneDrive-utopios/supports_markdown/theme/architecture_hexagonale/exercices/bibliotech-monolithe)
+&amp#27;[2m2026-03-20T06:51:57.567+01:00&amp#27;[0;39m &amp#27;[32mDEBUG&amp#27;[0;39m &amp#27;[35m52768&amp#27;[0;39m &amp#27;[2m---&amp#27;[0;39m &amp#27;[2m[bibliotech-monolithe] [           main]&amp#27;[0;39m &amp#27;[2m&amp#27;[0;39m&amp#27;[36mc.bibliotech.BiblioTechApplicationTest  &amp#27;[0;39m &amp#27;[2m:&amp#27;[0;39m Running with Spring Boot v3.2.0, Spring v6.1.1
+&amp#27;[2m2026-03-20T06:51:57.567+01:00&amp#27;[0;39m &amp#27;[32m INFO&amp#27;[0;39m &amp#27;[35m52768&amp#27;[0;39m &amp#27;[2m---&amp#27;[0;39m &amp#27;[2m[bibliotech-monolithe] [           main]&amp#27;[0;39m &amp#27;[2m&amp#27;[0;39m&amp#27;[36mc.bibliotech.BiblioTechApplicationTest  &amp#27;[0;39m &amp#27;[2m:&amp#27;[0;39m No active profile set, falling back to 1 default profile: "default"
+&amp#27;[2m2026-03-20T06:51:57.945+01:00&amp#27;[0;39m &amp#27;[32m INFO&amp#27;[0;39m &amp#27;[35m52768&amp#27;[0;39m &amp#27;[2m---&amp#27;[0;39m &amp#27;[2m[bibliotech-monolithe] [           main]&amp#27;[0;39m &amp#27;[2m&amp#27;[0;39m&amp#27;[36m.s.d.r.c.RepositoryConfigurationDelegate&amp#27;[0;39m &amp#27;[2m:&amp#27;[0;39m Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+&amp#27;[2m2026-03-20T06:51:57.984+01:00&amp#27;[0;39m &amp#27;[32m INFO&amp#27;[0;39m &amp#27;[35m52768&amp#27;[0;39m &amp#27;[2m---&amp#27;[0;39m &amp#27;[2m[bibliotech-monolithe] [           main]&amp#27;[0;39m &amp#27;[2m&amp#27;[0;39m&amp#27;[36m.s.d.r.c.RepositoryConfigurationDelegate&amp#27;[0;39m &amp#27;[2m:&amp#27;[0;39m Finished Spring Data repository scanning in 34 ms. Found 3 JPA repository interfaces.
+&amp#27;[2m2026-03-20T06:51:59.126+01:00&amp#27;[0;39m &amp#27;[32m INFO&amp#27;[0;39m &amp#27;[35m52768&amp#27;[0;39m &amp#27;[2m---&amp#27;[0;39m &amp#27;[2m[bibliotech-monolithe] [           main]&amp#27;[0;39m &amp#27;[2m&amp#27;[0;39m&amp#27;[36mo.hibernate.jpa.internal.util.LogHelper &amp#27;[0;39m &amp#27;[2m:&amp#27;[0;39m HHH000204: Processing PersistenceUnitInfo [name: default]
+&amp#27;[2m2026-03-20T06:51:59.265+01:00&amp#27;[0;39m &amp#27;[32m INFO&amp#27;[0;39m &amp#27;[35m52768&amp#27;[0;39m &amp#27;[2m---&amp#27;[0;39m &amp#27;[2m[bibliotech-monolithe] [           main]&amp#27;[0;39m &amp#27;[2m&amp#27;[0;39m&amp#27;[36morg.hibernate.Version                   &amp#27;[0;39m &amp#27;[2m:&amp#27;[0;39m HHH000412: Hibernate ORM core version 6.3.1.Final
+&amp#27;[2m2026-03-20T06:51:59.320+01:00&amp#27;[0;39m &amp#27;[32m INFO&amp#27;[0;39m &amp#27;[35m52768&amp#27;[0;39m &amp#27;[2m---&amp#27;[0;39m &amp#27;[2m[bibliotech-monolithe] [           main]&amp#27;[0;39m &amp#27;[2m&amp#27;[0;39m&amp#27;[36mo.h.c.internal.RegionFactoryInitiator   &amp#27;[0;39m &amp#27;[2m:&amp#27;[0;39m HHH000026: Second-level cache disabled
+&amp#27;[2m2026-03-20T06:51:59.513+01:00&amp#27;[0;39m &amp#27;[32m INFO&amp#27;[0;39m &amp#27;[35m52768&amp#27;[0;39m &amp#27;[2m---&amp#27;[0;39m &amp#27;[2m[bibliotech-monolithe] [           main]&amp#27;[0;39m &amp#27;[2m&amp#27;[0;39m&amp#27;[36mo.s.o.j.p.SpringPersistenceUnitInfo     &amp#27;[0;39m &amp#27;[2m:&amp#27;[0;39m No LoadTimeWeaver setup: ignoring JPA class transformer
+&amp#27;[2m2026-03-20T06:51:59.551+01:00&amp#27;[0;39m &amp#27;[32m INFO&amp#27;[0;39m &amp#27;[35m52768&amp#27;[0;39m &amp#27;[2m---&amp#27;[0;39m &amp#27;[2m[bibliotech-monolithe] [           main]&amp#27;[0;39m &amp#27;[2m&amp#27;[0;39m&amp#27;[36mcom.zaxxer.hikari.HikariDataSource      &amp#27;[0;39m &amp#27;[2m:&amp#27;[0;39m HikariPool-1 - Starting...
+&amp#27;[2m2026-03-20T06:51:59.661+01:00&amp#27;[0;39m &amp#27;[32m INFO&amp#27;[0;39m &amp#27;[35m52768&amp#27;[0;39m &amp#27;[2m---&amp#27;[0;39m &amp#27;[2m[bibliotech-monolithe] [           main]&amp#27;[0;39m &amp#27;[2m&amp#27;[0;39m&amp#27;[36mcom.zaxxer.hikari.pool.HikariPool       &amp#27;[0;39m &amp#27;[2m:&amp#27;[0;39m HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:bibliotech user=SA
+&amp#27;[2m2026-03-20T06:51:59.661+01:00&amp#27;[0;39m &amp#27;[32m INFO&amp#27;[0;39m &amp#27;[35m52768&amp#27;[0;39m &amp#27;[2m---&amp#27;[0;39m &amp#27;[2m[bibliotech-monolithe] [           main]&amp#27;[0;39m &amp#27;[2m&amp#27;[0;39m&amp#27;[36mcom.zaxxer.hikari.HikariDataSource      &amp#27;[0;39m &amp#27;[2m:&amp#27;[0;39m HikariPool-1 - Start completed.
+&amp#27;[2m2026-03-20T06:51:59.731+01:00&amp#27;[0;39m &amp#27;[33m WARN&amp#27;[0;39m &amp#27;[35m52768&amp#27;[0;39m &amp#27;[2m---&amp#27;[0;39m &amp#27;[2m[bibliotech-monolithe] [           main]&amp#27;[0;39m &amp#27;[2m&amp#27;[0;39m&amp#27;[36morg.hibernate.orm.deprecation           &amp#27;[0;39m &amp#27;[2m:&amp#27;[0;39m HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+&amp#27;[2m2026-03-20T06:52:00.429+01:00&amp#27;[0;39m &amp#27;[32m INFO&amp#27;[0;39m &amp#27;[35m52768&amp#27;[0;39m &amp#27;[2m---&amp#27;[0;39m &amp#27;[2m[bibliotech-monolithe] [           main]&amp#27;[0;39m &amp#27;[2m&amp#27;[0;39m&amp#27;[36mo.h.e.t.j.p.i.JtaPlatformInitiator      &amp#27;[0;39m &amp#27;[2m:&amp#27;[0;39m HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: 
+    drop table if exists books cascade 
+Hibernate: 
+    drop table if exists borrowing_records cascade 
+Hibernate: 
+    drop table if exists members cascade 
+Hibernate: 
+    create table books (
+        available_copies integer not null,
+        isbn varchar(13) not null,
+        author varchar(255) not null,
+        title varchar(255) not null,
+        primary key (isbn)
+    )
+Hibernate: 
+    create table borrowing_records (
+        borrow_date date not null,
+        penalty float(53) not null,
+        return_date date,
+        returned boolean not null,
+        id bigint generated by default as identity,
+        book_isbn varchar(13) not null,
+        member_id varchar(255) not null,
+        primary key (id)
+    )
+Hibernate: 
+    create table members (
+        borrowed_books_count integer not null,
+        unpaid_penalties float(53) not null,
+        email varchar(255) not null unique,
+        member_id varchar(255) not null,
+        name varchar(255) not null,
+        primary key (member_id)
+    )
+Hibernate: 
+    alter table if exists borrowing_records 
+       add constraint FKe3nwn7u1vppgotp21q6ihovwg 
+       foreign key (book_isbn) 
+       references books
+Hibernate: 
+    alter table if exists borrowing_records 
+       add constraint FK4ur6m14uxomq1ydsjlkpdxcuj 
+       foreign key (member_id) 
+       references members
+&amp#27;[2m2026-03-20T06:52:00.471+01:00&amp#27;[0;39m &amp#27;[32m INFO&amp#27;[0;39m &amp#27;[35m52768&amp#27;[0;39m &amp#27;[2m---&amp#27;[0;39m &amp#27;[2m[bibliotech-monolithe] [           main]&amp#27;[0;39m &amp#27;[2m&amp#27;[0;39m&amp#27;[36mj.LocalContainerEntityManagerFactoryBean&amp#27;[0;39m &amp#27;[2m:&amp#27;[0;39m Initialized JPA EntityManagerFactory for persistence unit 'default'
+&amp#27;[2m2026-03-20T06:52:00.969+01:00&amp#27;[0;39m &amp#27;[33m WARN&amp#27;[0;39m &amp#27;[35m52768&amp#27;[0;39m &amp#27;[2m---&amp#27;[0;39m &amp#27;[2m[bibliotech-monolithe] [           main]&amp#27;[0;39m &amp#27;[2m&amp#27;[0;39m&amp#27;[36mJpaBaseConfiguration$JpaWebConfiguration&amp#27;[0;39m &amp#27;[2m:&amp#27;[0;39m spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+&amp#27;[2m2026-03-20T06:52:01.139+01:00&amp#27;[0;39m &amp#27;[32m INFO&amp#27;[0;39m &amp#27;[35m52768&amp#27;[0;39m &amp#27;[2m---&amp#27;[0;39m &amp#27;[2m[bibliotech-monolithe] [           main]&amp#27;[0;39m &amp#27;[2m&amp#27;[0;39m&amp#27;[36mo.s.b.a.h2.H2ConsoleAutoConfiguration   &amp#27;[0;39m &amp#27;[2m:&amp#27;[0;39m H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:bibliotech'
+&amp#27;[2m2026-03-20T06:52:01.189+01:00&amp#27;[0;39m &amp#27;[32m INFO&amp#27;[0;39m &amp#27;[35m52768&amp#27;[0;39m &amp#27;[2m---&amp#27;[0;39m &amp#27;[2m[bibliotech-monolithe] [           main]&amp#27;[0;39m &amp#27;[2m&amp#27;[0;39m&amp#27;[36mc.bibliotech.BiblioTechApplicationTest  &amp#27;[0;39m &amp#27;[2m:&amp#27;[0;39m Started BiblioTechApplicationTest in 3.77 seconds (process running for 4.527)
+Hibernate: 
+    select
+        b1_0.isbn,
+        b1_0.author,
+        b1_0.available_copies,
+        b1_0.title 
+    from
+        books b1_0 
+    where
+        b1_0.isbn=?
+Hibernate: 
+    insert 
+    into
+        books
+        (author, available_copies, title, isbn) 
+    values
+        (?, ?, ?, ?)
+Hibernate: 
+    select
+        b1_0.isbn,
+        b1_0.author,
+        b1_0.available_copies,
+        b1_0.title 
+    from
+        books b1_0 
+    where
+        b1_0.isbn=?
+Hibernate: 
+    insert 
+    into
+        books
+        (author, available_copies, title, isbn) 
+    values
+        (?, ?, ?, ?)
+Hibernate: 
+    select
+        b1_0.isbn,
+        b1_0.author,
+        b1_0.available_copies,
+        b1_0.title 
+    from
+        books b1_0 
+    where
+        b1_0.isbn=?
+Hibernate: 
+    insert 
+    into
+        books
+        (author, available_copies, title, isbn) 
+    values
+        (?, ?, ?, ?)
+Hibernate: 
+    select
+        b1_0.isbn,
+        b1_0.author,
+        b1_0.available_copies,
+        b1_0.title 
+    from
+        books b1_0 
+    where
+        b1_0.isbn=?
+Hibernate: 
+    insert 
+    into
+        books
+        (author, available_copies, title, isbn) 
+    values
+        (?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        members
+        (borrowed_books_count, email, name, unpaid_penalties, member_id) 
+    values
+        (?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        m1_0.member_id,
+        m1_0.borrowed_books_count,
+        m1_0.email,
+        m1_0.name,
+        m1_0.unpaid_penalties 
+    from
+        members m1_0 
+    where
+        m1_0.member_id=?
+Hibernate: 
+    select
+        b1_0.isbn,
+        b1_0.author,
+        b1_0.available_copies,
+        b1_0.title 
+    from
+        books b1_0 
+    where
+        b1_0.isbn=?
+Hibernate: 
+    insert 
+    into
+        borrowing_records
+        (book_isbn, borrow_date, member_id, penalty, return_date, returned, id) 
+    values
+        (?, ?, ?, ?, ?, ?, default)
+Hibernate: 
+    update
+        members 
+    set
+        borrowed_books_count=?,
+        email=?,
+        name=?,
+        unpaid_penalties=? 
+    where
+        member_id=?
+Hibernate: 
+    update
+        books 
+    set
+        author=?,
+        available_copies=?,
+        title=? 
+    where
+        isbn=?
+Hibernate: 
+    select
+        m1_0.member_id,
+        m1_0.borrowed_books_count,
+        m1_0.email,
+        m1_0.name,
+        m1_0.unpaid_penalties 
+    from
+        members m1_0 
+    where
+        m1_0.member_id=?
+Hibernate: 
+    select
+        b1_0.isbn,
+        b1_0.author,
+        b1_0.available_copies,
+        b1_0.title 
+    from
+        books b1_0 
+    where
+        b1_0.isbn=?
+Hibernate: 
+    insert 
+    into
+        borrowing_records
+        (book_isbn, borrow_date, member_id, penalty, return_date, returned, id) 
+    values
+        (?, ?, ?, ?, ?, ?, default)
+Hibernate: 
+    update
+        members 
+    set
+        borrowed_books_count=?,
+        email=?,
+        name=?,
+        unpaid_penalties=? 
+    where
+        member_id=?
+Hibernate: 
+    update
+        books 
+    set
+        author=?,
+        available_copies=?,
+        title=? 
+    where
+        isbn=?
+Hibernate: 
+    select
+        m1_0.member_id,
+        m1_0.borrowed_books_count,
+        m1_0.email,
+        m1_0.name,
+        m1_0.unpaid_penalties 
+    from
+        members m1_0 
+    where
+        m1_0.member_id=?
+Hibernate: 
+    select
+        b1_0.isbn,
+        b1_0.author,
+        b1_0.available_copies,
+        b1_0.title 
+    from
+        books b1_0 
+    where
+        b1_0.isbn=?
+Hibernate: 
+    insert 
+    into
+        borrowing_records
+        (book_isbn, borrow_date, member_id, penalty, return_date, returned, id) 
+    values
+        (?, ?, ?, ?, ?, ?, default)
+Hibernate: 
+    update
+        members 
+    set
+        borrowed_books_count=?,
+        email=?,
+        name=?,
+        unpaid_penalties=? 
+    where
+        member_id=?
+Hibernate: 
+    update
+        books 
+    set
+        author=?,
+        available_copies=?,
+        title=? 
+    where
+        isbn=?
+Hibernate: 
+    select
+        m1_0.member_id,
+        m1_0.borrowed_books_count,
+        m1_0.email,
+        m1_0.name,
+        m1_0.unpaid_penalties 
+    from
+        members m1_0 
+    where
+        m1_0.member_id=?
+Hibernate: 
+    select
+        b1_0.isbn,
+        b1_0.author,
+        b1_0.available_copies,
+        b1_0.title 
+    from
+        books b1_0 
+    where
+        b1_0.isbn=?
+]]></system-out>
+    <system-err><![CDATA[WARNING: A Java agent has been loaded dynamically (/Users/ihababadi/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.10/byte-buddy-agent-1.14.10.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
+  </testcase>
+  <testcase name="shouldBorrowBook" classname="com.bibliotech.BiblioTechApplicationTest" time="0.013">
+    <system-out><![CDATA[Hibernate: 
+    select
+        b1_0.isbn,
+        b1_0.author,
+        b1_0.available_copies,
+        b1_0.title 
+    from
+        books b1_0 
+    where
+        b1_0.isbn=?
+Hibernate: 
+    insert 
+    into
+        books
+        (author, available_copies, title, isbn) 
+    values
+        (?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        members
+        (borrowed_books_count, email, name, unpaid_penalties, member_id) 
+    values
+        (?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        m1_0.member_id,
+        m1_0.borrowed_books_count,
+        m1_0.email,
+        m1_0.name,
+        m1_0.unpaid_penalties 
+    from
+        members m1_0 
+    where
+        m1_0.member_id=?
+Hibernate: 
+    select
+        b1_0.isbn,
+        b1_0.author,
+        b1_0.available_copies,
+        b1_0.title 
+    from
+        books b1_0 
+    where
+        b1_0.isbn=?
+Hibernate: 
+    insert 
+    into
+        borrowing_records
+        (book_isbn, borrow_date, member_id, penalty, return_date, returned, id) 
+    values
+        (?, ?, ?, ?, ?, ?, default)
+Hibernate: 
+    update
+        members 
+    set
+        borrowed_books_count=?,
+        email=?,
+        name=?,
+        unpaid_penalties=? 
+    where
+        member_id=?
+Hibernate: 
+    update
+        books 
+    set
+        author=?,
+        available_copies=?,
+        title=? 
+    where
+        isbn=?
+Hibernate: 
+    select
+        b1_0.isbn,
+        b1_0.author,
+        b1_0.available_copies,
+        b1_0.title 
+    from
+        books b1_0 
+    where
+        b1_0.isbn=?
+]]></system-out>
+  </testcase>
+  <testcase name="contextLoads" classname="com.bibliotech.BiblioTechApplicationTest" time="0.001"/>
+  <testcase name="shouldAddAndRetrieveBook" classname="com.bibliotech.BiblioTechApplicationTest" time="0.004">
+    <system-out><![CDATA[Hibernate: 
+    select
+        b1_0.isbn,
+        b1_0.author,
+        b1_0.available_copies,
+        b1_0.title 
+    from
+        books b1_0 
+    where
+        b1_0.isbn=?
+Hibernate: 
+    select
+        b1_0.isbn,
+        b1_0.author,
+        b1_0.available_copies,
+        b1_0.title 
+    from
+        books b1_0 
+    where
+        b1_0.isbn=?
+]]></system-out>
+  </testcase>
+  <testcase name="shouldRejectBorrowWhenNoCopiesAvailable" classname="com.bibliotech.BiblioTechApplicationTest" time="0.005">
+    <system-out><![CDATA[Hibernate: 
+    select
+        b1_0.isbn,
+        b1_0.author,
+        b1_0.available_copies,
+        b1_0.title 
+    from
+        books b1_0 
+    where
+        b1_0.isbn=?
+Hibernate: 
+    insert 
+    into
+        books
+        (author, available_copies, title, isbn) 
+    values
+        (?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        members
+        (borrowed_books_count, email, name, unpaid_penalties, member_id) 
+    values
+        (?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        m1_0.member_id,
+        m1_0.borrowed_books_count,
+        m1_0.email,
+        m1_0.name,
+        m1_0.unpaid_penalties 
+    from
+        members m1_0 
+    where
+        m1_0.member_id=?
+Hibernate: 
+    select
+        b1_0.isbn,
+        b1_0.author,
+        b1_0.available_copies,
+        b1_0.title 
+    from
+        books b1_0 
+    where
+        b1_0.isbn=?
+]]></system-out>
+  </testcase>
+</testsuite>
