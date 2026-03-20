@@ -310,7 +310,7 @@ notifyEvent(DomainEvent event) : void
 
 ---
 
-## Etape 4 : Implementer la couche application 
+## Etape 4 : Implementer la couche application (15 min)
 
 La couche application **orchestre** les objets du domaine via les ports. Elle ne contient aucune logique metier.
 
