@@ -104,11 +104,11 @@ Lisez attentivement le code de chaque classe, puis identifiez les problemes en r
 
 | Probleme | Ou dans le code ? | Consequence |
 |----------|-------------------|-------------|
-| ? | ? | ? |
-| ? | ? | ? |
-| ? | ? | ? |
-| ? | ? | ? |
-| ? | ? | ? |
+| Entités JPA = entités métier | @Entity et continent de la logique métier | Hibernate pour modifier l'état via des proxy. Sans hibernate les entités ont des setters public sans logique |
+| Couplage fort à JPA | BookService dépend de BookRepository extends JpaRepository | Changer BDD force à modifier le service métier |
+| Couplage fort à JavaMail | @Autowired JavaMailSender dans BookService | Changer de canal de notification force à modifier le service métier |
+| Logique métier dans le service, pas dans les entités | member.borrow() dans le service | Modèle anémique |
+| **God Service** | BookService (200 lignes) | Impossible à maintenir |
 
 > **Questions cles a se poser :**
 > - Peut-on tester la logique metier sans demarrer Spring ?
@@ -118,7 +118,7 @@ Lisez attentivement le code de chaque classe, puis identifiez les problemes en r
 
 ---
 
-## Etape 2 : Extraire le domaine
+## Etape 2 : Extraire le domaine (30min)
 
 Creez un **nouveau projet Maven** `bibliotech-hexagonal` (ou renommez le projet existant). L'objectif est de creer un package `domain` **totalement independant** de tout framework.
 
