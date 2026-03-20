@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.utopios.module3.integration.OrderRepositoryIntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.184 s -- in com.utopios.module3.integration.OrderRepositoryIntegrationTest

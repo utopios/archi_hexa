@@ -1,0 +1,8 @@
+com/utopios/module3/cucumber/CommandeStepDefinitions.class
+com/utopios/module3/domain/MoneyTest.class
+com/utopios/module3/cucumber/TestContext$InMemoryOrderRepository.class
+com/utopios/module3/cucumber/TestContext.class
+com/utopios/module3/domain/OrderTest.class
+com/utopios/module3/cucumber/CucumberSuite.class
+com/utopios/module3/cucumber/TestContext$InMemoryNotificationAdapter.class
+com/utopios/module3/integration/OrderRepositoryIntegrationTest.class
