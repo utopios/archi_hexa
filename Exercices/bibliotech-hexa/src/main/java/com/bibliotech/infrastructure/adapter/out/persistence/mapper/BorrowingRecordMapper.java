@@ -10,8 +10,7 @@ public class BorrowingRecordMapper {
     private BorrowingRecordMapper() {}
 
     public static BorrowingRecord toDomain(BorrowingRecordJpaEntity entity) {
-        BorrowingRecord record = new BorrowingRecord(
-                entity.getId(),
+        BorrowingRecord record = BorrowingRecord.create(
                 new MemberId(entity.getMemberId()),
                 new ISBN(entity.getIsbn()),
                 entity.getBorrowDate()

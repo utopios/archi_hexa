@@ -33,7 +33,7 @@ public class BorrowingRecord {
         this.penalty = Penalty.zero();
     }
 
-    private BorrowingRecord(Long id, MemberId memberId, ISBN isbn, LocalDate borrowDate,
+    public BorrowingRecord(Long id, MemberId memberId, ISBN isbn, LocalDate borrowDate,
                             LocalDate returnDate, boolean returned, double penaltyAmount) {
         this.id = id;
         this.memberId = memberId;
