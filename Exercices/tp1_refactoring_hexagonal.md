@@ -403,3 +403,75 @@ public class BeanConfiguration {
 
 ---
 
+
+# Partie 2 : Tests 
+
+> **Contexte :** Votre refactoring est en place. L'objectif de cette partie est de valider chaque couche de l'architecture hexagonale par des tests adaptes. Vous allez constater que l'architecture hexagonale rend les tests **beaucoup plus simples et rapides** qu'avec le monolithe d'origine.
+
+---
+
+## Etape 6 : Tests 
+
+### 6.1 Tests unitaires du domaine (20 min)
+
+> Ces tests ne necessitent **aucun framework** hormis JUnit. Pas de Spring, pas de base de donnees, pas de mock framework.
+
+Creez les tests suivants :
+
+**`BookTest`** :
+- `canBeBorrowed()` retourne `true` si copies > 0, `false` sinon
+- `decrementStock()` decremente le stock de 1
+- `decrementStock()` lance `BookNotAvailableException` si stock = 0
+- `incrementStock()` incremente le stock de 1
+
+**`MemberTest`** :
+- `canBorrow()` retourne `true` si < 3 livres ET pas de penalites
+- `canBorrow()` retourne `false` si 3 livres empruntes
+- `canBorrow()` retourne `false` si penalites impayees
+- `borrow()` incremente le compteur
+- `borrow()` lance `BorrowingLimitReachedException` si limite atteinte
+- `borrow()` lance `UnpaidPenaltiesException` si penalites impayees
+- `returnBook()` decremente le compteur
+
+### 6.2 Tests du `BorrowingRecord` (avec evenements)
+
+- `create()` genere un evenement `BookBorrowed`
+- `markAsReturned()` dans les delais ne genere pas de penalite, genere seulement `BookReturned`
+- `markAsReturned()` en retard genere une penalite correcte, genere `BookReturned` + `PenaltyGenerated`
+
+### 6.3 Test BDD : scenario complet du use case
+
+Creez `BookLendingUseCaseTest` avec des adapteurs en memoire (classes internes implementant les ports secondaires) :
+
+**Scenario 1 :** GIVEN un membre avec 3 livres empruntes WHEN il emprunte un 4eme THEN `BorrowingLimitReachedException` + stock du livre inchange
+
+**Scenario 2 :** GIVEN un membre eligible WHEN il emprunte THEN emprunt enregistre + stock decremente + notification envoyee
+
+> **Avantage :** ces tests s'executent en quelques millisecondes, sans Spring, sans BDD.
+
+### 6.4 Test d'integration JPA avec H2
+
+Creez `JpaBookRepositoryIntegrationTest` avec `@DataJpaTest` :
+- `save()` et `findByIsbn()` fonctionnent correctement
+- `findByTitleContaining()` retourne les livres correspondants (insensible a la casse)
+
+### 6.5 Test ArchUnit : verifier les regles architecturales
+
+Ajoutez la dependance :
+```xml
+<dependency>
+    <groupId>com.tngtech.archunit</groupId>
+    <artifactId>archunit-junit5</artifactId>
+    <version>1.2.1</version>
+    <scope>test</scope>
+</dependency>
+```
+
+Creez `HexagonalArchitectureTest` et verifiez que :
+- Le domaine ne depend pas de l'infrastructure
+- Le domaine ne depend pas de Spring
+- Le domaine ne depend pas de JPA (`jakarta.persistence`)
+- L'application ne depend pas de l'infrastructure
+
+
+
