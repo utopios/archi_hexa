@@ -137,6 +137,8 @@ com.bibliotech/
       BookTitle.java
       Email.java
       Penalty.java
+      Author.java
+      MemberName.java
     event/
       DomainEvent.java
       BookBorrowed.java
