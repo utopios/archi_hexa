@@ -50,9 +50,12 @@ public class Member {
         this.borrowedBooksCount++;
     }
 
-    public void returnBook() {
+    public void returnBook(Penalty penalty) {
         if (this.borrowedBooksCount <= 0) {
             throw new IllegalStateException("Le membre n'a aucun livre emprunte");
+        }
+        if (penalty.isUnpaid()) {
+            addPenalty(penalty);
         }
         this.borrowedBooksCount--;
     }

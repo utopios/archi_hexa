@@ -14,7 +14,7 @@ import java.util.List;
 
 public class BorrowingRecord {
 
-    private final Long id;
+    private Long id;
     private final MemberId memberId;
     private final ISBN isbn;
     private final LocalDate borrowDate;
@@ -24,8 +24,8 @@ public class BorrowingRecord {
 
     private final List<DomainEvent> domainEvents = new ArrayList<>();
 
-    private BorrowingRecord(Long id, MemberId memberId, ISBN isbn, LocalDate borrowDate) {
-        this.id = id;
+    private BorrowingRecord(MemberId memberId, ISBN isbn, LocalDate borrowDate) {
+
         this.memberId = memberId;
         this.isbn = isbn;
         this.borrowDate = borrowDate;
@@ -44,8 +44,8 @@ public class BorrowingRecord {
         this.penalty = new Penalty(penaltyAmount);
     }
 
-    public static BorrowingRecord create(Long id, MemberId memberId, ISBN isbn, LocalDate borrowDate) {
-        BorrowingRecord record = new BorrowingRecord(id, memberId, isbn, borrowDate);
+    public static BorrowingRecord create(MemberId memberId, ISBN isbn, LocalDate borrowDate) {
+        BorrowingRecord record = new BorrowingRecord(memberId, isbn, borrowDate);
         record.domainEvents.add(new BookBorrowed(memberId, isbn, borrowDate));
         return record;
     }
