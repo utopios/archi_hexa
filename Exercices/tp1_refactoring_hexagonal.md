@@ -98,7 +98,7 @@ bibliotech-monolithe/
         └── BookController.java
 ```
 
-### 1.1 Exercice d'analyse
+### 1.1 Exercice d'analyse (10 min)
 
 Lisez attentivement le code de chaque classe, puis identifiez les problemes en remplissant le tableau suivant :
 
