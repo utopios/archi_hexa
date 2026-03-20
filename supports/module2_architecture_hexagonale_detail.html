@@ -1,0 +1,1785 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 2 : Architecture Hexagonale en detail</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/java.min.js"></script>
+    <style>
+        :root {
+            --primary: #6a1b9a;
+            --primary-dark: #4a148c;
+            --primary-light: #9c4dcc;
+            --accent-orange: #ff6b35;
+            --accent-green: #00d084;
+            --accent-yellow: #ffd93d;
+            --bg-light: #f8f9fa;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .slide-container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            padding-top: 50px;
+            padding-bottom: 70px;
+        }
+
+        .slide {
+            position: absolute;
+            top: 50px;
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 120px);
+            display: none;
+            padding: 30px 60px;
+            overflow-y: auto;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Title Slide */
+        .slide.title-slide {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 50%, #2a0845 100%);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--white);
+            text-align: center;
+            padding: 40px;
+        }
+
+        .slide.title-slide.active {
+            display: flex;
+        }
+
+        .title-slide h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            border: none;
+        }
+
+        .title-slide .subtitle {
+            font-size: 1.3em;
+            opacity: 0.9;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .objective-box {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 18px 20px;
+            text-align: left;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .objective-box:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.18);
+        }
+
+        .objective-box i {
+            color: var(--accent-yellow);
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        .objective-box span {
+            font-size: 0.95em;
+        }
+
+        /* Content Slides */
+        .slide h2 {
+            color: var(--primary);
+            font-size: 1.7em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .slide h2 i {
+            margin-right: 12px;
+            color: var(--primary-light);
+        }
+
+        .slide h3 {
+            color: var(--primary-dark);
+            font-size: 1.25em;
+            margin: 18px 0 12px;
+        }
+
+        .slide p {
+            font-size: 1.05em;
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+
+        .slide ul, .slide ol {
+            margin: 10px 0 15px 25px;
+            font-size: 1.02em;
+            line-height: 1.8;
+        }
+
+        .slide li {
+            margin-bottom: 6px;
+        }
+
+        /* Code Box */
+        .code-box {
+            background: #1a1d23;
+            border-radius: 10px;
+            padding: 18px 22px;
+            margin: 15px 0;
+            overflow-x: auto;
+            position: relative;
+            box-shadow: var(--shadow);
+        }
+
+        .code-box::before {
+            content: 'Java';
+            position: absolute;
+            top: 8px;
+            right: 14px;
+            font-size: 0.75em;
+            color: #888;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .code-box code {
+            font-family: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', Consolas, monospace;
+            font-size: 0.85em;
+            color: #22d3ee;
+            line-height: 1.6;
+            white-space: pre;
+        }
+
+        .code-box pre {
+            margin: 0;
+            background: transparent;
+        }
+
+        /* Info/Warning/Success Boxes */
+        .info-box {
+            background: #e8f4fd;
+            border-left: 4px solid #2196F3;
+            border-radius: 0 8px 8px 0;
+            padding: 14px 18px;
+            margin: 15px 0;
+            font-size: 0.98em;
+        }
+
+        .info-box::before {
+            content: '\f05a';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: #2196F3;
+            margin-right: 10px;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid var(--accent-orange);
+            border-radius: 0 8px 8px 0;
+            padding: 14px 18px;
+            margin: 15px 0;
+            font-size: 0.98em;
+        }
+
+        .warning-box::before {
+            content: '\f071';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: var(--accent-orange);
+            margin-right: 10px;
+        }
+
+        .success-box {
+            background: #e8f5e9;
+            border-left: 4px solid var(--accent-green);
+            border-radius: 0 8px 8px 0;
+            padding: 14px 18px;
+            margin: 15px 0;
+            font-size: 0.98em;
+        }
+
+        .success-box::before {
+            content: '\f058';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: var(--accent-green);
+            margin-right: 10px;
+        }
+
+        /* Content Box */
+        .content-box {
+            background: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 12px 0;
+            box-shadow: var(--shadow);
+        }
+
+        /* Grid */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 15px 0;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.82em;
+            font-weight: 600;
+            margin: 3px 4px;
+        }
+
+        .badge-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .badge-orange {
+            background: var(--accent-orange);
+            color: var(--white);
+        }
+
+        .badge-green {
+            background: var(--accent-green);
+            color: var(--white);
+        }
+
+        .badge-yellow {
+            background: var(--accent-yellow);
+            color: var(--text-dark);
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 0.95em;
+        }
+
+        th {
+            background: var(--primary);
+            color: var(--white);
+            padding: 10px 14px;
+            text-align: left;
+        }
+
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:nth-child(even) {
+            background: #f7fafc;
+        }
+
+        /* Diagram Box */
+        .diagram-box {
+            background: #1a1d23;
+            border-radius: 10px;
+            padding: 18px 22px;
+            margin: 15px 0;
+            color: #a0aec0;
+            font-family: 'Fira Code', Consolas, monospace;
+            font-size: 0.82em;
+            line-height: 1.5;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        /* Navigation */
+        .module-navigation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--primary-dark);
+            color: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 30px;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .module-navigation .module-title {
+            font-weight: 600;
+            font-size: 1em;
+        }
+
+        .module-navigation .module-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 0.9em;
+            transition: color 0.3s;
+        }
+
+        .module-navigation .module-links a:hover {
+            color: var(--accent-yellow);
+        }
+
+        .slide-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px 30px;
+            gap: 20px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 500;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .nav-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            font-size: 0.95em;
+            color: var(--text-light);
+            font-weight: 500;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        /* Highlight overrides */
+        .code-box .hljs {
+            background: transparent;
+            padding: 0;
+        }
+
+        /* Scrollbar */
+        .slide::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .slide::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .slide::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 3px;
+        }
+
+        /* Summary slide */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .summary-card {
+            background: var(--white);
+            border-radius: 10px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+            border-top: 3px solid var(--primary);
+        }
+
+        .summary-card h4 {
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+
+        .summary-card ul {
+            font-size: 0.9em;
+            margin-left: 18px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Module Navigation -->
+    <nav class="module-navigation">
+        <span class="module-title"><i class="fas fa-hexagon-nodes"></i> Module 2 : Architecture Hexagonale en detail</span>
+        <div class="module-links">
+            <a href="module1_introduction_architectures.html"><i class="fas fa-arrow-left"></i> Module 1</a>
+            <a href="module3_tests_construction.html">Module 3 <i class="fas fa-arrow-right"></i></a>
+            <a href="index.html"><i class="fas fa-home"></i> Accueil</a>
+        </div>
+    </nav>
+
+    <div class="slide-container">
+
+        <!-- Slide 1: Title -->
+        <div class="slide title-slide active">
+            <h1><i class="fas fa-hexagon-nodes"></i> Architecture Hexagonale en detail</h1>
+            <p class="subtitle">Module 2 - Domaine, Ports, Adapteurs et Dependances</p>
+            <div class="objectives-grid">
+                <div class="objective-box">
+                    <i class="fas fa-crosshairs"></i>
+                    <span><strong>Identifier</strong> les contextes ou l'hexagonale apporte de la valeur</span>
+                </div>
+                <div class="objective-box">
+                    <i class="fas fa-cubes"></i>
+                    <span><strong>Modeliser</strong> un domaine riche : agregats, entites, Value Objects, Domain Events</span>
+                </div>
+                <div class="objective-box">
+                    <i class="fas fa-plug"></i>
+                    <span><strong>Concevoir</strong> ports primaires/secondaires et adapteurs driving/driven</span>
+                </div>
+                <div class="objective-box">
+                    <i class="fas fa-shield-halved"></i>
+                    <span><strong>Proteger</strong> le domaine avec des couches anti-corruption et regles de dependances</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: 2.1 Pourquoi et quand -->
+        <div class="slide">
+            <h2><i class="fas fa-question-circle"></i> 2.1 Pourquoi et quand utiliser l'architecture hexagonale ?</h2>
+            <p>L'architecture hexagonale n'est pas une solution universelle. Son adoption doit etre guidee par la <strong>nature du probleme</strong>, la <strong>complexite du domaine metier</strong> et la <strong>strategie de l'entreprise</strong>.</p>
+
+            <h3>2.1.1 Domaine complexe</h3>
+            <p>L'hexagonale prend tout son sens lorsque les <strong>regles metier sont complexes et constituent le coeur de la proposition de valeur</strong>.</p>
+
+            <div class="content-box">
+                <h3>Indicateurs qu'un domaine est complexe :</h3>
+                <ul>
+                    <li>Les regles metier changent frequemment selon le contexte</li>
+                    <li>Il existe de nombreuses conditions, exceptions et cas limites</li>
+                    <li>Le vocabulaire metier est riche et specifique (<em>ubiquitous language</em>)</li>
+                    <li>Les interactions entre entites metier sont non triviales</li>
+                    <li>La logique de calcul ou de decision est sophistiquee</li>
+                </ul>
+            </div>
+
+            <table>
+                <tr><th>Domaine</th><th>Exemples de complexite</th></tr>
+                <tr><td><strong>Finance</strong></td><td>Calcul de risques, conformite reglementaire, orchestration de paiements multi-devises</td></tr>
+                <tr><td><strong>Assurance</strong></td><td>Tarification dynamique, gestion des sinistres, regles d'eligibilite</td></tr>
+                <tr><td><strong>Logistique</strong></td><td>Optimisation de tournees, gestion des stocks multi-entrepots, tracking temps reel</td></tr>
+                <tr><td><strong>Sante</strong></td><td>Protocoles de soins, interactions medicamenteuses, parcours patient</td></tr>
+                <tr><td><strong>E-commerce</strong></td><td>Promotions combinables, gestion des retours, pricing dynamique</td></tr>
+            </table>
+        </div>
+
+        <!-- Slide 3: Spectre de complexite -->
+        <div class="slide">
+            <h2><i class="fas fa-chart-line"></i> 2.1 Spectre de complexite</h2>
+
+            <div class="diagram-box">+-----------------------------------------------------------------------+
+|                    SPECTRE DE COMPLEXITE                               |
+|                                                                       |
+|   CRUD simple          Logique moderee           Domaine riche        |
+|   |                         |                         |               |
+|   v                         v                         v               |
+|   [  Spring Data REST  ] [ Layered classique ] [ Hexagonale / DDD ]   |
+|                                                                       |
+|   Ex: gestion de         Ex: blog avec           Ex: systeme          |
+|   parametres             workflow simple          de trading           |
++-----------------------------------------------------------------------+</div>
+
+            <div class="warning-box">
+                <strong>Regle d'or</strong> : Si votre application est essentiellement du CRUD avec peu de logique metier, l'architecture hexagonale ajoutera de la complexite accidentelle sans benefice reel. Un simple <code>@RestController</code> + <code>@Service</code> + <code>@Repository</code> Spring Boot suffit.
+            </div>
+
+            <h3>2.1.2 Competences strategiques (DDD)</h3>
+            <div class="diagram-box">+-------------------------------------------------------------------+
+|   +------------------+    +------------------+    +-----------+   |
+|   |   CORE DOMAIN    |    |    SUPPORTING     |    |  GENERIC  |   |
+|   |                  |    |    SUBDOMAIN      |    | SUBDOMAIN |   |
+|   |  Avantage        |    |                  |    |           |   |
+|   |  concurrentiel   |    |  Necessaire mais |    | Commodity |   |
+|   |                  |    |  pas differentiant|    |           |   |
+|   |  --> HEXAGONALE  |    |  --> Simplifie    |    | --> COTS  |   |
+|   |  --> DDD riche   |    |  --> DDD light    |    | --> SaaS  |   |
+|   +------------------+    +------------------+    +-----------+   |
++-------------------------------------------------------------------+</div>
+
+            <div class="success-box">
+                <strong>L'architecture hexagonale brille pour le Core Domain</strong> : c'est la que la complexite metier justifie l'investissement en conception. Pour les sous-domaines generiques, on utilisera des solutions du marche integrees via des <strong>adapteurs</strong>.
+            </div>
+        </div>
+
+        <!-- Slide 4: POO vs FP -->
+        <div class="slide">
+            <h2><i class="fas fa-code"></i> 2.1.3 Paradigmes de programmation</h2>
+            <p>L'architecture hexagonale a ete concue dans un contexte oriente objet, mais elle peut s'adapter a d'autres paradigmes.</p>
+
+            <div class="grid-2">
+                <div class="content-box">
+                    <h3><i class="fas fa-check-circle" style="color: var(--accent-green);"></i> POO - Ajustement naturel</h3>
+                    <ul>
+                        <li><strong>Interfaces</strong> incarnent les ports</li>
+                        <li><strong>Polymorphisme</strong> branche les adapteurs</li>
+                        <li><strong>Encapsulation</strong> protege les invariants</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h3><i class="fas fa-adjust" style="color: var(--accent-orange);"></i> FP - Adaptation possible</h3>
+                    <ul>
+                        <li>Ports = <strong>signatures de fonctions</strong></li>
+                        <li>Adapteurs = <strong>implementations de fonctions</strong></li>
+                        <li>Interfaces fonctionnelles Java</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="code-box"><pre><code class="language-java">// POO : Les INTERFACES incarnent naturellement les ports
+public interface OrderRepository {
+    Order findById(OrderId id);
+    void save(Order order);
+}
+
+// Le POLYMORPHISME permet de brancher differents adapteurs
+public class JpaOrderRepository implements OrderRepository { /* ... */ }
+public class InMemoryOrderRepository implements OrderRepository { /* ... */ }</code></pre></div>
+
+            <div class="code-box"><pre><code class="language-java">// FP : Port = interface fonctionnelle
+@FunctionalInterface
+public interface FindOrderById {
+    Optional&lt;Order&gt; apply(OrderId id);
+}
+
+// Adapteur = implementation de la fonction
+FindOrderById jpaFindOrder = id -> Optional.ofNullable(
+    jpaRepository.findById(id.value())
+).map(OrderMapper::toDomain);</code></pre></div>
+
+            <div class="warning-box">
+                <strong>Programmation procedurale</strong> : Inadaptee - pas d'interfaces, pas de polymorphisme, pas d'encapsulation, couplage direct aux appels. Impossible d'inverser les dependances.
+            </div>
+        </div>
+
+        <!-- Slide 5: Microservices et Bounded Context -->
+        <div class="slide">
+            <h2><i class="fas fa-network-wired"></i> 2.1.4 Microservices et Bounded Context</h2>
+            <p>Chaque microservice peut etre modelise comme <strong>son propre hexagone</strong>, et les Bounded Contexts du DDD s'alignent naturellement sur les frontieres hexagonales.</p>
+
+            <div class="diagram-box">   Bounded Context              Bounded Context              Bounded Context
+       "Commande"                  "Paiement"                 "Livraison"
+ +-------------------+      +-------------------+      +-------------------+
+ |    +----------+   |      |    +----------+   |      |    +----------+   |
+ |    |  DOMAIN  |   |      |    |  DOMAIN  |   |      |    |  DOMAIN  |   |
+ |    |  Order   |   |      |    | Payment  |   |      |    | Delivery |   |
+ |    +----+-----+   |      |    +----+-----+   |      |    +----+-----+   |
+ |   [Ports/Adapt.]  | ---> |   [Ports/Adapt.]  | ---> |   [Ports/Adapt.]  |
+ +-------------------+ ACL  +-------------------+ ACL  +-------------------+</div>
+
+            <div class="content-box">
+                <h3>Regles d'integration entre hexagones :</h3>
+                <ol>
+                    <li><strong>Chaque hexagone a son propre modele de domaine</strong> : un <code>Order</code> dans "Commande" n'est PAS le meme objet que dans "Livraison"</li>
+                    <li><strong>La communication passe par des ports sortants</strong> : REST, messaging (Kafka, RabbitMQ), gRPC</li>
+                    <li><strong>Des couches anti-corruption (ACL)</strong> traduisent entre les modeles de chaque bounded context</li>
+                    <li><strong>Aucun hexagone ne partage sa base de donnees</strong> : chaque microservice a sa propre persistence</li>
+                </ol>
+            </div>
+
+            <div class="code-box"><pre><code class="language-java">// Port sortant vers le service de paiement
+public interface PaymentPort {
+    PaymentResult requestPayment(OrderId orderId, Money amount);
+}
+
+// Adapteur driven - appel REST vers le microservice Paiement
+@Component
+public class PaymentRestAdapter implements PaymentPort {
+    @Override
+    public PaymentResult requestPayment(OrderId orderId, Money amount) {
+        // ACL : on traduit nos objets domaine en DTO externe
+        PaymentRequestDTO dto = new PaymentRequestDTO(
+            orderId.value(), amount.value(), amount.currency().code()
+        );
+        PaymentResponseDTO response = restClient.post()
+            .uri("/api/payments").body(dto)
+            .retrieve().body(PaymentResponseDTO.class);
+        // ACL : on retraduit la reponse externe en objet domaine
+        return new PaymentResult(
+            PaymentStatus.from(response.status()), response.transactionId()
+        );
+    }
+}</code></pre></div>
+        </div>
+
+        <!-- Slide 6: Le Domaine - Vue d'ensemble -->
+        <div class="slide">
+            <h2><i class="fas fa-gem"></i> 2.2 Le Domaine</h2>
+            <p>Le domaine est le <strong>coeur de l'hexagone</strong>. Il contient toute la logique metier et ne depend d'aucune technologie externe. C'est la couche la plus stable et la plus precieuse de l'application.</p>
+
+            <div class="diagram-box">+---------------------------------------------------------------+
+|                        HEXAGONE                               |
+|              +-------------------------------+                |
+|              |          DOMAINE              |                |
+|              |  +----------+  +-----------+  |                |
+|              |  | Agregats |  |  Value     |  |                |
+|              |  | Entites  |  |  Objects   |  |                |
+|              |  +----------+  +-----------+  |                |
+|              |  +----------+  +-----------+  |                |
+|              |  | Domain   |  |  Domain    |  |                |
+|              |  | Events   |  |  Services  |  |                |
+|              |  +----------+  +-----------+  |                |
+|              |  +----------+                 |                |
+|              |  | Ports    |                 |                |
+|              |  | (interf) |                 |                |
+|              |  +----------+                 |                |
+|              +-------------------------------+                |
++---------------------------------------------------------------+</div>
+
+            <div class="grid-2">
+                <div class="content-box">
+                    <h3><i class="fas fa-layer-group" style="color: var(--primary);"></i> Composants du Domaine</h3>
+                    <ul>
+                        <li><strong>Agregats</strong> - Unite de coherence</li>
+                        <li><strong>Entites</strong> - Objets avec identite</li>
+                        <li><strong>Value Objects</strong> - Immutables, auto-validants</li>
+                        <li><strong>Domain Events</strong> - Faits passes</li>
+                        <li><strong>Domain Services</strong> - Logique inter-agregats</li>
+                        <li><strong>Ports</strong> - Interfaces/contrats</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h3><i class="fas fa-ban" style="color: var(--accent-orange);"></i> Ce qui n'est PAS dans le Domaine</h3>
+                    <ul>
+                        <li>Annotations Spring (<code>@Service</code>, <code>@Component</code>)</li>
+                        <li>Annotations JPA (<code>@Entity</code>, <code>@Table</code>)</li>
+                        <li>Dependances sur des frameworks</li>
+                        <li>Acces direct aux bases de donnees</li>
+                        <li>Serialisation JSON / HTTP</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Agregats -->
+        <div class="slide">
+            <h2><i class="fas fa-boxes-stacked"></i> 2.2.1 Agregats et Racines d'Agregat</h2>
+            <p>Un <strong>agregat</strong> est un groupe d'objets du domaine traite comme une unite de coherence. La <strong>racine d'agregat</strong> est le seul point d'entree pour interagir avec l'agregat.</p>
+
+            <div class="content-box">
+                <h3>Regles fondamentales des agregats :</h3>
+                <ol>
+                    <li>Les references externes ne pointent que vers la <strong>racine</strong></li>
+                    <li>La coherence transactionnelle est garantie <strong>a l'interieur</strong> de l'agregat</li>
+                    <li>Les modifications passent <strong>toujours</strong> par la racine</li>
+                    <li>Un agregat est charge et persiste <strong>en entier</strong></li>
+                </ol>
+            </div>
+
+            <div class="diagram-box">   Agregat "Order"
+   +-------------------------------------------+
+   |   +------------------+                    |
+   |   |   Order (ROOT)   | <-- seul point     |
+   |   |   - orderId      |     d'entree       |
+   |   |   - status       |     externe        |
+   |   |   - customerId   |                    |
+   |   +--------+---------+                    |
+   |            | contient                     |
+   |   +------------------+                    |
+   |   |   OrderLine      |                    |
+   |   |   - productRef   |  (reference, pas   |
+   |   |   - quantity     |   l'agregat        |
+   |   |   - unitPrice    |   Product entier)  |
+   |   +--------+---------+                    |
+   |            | utilise                      |
+   |   +------------------+                    |
+   |   |   Money (VO)     |                    |
+   |   |   - amount       |                    |
+   |   |   - currency     |                    |
+   |   +------------------+                    |
+   +-------------------------------------------+</div>
+        </div>
+
+        <!-- Slide 8: Agregat - Implementation -->
+        <div class="slide">
+            <h2><i class="fas fa-code"></i> 2.2.1 Agregat Order - Implementation</h2>
+
+            <div class="code-box"><pre><code class="language-java">public class Order {
+    private final OrderId id;
+    private final CustomerId customerId;
+    private OrderStatus status;
+    private final List&lt;OrderLine&gt; lines;
+    private final List&lt;DomainEvent&gt; domainEvents;
+
+    // Constructeur prive : on passe par une factory method
+    private Order(OrderId id, CustomerId customerId) {
+        this.id = Objects.requireNonNull(id, "L'ID de commande est obligatoire");
+        this.customerId = Objects.requireNonNull(customerId, "L'ID client est obligatoire");
+        this.status = OrderStatus.DRAFT;
+        this.lines = new ArrayList&lt;&gt;();
+        this.domainEvents = new ArrayList&lt;&gt;();
+    }
+
+    // Factory method : point d'entree de creation
+    public static Order create(CustomerId customerId) {
+        OrderId id = OrderId.generate();
+        Order order = new Order(id, customerId);
+        order.registerEvent(new OrderCreated(id, customerId, Instant.now()));
+        return order;
+    }
+
+    // Methode metier : ajout de ligne (invariant protege)
+    public void addLine(ProductReference productRef, Quantity quantity, Money unitPrice) {
+        assertDraft();
+        lines.stream()
+            .filter(line -> line.getProductRef().equals(productRef))
+            .findFirst()
+            .ifPresent(existing -> { throw new DuplicateProductException(productRef); });
+        lines.add(new OrderLine(productRef, quantity, unitPrice));
+    }
+
+    // Methode metier : confirmation de commande
+    public void confirm() {
+        assertDraft();
+        if (lines.isEmpty()) { throw new EmptyOrderException(id); }
+        this.status = OrderStatus.CONFIRMED;
+        registerEvent(new OrderConfirmed(id, calculateTotal(), Instant.now()));
+    }
+
+    private void assertDraft() {
+        if (status != OrderStatus.DRAFT) {
+            throw new OrderNotModifiableException(id, status);
+        }
+    }
+
+    // Getters (pas de setters publics !)
+    public OrderId getId() { return id; }
+    public List&lt;OrderLine&gt; getLines() { return Collections.unmodifiableList(lines); }
+}</code></pre></div>
+
+            <div class="info-box">
+                <strong>Point cle</strong> : Remarquez que <code>Order</code> n'a <strong>aucun setter public</strong>. Toute modification passe par des methodes metier (<code>addLine</code>, <code>confirm</code>, <code>cancel</code>) qui <strong>protegent les invariants</strong>.
+            </div>
+        </div>
+
+        <!-- Slide 9: Entites -->
+        <div class="slide">
+            <h2><i class="fas fa-fingerprint"></i> 2.2.2 Entites</h2>
+            <p>Une <strong>entite</strong> est un objet du domaine qui possede une <strong>identite unique</strong> et un <strong>cycle de vie</strong>. Son egalite se base sur son identite, pas sur ses attributs.</p>
+
+            <table>
+                <tr><th>Caracteristique</th><th>Description</th></tr>
+                <tr><td><strong>Identite</strong></td><td>Un identifiant unique et stable dans le temps</td></tr>
+                <tr><td><strong>Mutabilite</strong></td><td>Son etat peut changer au cours de sa vie</td></tr>
+                <tr><td><strong>Cycle de vie</strong></td><td>Creation, modification, eventuellement suppression</td></tr>
+                <tr><td><strong>Egalite</strong></td><td>Deux entites avec le meme ID sont la meme entite</td></tr>
+            </table>
+
+            <div class="code-box"><pre><code class="language-java">// Identifiant type (Value Object pour l'ID)
+public record OrderId(String value) {
+    public OrderId {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException("OrderId ne peut pas etre vide");
+        }
+    }
+    public static OrderId generate() { return new OrderId(UUID.randomUUID().toString()); }
+}
+
+// Entite avec egalite sur l'identite
+public class Customer {
+    private final CustomerId id;
+    private String name;
+    private Email email;
+
+    // Egalite basee sur l'identite uniquement
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Customer other)) return false;
+        return id.equals(other.id);
+    }
+    @Override
+    public int hashCode() { return id.hashCode(); }
+}</code></pre></div>
+
+            <div class="warning-box">
+                <strong>Attention</strong> : Ne confondez pas entite DDD et entite JPA (<code>@Entity</code>). Une entite JPA est un concept de persistence. Une entite DDD est un concept metier. Dans l'architecture hexagonale, elles vivent dans des couches differentes.
+            </div>
+        </div>
+
+        <!-- Slide 10: Value Objects -->
+        <div class="slide">
+            <h2><i class="fas fa-diamond"></i> 2.2.3 Value Objects (VO)</h2>
+            <p>Un <strong>Value Object</strong> est un objet du domaine <strong>sans identite propre</strong>, <strong>immutable</strong>, dont l'egalite se base sur <strong>tous ses attributs</strong>.</p>
+
+            <table>
+                <tr><th>Caracteristique</th><th>Description</th></tr>
+                <tr><td><strong>Pas d'identite</strong></td><td>Deux VOs avec les memes valeurs sont interchangeables</td></tr>
+                <tr><td><strong>Immutable</strong></td><td>Une fois cree, il ne change jamais</td></tr>
+                <tr><td><strong>Auto-validant</strong></td><td>Il garantit ses propres invariants a la construction</td></tr>
+                <tr><td><strong>Egalite structurelle</strong></td><td>Comparaison sur tous les champs</td></tr>
+            </table>
+
+            <div class="code-box"><pre><code class="language-java">// VALUE OBJECT : Money (les Java Records sont parfaits)
+public record Money(BigDecimal amount, Currency currency) {
+    public static final Money ZERO_EUR = new Money(BigDecimal.ZERO, Currency.EUR);
+
+    public Money {
+        Objects.requireNonNull(amount, "Le montant est obligatoire");
+        Objects.requireNonNull(currency, "La devise est obligatoire");
+        if (amount.scale() > 2) {
+            throw new IllegalArgumentException("Precision maximale : 2 decimales");
+        }
+    }
+
+    // Operations (retournent un NOUVEAU VO a chaque fois)
+    public Money add(Money other) {
+        assertSameCurrency(other);
+        return new Money(this.amount.add(other.amount), this.currency);
+    }
+
+    public Money multiply(int factor) {
+        return new Money(this.amount.multiply(BigDecimal.valueOf(factor)), this.currency);
+    }
+}
+
+// VALUE OBJECT : Email
+public record Email(String value) {
+    private static final Pattern EMAIL_PATTERN =
+        Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
+    public Email {
+        Objects.requireNonNull(value, "L'email est obligatoire");
+        if (!EMAIL_PATTERN.matcher(value).matches()) {
+            throw new InvalidEmailException(value);
+        }
+        value = value.toLowerCase().trim();
+    }
+}</code></pre></div>
+        </div>
+
+        <!-- Slide 11: Value Objects - Primitive Obsession -->
+        <div class="slide">
+            <h2><i class="fas fa-diamond"></i> 2.2.3 Value Objects - Pourquoi ?</h2>
+            <p><strong>Pourquoi utiliser des Value Objects plutot que des types primitifs ?</strong></p>
+
+            <div class="grid-2">
+                <div class="content-box" style="border-top: 3px solid #e53e3e;">
+                    <h3><i class="fas fa-times-circle" style="color: #e53e3e;"></i> Primitive Obsession</h3>
+                    <div class="code-box"><pre><code class="language-java">// MAUVAIS
+public class Order {
+    private String customerId;
+    // Quel format ? Valide ?
+    private double totalAmount;
+    // Quelle devise ? Precision ?
+    private String customerEmail;
+    // Email valide ?
+}</code></pre></div>
+                </div>
+                <div class="content-box" style="border-top: 3px solid var(--accent-green);">
+                    <h3><i class="fas fa-check-circle" style="color: var(--accent-green);"></i> Value Objects riches</h3>
+                    <div class="code-box"><pre><code class="language-java">// BON
+public class Order {
+    private CustomerId customerId;
+    // Toujours valide
+    private Money totalAmount;
+    // Devise explicite, operations sures
+    private Email customerEmail;
+    // Format garanti
+}</code></pre></div>
+                </div>
+            </div>
+
+            <div class="code-box"><pre><code class="language-java">// VALUE OBJECT : Address
+public record Address(String street, String city, String postalCode, String country) {
+    public Address {
+        Objects.requireNonNull(street, "La rue est obligatoire");
+        Objects.requireNonNull(city, "La ville est obligatoire");
+        Objects.requireNonNull(postalCode, "Le code postal est obligatoire");
+        Objects.requireNonNull(country, "Le pays est obligatoire");
+    }
+    public String fullAddress() {
+        return "%s, %s %s, %s".formatted(street, postalCode, city, country);
+    }
+}
+
+// VALUE OBJECT : Quantity
+public record Quantity(int value) {
+    public Quantity {
+        if (value &lt;= 0) throw new IllegalArgumentException("Quantite strictement positive");
+        if (value > 10_000) throw new IllegalArgumentException("Quantite max : 10 000");
+    }
+}</code></pre></div>
+        </div>
+
+        <!-- Slide 12: Domain Events -->
+        <div class="slide">
+            <h2><i class="fas fa-bolt"></i> 2.2.4 Domain Events</h2>
+            <p>Un <strong>Domain Event</strong> represente <strong>quelque chose qui s'est produit dans le domaine</strong>. Il est nomme au <strong>passe</strong> et est <strong>immutable</strong>.</p>
+
+            <div class="content-box">
+                <h3>Convention de nommage : <code>[Agregat][Action au passe]</code></h3>
+                <p>
+                    <span class="badge badge-primary">OrderPlaced</span>
+                    <span class="badge badge-primary">PaymentReceived</span>
+                    <span class="badge badge-primary">ShipmentDelivered</span>
+                    <span class="badge badge-primary">CustomerDeactivated</span>
+                    <span class="badge badge-primary">InventoryReplenished</span>
+                </p>
+            </div>
+
+            <div class="code-box"><pre><code class="language-java">// Interface de base
+public interface DomainEvent {
+    Instant occurredAt();
+    String eventType();
+}
+
+// Domain Event : OrderCreated
+public record OrderCreated(
+    OrderId orderId, CustomerId customerId, Instant occurredAt
+) implements DomainEvent {
+    @Override public String eventType() { return "ORDER_CREATED"; }
+}
+
+// Domain Event : OrderConfirmed
+public record OrderConfirmed(
+    OrderId orderId, Money totalAmount, Instant occurredAt
+) implements DomainEvent {
+    @Override public String eventType() { return "ORDER_CONFIRMED"; }
+}
+
+// Domain Event : OrderCancelled
+public record OrderCancelled(
+    OrderId orderId, String reason, Instant occurredAt
+) implements DomainEvent {
+    @Override public String eventType() { return "ORDER_CANCELLED"; }
+}</code></pre></div>
+        </div>
+
+        <!-- Slide 13: Domain Events - Publication -->
+        <div class="slide">
+            <h2><i class="fas fa-bolt"></i> 2.2.4 Domain Events - Publication</h2>
+
+            <div class="code-box"><pre><code class="language-java">// PORT SORTANT : Publication d'evenements
+public interface DomainEventPublisher {
+    void publish(DomainEvent event);
+    void publishAll(List&lt;DomainEvent&gt; events);
+}
+
+// DANS LE USE CASE : on recupere et publie les evenements
+@Service
+public class ConfirmOrderUseCase {
+    private final OrderRepository orderRepository;
+    private final DomainEventPublisher eventPublisher;
+
+    @Transactional
+    public void execute(OrderId orderId) {
+        Order order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new OrderNotFoundException(orderId));
+        order.confirm(); // La logique metier est dans le domaine
+        orderRepository.save(order);
+        eventPublisher.publishAll(order.pullDomainEvents());
+    }
+}
+
+// ADAPTEUR : Publication via Spring Events
+@Component
+public class SpringDomainEventPublisher implements DomainEventPublisher {
+    private final ApplicationEventPublisher springPublisher;
+    @Override public void publish(DomainEvent event) { springPublisher.publishEvent(event); }
+    @Override public void publishAll(List&lt;DomainEvent&gt; events) { events.forEach(this::publish); }
+}
+
+// LISTENER : Reaction a un evenement
+@Component
+public class SendConfirmationEmailOnOrderConfirmed {
+    @EventListener
+    public void handle(OrderConfirmed event) {
+        Customer customer = customerRepository.findByOrderId(event.orderId());
+        emailSender.send(customer.getEmail(), "Commande confirmee",
+            "Votre commande %s confirmee. Total : %s"
+                .formatted(event.orderId().value(), event.totalAmount()));
+    }
+}</code></pre></div>
+        </div>
+
+        <!-- Slide 14: Services de domaine -->
+        <div class="slide">
+            <h2><i class="fas fa-cogs"></i> 2.2.5 Services de domaine</h2>
+            <p>Un <strong>service de domaine</strong> contient de la logique metier qui <strong>n'appartient naturellement a aucune entite ni aucun VO</strong>. Il est <strong>sans etat</strong> (stateless).</p>
+
+            <table>
+                <tr><th>Situation</th><th>Exemple</th></tr>
+                <tr><td>L'operation implique <strong>plusieurs agregats</strong></td><td>Transfert de fonds entre deux comptes</td></tr>
+                <tr><td>La logique ne se rattache a <strong>aucune entite</strong></td><td>Calcul de prix avec remises croisees</td></tr>
+                <tr><td>Un <strong>algorithme metier</strong> complexe et independant</td><td>Validation de compatibilite de produits</td></tr>
+            </table>
+
+            <div class="code-box"><pre><code class="language-java">// SERVICE DE DOMAINE : PricingService
+public class PricingService {
+    public Money calculateOrderTotal(
+            List&lt;OrderLine&gt; lines, CustomerType customerType,
+            DiscountPolicy discountPolicy) {
+        Money subtotal = lines.stream()
+            .map(OrderLine::lineTotal)
+            .reduce(Money.ZERO_EUR, Money::add);
+        BigDecimal customerDiscount = switch (customerType) {
+            case PREMIUM -> new BigDecimal("0.10");   // 10%
+            case BUSINESS -> new BigDecimal("0.05");  // 5%
+            case STANDARD -> BigDecimal.ZERO;
+        };
+        Money afterDiscount = subtotal.multiply(
+            BigDecimal.ONE.subtract(customerDiscount));
+        return discountPolicy.apply(afterDiscount);
+    }
+}
+
+// SERVICE DE DOMAINE : TransferService (2 agregats)
+public class TransferService {
+    public TransferResult transfer(Account source, Account destination, Money amount) {
+        if (!source.hasSufficientFunds(amount))
+            return TransferResult.insufficientFunds(source.getId(), amount);
+        source.debit(amount);
+        destination.credit(amount);
+        return TransferResult.success(source.getId(), destination.getId(), amount);
+    }
+}</code></pre></div>
+
+            <div class="info-box">
+                <strong>Distinction importante</strong> : Le service de domaine contient de la <strong>logique metier pure</strong>. Le service applicatif (use case) <strong>orchestre</strong> les appels et gere les transactions. Ne les confondez pas !
+            </div>
+        </div>
+
+        <!-- Slide 15: Couche Application -->
+        <div class="slide">
+            <h2><i class="fas fa-layer-group"></i> 2.3 La couche Application</h2>
+            <p>La couche Application orchestre les interactions entre le domaine et le monde exterieur. Elle contient les <strong>Use Cases</strong> (Application Services) qui definissent <strong>ce que l'application peut faire</strong>.</p>
+
+            <div class="grid-2">
+                <div class="content-box" style="border-top: 3px solid var(--accent-green);">
+                    <h3><i class="fas fa-check" style="color: var(--accent-green);"></i> Responsabilites</h3>
+                    <ul>
+                        <li><strong>Orchestration</strong> - Coordonne domaine et ports</li>
+                        <li><strong>Transactions</strong> - Delimite les frontieres transactionnelles</li>
+                        <li><strong>Securite</strong> - Verifie les autorisations</li>
+                        <li><strong>Conversion</strong> - Traduit commandes en appels domaine</li>
+                        <li><strong>Publication</strong> - Propage les evenements</li>
+                    </ul>
+                </div>
+                <div class="content-box" style="border-top: 3px solid #e53e3e;">
+                    <h3><i class="fas fa-times" style="color: #e53e3e;"></i> Ce qui n'est PAS dedans</h3>
+                    <ul>
+                        <li>Logique metier (dans le domaine)</li>
+                        <li>Acces direct a la BDD (via les ports)</li>
+                        <li>Serialisation JSON, mapping HTTP (dans les adapteurs)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="code-box"><pre><code class="language-java">// Commande (DTO d'entree)
+public record PlaceOrderCommand(
+    String customerId, List&lt;OrderLineCommand&gt; lines
+) {
+    public record OrderLineCommand(
+        String productReference, int quantity,
+        double unitPrice, String currency
+    ) {}
+}
+
+// Resultat (DTO de sortie)
+public record PlaceOrderResult(String orderId, String status, String totalAmount) {}</code></pre></div>
+        </div>
+
+        <!-- Slide 16: Use Case Implementation -->
+        <div class="slide">
+            <h2><i class="fas fa-play-circle"></i> 2.3 Use Case - PlaceOrderUseCase</h2>
+
+            <div class="code-box"><pre><code class="language-java">@Service
+@Transactional
+public class PlaceOrderUseCase {
+    private final OrderRepository orderRepository;
+    private final CustomerRepository customerRepository;
+    private final PricingService pricingService;
+    private final DomainEventPublisher eventPublisher;
+
+    public PlaceOrderResult execute(PlaceOrderCommand command) {
+        // 1. Recuperer les donnees necessaires via les ports
+        CustomerId customerId = CustomerId.of(command.customerId());
+        Customer customer = customerRepository.findById(customerId)
+            .orElseThrow(() -> new CustomerNotFoundException(customerId));
+
+        // 2. Executer la logique metier (deleguee au domaine)
+        Order order = Order.create(customer.getId());
+        for (var lineCmd : command.lines()) {
+            order.addLine(
+                ProductReference.of(lineCmd.productReference()),
+                Quantity.of(lineCmd.quantity()),
+                new Money(BigDecimal.valueOf(lineCmd.unitPrice()),
+                          Currency.valueOf(lineCmd.currency()))
+            );
+        }
+        order.confirm();
+
+        // 3. Persister via le port de sortie
+        orderRepository.save(order);
+
+        // 4. Publier les evenements de domaine
+        eventPublisher.publishAll(order.pullDomainEvents());
+
+        // 5. Retourner le resultat
+        Money total = order.calculateTotal();
+        return new PlaceOrderResult(
+            order.getId().value(), order.getStatus().name(),
+            total.amount() + " " + total.currency()
+        );
+    }
+}</code></pre></div>
+
+            <div class="success-box">
+                Le Use Case <strong>orchestre sans contenir de logique metier</strong>. Chaque etape delegue au domaine ou passe par un port. C'est le chef d'orchestre, pas le musicien.
+            </div>
+        </div>
+
+        <!-- Slide 17: CQRS leger -->
+        <div class="slide">
+            <h2><i class="fas fa-columns"></i> 2.3 CQRS leger - Command & Query Handlers</h2>
+
+            <div class="grid-2">
+                <div class="content-box" style="border-top: 3px solid var(--accent-orange);">
+                    <h3><i class="fas fa-pen" style="color: var(--accent-orange);"></i> Command Handler (ecriture)</h3>
+                    <div class="code-box"><pre><code class="language-java">@Service
+public class CancelOrderCommandHandler {
+    private final OrderRepository orderRepository;
+    private final DomainEventPublisher eventPublisher;
+
+    @Transactional
+    public void handle(CancelOrderCommand cmd) {
+        Order order = orderRepository
+            .findById(OrderId.of(cmd.orderId()))
+            .orElseThrow(() ->
+                new OrderNotFoundException(cmd.orderId()));
+        order.cancel(cmd.reason());
+        orderRepository.save(order);
+        eventPublisher.publishAll(
+            order.pullDomainEvents());
+    }
+}</code></pre></div>
+                </div>
+                <div class="content-box" style="border-top: 3px solid #2196F3;">
+                    <h3><i class="fas fa-search" style="color: #2196F3;"></i> Query Handler (lecture)</h3>
+                    <div class="code-box"><pre><code class="language-java">@Service
+@Transactional(readOnly = true)
+public class GetOrderQueryHandler {
+    // Port dedie aux lectures
+    private final OrderQueryPort orderQueryPort;
+
+    public OrderView handle(GetOrderQuery query) {
+        return orderQueryPort
+            .findOrderView(OrderId.of(query.orderId()))
+            .orElseThrow(() ->
+                new OrderNotFoundException(
+                    query.orderId()));
+    }
+}
+
+// Vue en lecture (Read Model)
+public record OrderView(
+    String orderId, String customerName,
+    String status, List&lt;OrderLineView&gt; lines,
+    String totalAmount, Instant createdAt
+) {}</code></pre></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 18: Couche Infrastructure -->
+        <div class="slide">
+            <h2><i class="fas fa-server"></i> 2.4 La couche Infrastructure</h2>
+            <p>La couche Infrastructure contient les <strong>implementations concretes</strong> des ports secondaires. C'est la couche ou vivent les frameworks, les bases de donnees, les clients HTTP et toute la "plomberie" technique.</p>
+
+            <div class="diagram-box">+-------------------------------------------------------------------+
+|                    COUCHE INFRASTRUCTURE                          |
+|  +-------------------+  +-------------------+  +---------------+  |
+|  | JPA Repositories  |  | REST Clients      |  | Kafka         |  |
+|  | (persistence)     |  | (appels externes) |  | (messaging)   |  |
+|  +-------------------+  +-------------------+  +---------------+  |
+|  +-------------------+  +-------------------+  +---------------+  |
+|  | Configuration     |  | Security          |  | Mapping       |  |
+|  | Spring (beans)    |  | (JWT, OAuth)      |  | (Entite JPA)  |  |
+|  +-------------------+  +-------------------+  +---------------+  |
++-------------------------------------------------------------------+</div>
+
+            <div class="content-box">
+                <h3>Principes cles :</h3>
+                <ol>
+                    <li>L'infrastructure <strong>implemente</strong> les interfaces definies dans le domaine/application</li>
+                    <li>L'infrastructure <strong>ne contient pas</strong> de logique metier</li>
+                    <li>L'infrastructure est <strong>remplacable</strong> : on peut changer de BDD sans toucher au domaine</li>
+                </ol>
+            </div>
+
+            <div class="code-box"><pre><code class="language-java">// Entite JPA (modele de persistence, PAS le domaine)
+@Entity @Table(name = "orders")
+public class OrderJpaEntity {
+    @Id private String id;
+    @Column(name = "customer_id", nullable = false) private String customerId;
+    @Enumerated(EnumType.STRING) private String status;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "order_id")
+    private List&lt;OrderLineJpaEntity&gt; lines = new ArrayList&lt;&gt;();
+    protected OrderJpaEntity() {} // Requis par JPA
+}
+
+// Spring Data JPA Repository
+public interface OrderJpaRepository extends JpaRepository&lt;OrderJpaEntity, String&gt; {
+    List&lt;OrderJpaEntity&gt; findByCustomerId(String customerId);
+}</code></pre></div>
+        </div>
+
+        <!-- Slide 19: Infrastructure - Mapper et Adapter -->
+        <div class="slide">
+            <h2><i class="fas fa-exchange-alt"></i> 2.4 Infrastructure - Mapper et Adapter</h2>
+
+            <div class="code-box"><pre><code class="language-java">// MAPPER : Domaine &lt;--&gt; JPA
+@Component
+public class OrderMapper {
+    public OrderJpaEntity toJpaEntity(Order order) {
+        OrderJpaEntity entity = new OrderJpaEntity();
+        entity.setId(order.getId().value());
+        entity.setCustomerId(order.getCustomerId().value());
+        entity.setStatus(order.getStatus().name());
+        entity.setLines(order.getLines().stream()
+            .map(this::toJpaEntity).toList());
+        return entity;
+    }
+
+    public Order toDomain(OrderJpaEntity entity) {
+        return Order.reconstitute(
+            OrderId.of(entity.getId()),
+            CustomerId.of(entity.getCustomerId()),
+            OrderStatus.valueOf(entity.getStatus()),
+            entity.getLines().stream().map(this::toDomain).toList(),
+            entity.getCreatedAt()
+        );
+    }
+}
+
+// ADAPTEUR SECONDAIRE : Implemente le port du domaine
+@Repository
+public class JpaOrderRepositoryAdapter implements OrderRepository {
+    private final OrderJpaRepository jpaRepository;
+    private final OrderMapper mapper;
+
+    @Override
+    public Optional&lt;Order&gt; findById(OrderId id) {
+        return jpaRepository.findById(id.value()).map(mapper::toDomain);
+    }
+
+    @Override
+    public void save(Order order) {
+        jpaRepository.save(mapper.toJpaEntity(order));
+    }
+}</code></pre></div>
+
+            <div class="info-box">
+                <strong>Point important</strong> : Notez la separation entre <code>Order</code> (domaine) et <code>OrderJpaEntity</code> (persistence). L'entite JPA est un <strong>detail d'implementation</strong>. Le domaine ne sait meme pas que JPA existe.
+            </div>
+        </div>
+
+        <!-- Slide 20: Ports et Adapteurs - Vue d'ensemble -->
+        <div class="slide">
+            <h2><i class="fas fa-plug"></i> 2.5 Ports, Adapteurs et Anti-corruption Layer</h2>
+            <p>Les ports et adapteurs sont le mecanisme central de l'architecture hexagonale. Ils permettent au domaine de communiquer avec le monde exterieur <strong>sans en dependre</strong>.</p>
+
+            <div class="diagram-box">   MONDE EXTERIEUR             HEXAGONE              MONDE EXTERIEUR
+   (driving side)                                  (driven side)
+
+  +----------------+      +-------------------+      +--------------+
+  | REST Client    | ---> | Port Primaire     |      | Base de      |
+  | (navigateur)   |      | (interface)       |      | donnees      |
+  +----------------+      |    |              |      +--------------+
+                           | Adapteur Primaire|             |
+  +----------------+      | (Controller)     |      +--------------+
+  | Message Queue  | ---> |    |              |      | Adapteur     |
+  | (Kafka)        |      | Application      |      | Secondaire   |
+  +----------------+      | Service     ---->|----> | (JPA Repo)   |
+                           |    |              |      +--------------+
+  +----------------+      | DOMAINE           |             |
+  | CLI            | ---> |    |              |      +--------------+
+  | (terminal)     |      | Port Secondaire   | ---> | API externe  |
+  +----------------+      | (interface)       |      | (Stripe)     |
+                           +-------------------+      +--------------+</div>
+
+            <div class="grid-2">
+                <div class="content-box">
+                    <h3><span class="badge badge-green">Ports Primaires (IN)</span></h3>
+                    <p>Definissent <strong>ce que l'app SAIT FAIRE</strong>. Implementes par les Application Services.</p>
+                </div>
+                <div class="content-box">
+                    <h3><span class="badge badge-orange">Ports Secondaires (OUT)</span></h3>
+                    <p>Definissent <strong>ce dont l'app A BESOIN</strong>. Implementes par les adapteurs secondaires.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 21: Ports Primaires et Secondaires -->
+        <div class="slide">
+            <h2><i class="fas fa-plug"></i> 2.5 Ports Primaires et Secondaires</h2>
+
+            <div class="grid-2">
+                <div class="content-box" style="border-top: 3px solid var(--accent-green);">
+                    <h3>2.5.1 Ports Primaires (Driving)</h3>
+                    <div class="code-box"><pre><code class="language-java">// Ce que l'application sait faire
+public interface OrderService {
+    // Commandes (ecriture)
+    PlaceOrderResult placeOrder(
+        PlaceOrderCommand command);
+    void confirmOrder(String orderId);
+    void cancelOrder(String orderId,
+        String reason);
+    // Queries (lecture)
+    OrderView getOrder(String orderId);
+    List&lt;OrderView&gt; getOrdersByCustomer(
+        String customerId);
+}</code></pre></div>
+                </div>
+                <div class="content-box" style="border-top: 3px solid var(--accent-orange);">
+                    <h3>2.5.2 Ports Secondaires (Driven)</h3>
+                    <div class="code-box"><pre><code class="language-java">// Ce dont l'application a besoin
+public interface OrderRepository {
+    Optional&lt;Order&gt; findById(OrderId id);
+    void save(Order order);
+}
+
+public interface NotificationSender {
+    void sendOrderConfirmation(
+        Email to, OrderId orderId, Money total);
+}
+
+public interface PaymentGateway {
+    PaymentResult charge(
+        CustomerId customerId, Money amount);
+}
+
+public interface InventoryChecker {
+    boolean isAvailable(
+        ProductReference ref, Quantity qty);
+}</code></pre></div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                Le port primaire est <strong>implemente par un Application Service</strong>. Les adapteurs primaires (controllers, CLI) appellent ce port sans connaitre l'implementation.
+            </div>
+        </div>
+
+        <!-- Slide 22: Adapteurs Primaires -->
+        <div class="slide">
+            <h2><i class="fas fa-arrow-right"></i> 2.5.3 Adapteurs Primaires (Driving)</h2>
+            <p>Les adapteurs primaires <strong>appellent</strong> les ports primaires. Ils traduisent les requetes externes en appels vers l'application.</p>
+
+            <div class="code-box"><pre><code class="language-java">// ADAPTEUR PRIMAIRE : REST Controller
+@RestController @RequestMapping("/api/orders")
+public class OrderRestController {
+    private final OrderService orderService; // Depend du PORT, pas de l'impl
+
+    @PostMapping
+    public ResponseEntity&lt;PlaceOrderResult&gt; placeOrder(
+            @Valid @RequestBody PlaceOrderRequest request) {
+        PlaceOrderCommand command = new PlaceOrderCommand(request.customerId(),
+            request.lines().stream()
+                .map(l -> new PlaceOrderCommand.OrderLineCommand(
+                    l.productReference(), l.quantity(), l.unitPrice(), l.currency()))
+                .toList());
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(orderService.placeOrder(command));
+    }
+}
+
+// ADAPTEUR PRIMAIRE : Kafka Event Listener
+@Component
+public class OrderKafkaListener {
+    private final OrderService orderService;
+    @KafkaListener(topics = "payment-completed", groupId = "order-service")
+    public void onPaymentCompleted(PaymentCompletedEvent event) {
+        orderService.confirmOrder(event.orderId());
+    }
+}
+
+// ADAPTEUR PRIMAIRE : CLI
+@ShellComponent
+public class OrderCliAdapter {
+    private final OrderService orderService;
+    @ShellMethod("Annuler une commande")
+    public String cancelOrder(String orderId, String reason) {
+        orderService.cancelOrder(orderId, reason);
+        return "Commande %s annulee.".formatted(orderId);
+    }
+}</code></pre></div>
+
+            <div class="success-box">
+                <strong>Observation cle</strong> : Les trois adapteurs (REST, Kafka, CLI) appellent le <strong>meme port</strong> <code>OrderService</code>. Le domaine n'a aucune idee de la facon dont il est invoque !
+            </div>
+        </div>
+
+        <!-- Slide 23: ACL -->
+        <div class="slide">
+            <h2><i class="fas fa-shield-halved"></i> 2.5.5 Anti-Corruption Layer (ACL)</h2>
+            <p>L'<strong>Anti-Corruption Layer</strong> protege votre domaine des modeles externes. Elle traduit entre le langage de votre domaine et le langage du systeme externe.</p>
+
+            <div class="diagram-box">    VOTRE DOMAINE                    ACL                     SYSTEME EXTERNE
+   (votre langage)            (traduction)               (leur langage)
+
+   +-------------+         +--------------+          +------------------+
+   |   Order     | ------> | OrderMapper  | -------> | PurchaseOrder    |
+   |   OrderLine |         | ACL          |          | LineItem         |
+   |   Money     | <------ |              | <------- | PriceAmount      |
+   +-------------+         +--------------+          +------------------+</div>
+
+            <div class="content-box">
+                <h3>Quand utiliser une ACL :</h3>
+                <ul>
+                    <li>Integration avec un <strong>systeme legacy</strong> qui a son propre modele</li>
+                    <li>Appel a une <strong>API externe</strong> dont vous ne controlez pas le modele</li>
+                    <li>Communication entre <strong>bounded contexts</strong> avec des langages differents</li>
+                    <li>Protection contre les <strong>changements</strong> du modele externe</li>
+                </ul>
+            </div>
+
+            <div class="code-box"><pre><code class="language-java">@Component
+public class LegacyPaymentACL implements PaymentGateway {
+    @Override
+    public PaymentResult charge(CustomerId customerId, Money amount) {
+        // TRADUCTION : domaine --> modele legacy
+        LegacyPaymentRequest req = new LegacyPaymentRequest();
+        req.setAmountInCents(amount.toMinorUnits());
+        req.setCurrencyCode(amount.currency().code());
+        req.setBuyerReference(customerId.value());
+        req.setTransactionType(1); // 1 = charge
+
+        LegacyPaymentResponse resp = legacyClient.process(req);
+
+        // TRADUCTION : modele legacy --> domaine
+        return switch (resp.getStatusCode()) {
+            case 0 -> PaymentResult.success(resp.getTxnId(),
+                Money.fromMinorUnits(resp.getProcessedAmount(), amount.currency()));
+            case 1 -> PaymentResult.declined(resp.getStatusMessage());
+            default -> PaymentResult.failed("Erreur: " + resp.getStatusMessage());
+        };
+    }
+}</code></pre></div>
+        </div>
+
+        <!-- Slide 24: Dependances -->
+        <div class="slide">
+            <h2><i class="fas fa-project-diagram"></i> 2.6 Les dependances en hexagonale</h2>
+            <p>La regle d'or : <strong>toutes les dependances pointent vers le domaine</strong>. Le domaine ne depend de rien d'exterieur.</p>
+
+            <h3>Le Principe d'Inversion des Dependances (DIP)</h3>
+
+            <div class="grid-2">
+                <div class="content-box" style="border-top: 3px solid #e53e3e;">
+                    <h3><i class="fas fa-times-circle" style="color: #e53e3e;"></i> SANS inversion (classique)</h3>
+                    <div class="diagram-box" style="font-size: 0.8em;">Controller
+    |
+    v
+Service
+    |
+    v
+Repository (impl)
+    |
+    v
+Base de donnees</div>
+                </div>
+                <div class="content-box" style="border-top: 3px solid var(--accent-green);">
+                    <h3><i class="fas fa-check-circle" style="color: var(--accent-green);"></i> AVEC inversion (hexagonale)</h3>
+                    <div class="diagram-box" style="font-size: 0.8em;">Controller (Adapteur Primaire)
+    |
+    v
+Port Primaire (interface)
+    ^
+    |
+Application Service (impl)
+    |
+    v
+Port Secondaire (interface)
+    ^
+    |
+Repository Adapter (impl)
+    |
+    v
+Base de donnees</div>
+                </div>
+            </div>
+
+            <table>
+                <tr><th>De</th><th>Vers</th><th>Type de dependance</th></tr>
+                <tr><td>Adapteur Primaire</td><td>Port Primaire (interface)</td><td>Appelle</td></tr>
+                <tr><td>Application Service</td><td>Port Primaire (interface)</td><td>Implemente</td></tr>
+                <tr><td>Application Service</td><td>Port Secondaire (interface)</td><td>Utilise</td></tr>
+                <tr><td>Adapteur Secondaire</td><td>Port Secondaire (interface)</td><td>Implemente</td></tr>
+                <tr><td><strong>Domaine</strong></td><td><strong>RIEN</strong></td><td><strong>Aucune dependance sortante</strong></td></tr>
+            </table>
+        </div>
+
+        <!-- Slide 25: Structure de packages -->
+        <div class="slide">
+            <h2><i class="fas fa-folder-tree"></i> 2.6 Structure de packages recommandee</h2>
+
+            <div class="diagram-box" style="font-size: 0.78em;">com.example.order/
+|
++-- domain/                          &lt;-- Coeur metier (0 dependance externe)
+|   +-- model/                       &lt;-- Objets du domaine
+|   |   +-- Order.java               &lt;-- Racine d'agregat
+|   |   +-- OrderLine.java, OrderId.java, Money.java, Quantity.java
+|   +-- port/
+|   |   +-- in/                      &lt;-- Ports Primaires (driving)
+|   |   |   +-- OrderService.java
+|   |   +-- out/                     &lt;-- Ports Secondaires (driven)
+|   |       +-- OrderRepository.java, PaymentGateway.java, NotificationSender.java
+|   +-- service/                     &lt;-- Services de domaine
+|   +-- event/                       &lt;-- Domain Events
+|   +-- exception/                   &lt;-- Exceptions metier
+|
++-- application/                     &lt;-- Orchestration (depend du domaine seulement)
+|   +-- command/                     &lt;-- PlaceOrderCommand, CancelOrderCommand
+|   +-- query/                       &lt;-- GetOrderQuery, OrderView
+|   +-- usecase/                     &lt;-- PlaceOrderUseCase, ConfirmOrderUseCase
+|
++-- infrastructure/                  &lt;-- Plomberie technique
+    +-- adapter/
+    |   +-- in/rest/                 &lt;-- OrderRestController
+    |   +-- in/kafka/                &lt;-- OrderKafkaListener
+    |   +-- in/cli/                  &lt;-- OrderCliAdapter
+    |   +-- out/persistence/         &lt;-- JpaOrderRepositoryAdapter, OrderMapper
+    |   +-- out/payment/             &lt;-- StripePaymentGateway, LegacyPaymentACL
+    |   +-- out/notification/        &lt;-- SmtpNotificationSender
+    |   +-- out/messaging/           &lt;-- SpringDomainEventPublisher
+    +-- config/                      &lt;-- DomainConfiguration, PersistenceConfiguration</div>
+
+            <div class="success-box">
+                <strong>Regle d'or</strong> : Le package <code>domain/</code> n'importe RIEN des packages <code>application/</code> ou <code>infrastructure/</code>. Le flux de dependances est toujours : <code>infrastructure -> application -> domain</code>.
+            </div>
+        </div>
+
+        <!-- Slide 26: ArchUnit -->
+        <div class="slide">
+            <h2><i class="fas fa-vial"></i> 2.6 Validation automatique avec ArchUnit</h2>
+            <p>On peut <strong>automatiser la verification</strong> des regles de dependances avec ArchUnit :</p>
+
+            <div class="code-box"><pre><code class="language-java">@AnalyzeClasses(packages = "com.example.order")
+public class HexagonalArchitectureTest {
+
+    // Le domaine ne depend de RIEN d'exterieur
+    @ArchTest
+    static final ArchRule domain_should_not_depend_on_application =
+        noClasses().that().resideInAPackage("..domain..")
+            .should().dependOnClassesThat().resideInAPackage("..application..");
+
+    @ArchTest
+    static final ArchRule domain_should_not_depend_on_infrastructure =
+        noClasses().that().resideInAPackage("..domain..")
+            .should().dependOnClassesThat().resideInAPackage("..infrastructure..");
+
+    // Le domaine ne depend pas de Spring
+    @ArchTest
+    static final ArchRule domain_should_not_use_spring =
+        noClasses().that().resideInAPackage("..domain..")
+            .should().dependOnClassesThat().resideInAPackage("org.springframework..");
+
+    // Le domaine ne depend pas de JPA
+    @ArchTest
+    static final ArchRule domain_should_not_use_jpa =
+        noClasses().that().resideInAPackage("..domain..")
+            .should().dependOnClassesThat().resideInAPackage("jakarta.persistence..");
+
+    // L'application ne depend pas de l'infrastructure
+    @ArchTest
+    static final ArchRule application_should_not_depend_on_infrastructure =
+        noClasses().that().resideInAPackage("..application..")
+            .should().dependOnClassesThat().resideInAPackage("..infrastructure..");
+}</code></pre></div>
+
+            <div class="info-box">
+                <strong>ArchUnit</strong> s'execute comme un test JUnit classique. Si un developpeur ajoute un <code>import</code> interdit (ex: JPA dans le domaine), le build echoue automatiquement. C'est le gardien de vos regles architecturales.
+            </div>
+        </div>
+
+        <!-- Slide 27: Synthese -->
+        <div class="slide">
+            <h2><i class="fas fa-map"></i> Synthese du Module 2</h2>
+
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <h4><i class="fas fa-question-circle"></i> 1. Quand utiliser l'hexagonale ?</h4>
+                    <ul>
+                        <li>Domaine complexe (finance, sante, logistique)</li>
+                        <li>Core Domain (pas les sous-domaines generiques)</li>
+                        <li>POO naturellement, FP possible, procedurale inadaptee</li>
+                        <li>Microservices = chaque service est un hexagone</li>
+                    </ul>
+                </div>
+                <div class="summary-card">
+                    <h4><i class="fas fa-gem"></i> 2. Le Domaine contient</h4>
+                    <ul>
+                        <li>Agregats (racine = seul point d'entree)</li>
+                        <li>Entites (identite, cycle de vie)</li>
+                        <li>Value Objects (immutables, auto-validants)</li>
+                        <li>Domain Events + Services de domaine</li>
+                    </ul>
+                </div>
+                <div class="summary-card">
+                    <h4><i class="fas fa-layer-group"></i> 3. Couche Application</h4>
+                    <ul>
+                        <li>Use Cases / Application Services</li>
+                        <li>Orchestre, ne contient PAS de logique metier</li>
+                        <li>Gere les transactions</li>
+                        <li>CQRS leger : Command + Query Handlers</li>
+                    </ul>
+                </div>
+                <div class="summary-card">
+                    <h4><i class="fas fa-plug"></i> 4. Ports & Adapteurs</h4>
+                    <ul>
+                        <li>Primaires = ce que l'app SAIT FAIRE (in)</li>
+                        <li>Secondaires = ce dont l'app A BESOIN (out)</li>
+                        <li>ACL = traducteur vers le monde externe</li>
+                        <li>Tout pointe vers le domaine (DIP)</li>
+                    </ul>
+                </div>
+                <div class="summary-card">
+                    <h4><i class="fas fa-server"></i> 5. Infrastructure</h4>
+                    <ul>
+                        <li>Implementations concretes des ports</li>
+                        <li>JPA entities != Domain entities</li>
+                        <li>Configuration Spring, Kafka, REST clients</li>
+                    </ul>
+                </div>
+                <div class="summary-card">
+                    <h4><i class="fas fa-project-diagram"></i> 6. Dependances</h4>
+                    <ul>
+                        <li>TOUT pointe vers le domaine</li>
+                        <li>Le domaine depend de RIEN</li>
+                        <li>DIP est la cle de voute</li>
+                        <li>ArchUnit verifie automatiquement</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="success-box" style="margin-top: 20px; text-align: center;">
+                <strong>Prochain module</strong> : Module 3 -- La pyramide des tests hexagonale et construction iterative (BDD/TDD, tests par couche, Event Sourcing, CQRS)
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="slide-nav">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">
+            <i class="fas fa-arrow-left"></i> Precedent
+        </button>
+        <span class="slide-counter">
+            <span id="currentSlide">1</span> / <span id="totalSlides"></span>
+        </span>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">
+            Suivant <i class="fas fa-arrow-right"></i>
+        </button>
+    </div>
+
+    <script>
+        // Initialize highlight.js
+        document.querySelectorAll('.code-box code').forEach(el => {
+            hljs.highlightElement(el);
+        });
+
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('currentSlide').textContent = currentSlide + 1;
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function changeSlide(n) {
+            showSlide(currentSlide + n);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        showSlide(0);
+    </script>
+
+</body>
+</html>

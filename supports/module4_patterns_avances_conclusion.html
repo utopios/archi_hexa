@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 4 : Patterns Avances &amp; Conclusion - Architecture Hexagonale</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6a1b9a;
+            --primary-dark: #4a148c;
+            --primary-light: #9c4dcc;
+            --accent-orange: #ff6b35;
+            --accent-green: #00d084;
+            --accent-yellow: #ffd93d;
+            --bg-dark: #1a1d23;
+            --bg-light: #f5f5f5;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .slide-container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: none;
+            padding: 80px 60px 100px 60px;
+            overflow-y: auto;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Title Slide */
+        .slide.title-slide {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: var(--white);
+        }
+        .slide.title-slide.active {
+            display: flex;
+        }
+
+        .title-slide .module-number {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .title-slide h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .title-slide .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 700px;
+            line-height: 1.8;
+        }
+
+        .title-slide .objectives {
+            margin-top: 40px;
+            text-align: left;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 30px 40px;
+            backdrop-filter: blur(10px);
+        }
+
+        .title-slide .objectives h3 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--accent-yellow);
+        }
+
+        .title-slide .objectives ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .title-slide .objectives li {
+            padding: 8px 0;
+            font-size: 1.05rem;
+            opacity: 0.95;
+        }
+
+        .title-slide .objectives li::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-right: 12px;
+            color: var(--accent-green);
+        }
+
+        /* Content Slides */
+        .slide h2 {
+            font-size: 1.8rem;
+            color: var(--primary-dark);
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .slide h3 {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin: 20px 0 12px 0;
+        }
+
+        .slide p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+
+        .slide ul, .slide ol {
+            margin: 10px 0 15px 25px;
+            line-height: 1.8;
+        }
+
+        .slide li {
+            font-size: 1.02rem;
+            margin-bottom: 6px;
+        }
+
+        /* Code Box */
+        .code-box {
+            background: var(--bg-dark);
+            color: #22d3ee;
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin: 15px 0;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.82rem;
+            line-height: 1.5;
+            overflow-x: auto;
+            position: relative;
+            white-space: pre;
+        }
+
+        .code-box::before {
+            content: 'Java';
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-size: 0.7rem;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .code-box.lang-gherkin::before { content: 'Gherkin'; }
+        .code-box.lang-sql::before { content: 'SQL'; }
+        .code-box.lang-markdown::before { content: 'Markdown'; }
+        .code-box.lang-text::before { content: ''; }
+
+        /* Info/Warning/Success Boxes */
+        .info-box {
+            background: linear-gradient(135deg, #e8f4fd, #d1ecf9);
+            border-left: 4px solid #2196F3;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 15px 0;
+            font-size: 0.98rem;
+        }
+
+        .info-box::before {
+            content: '\f05a';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: #2196F3;
+            margin-right: 10px;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fff8e1, #ffecb3);
+            border-left: 4px solid var(--accent-orange);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 15px 0;
+            font-size: 0.98rem;
+        }
+
+        .warning-box::before {
+            content: '\f071';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: var(--accent-orange);
+            margin-right: 10px;
+        }
+
+        .success-box {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            border-left: 4px solid var(--accent-green);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 15px 0;
+            font-size: 0.98rem;
+        }
+
+        .success-box::before {
+            content: '\f058';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: var(--accent-green);
+            margin-right: 10px;
+        }
+
+        /* Content Box */
+        .content-box {
+            background: var(--white);
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin: 15px 0;
+            box-shadow: var(--shadow);
+        }
+
+        /* Grid */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 15px 0;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 2px 4px;
+        }
+
+        .badge-primary { background: var(--primary-light); color: white; }
+        .badge-orange { background: var(--accent-orange); color: white; }
+        .badge-green { background: var(--accent-green); color: white; }
+        .badge-yellow { background: var(--accent-yellow); color: var(--text-dark); }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.92rem;
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            padding: 10px 14px;
+            text-align: left;
+        }
+
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:nth-child(even) { background: #f7f7f7; }
+
+        /* Slide Navigation (bottom) */
+        .slide-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .nav-btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        #prevBtn {
+            background: var(--bg-light);
+            color: var(--text-dark);
+            border: 2px solid #cbd5e0;
+        }
+
+        #prevBtn:hover:not(:disabled) {
+            background: #e2e8f0;
+        }
+
+        #nextBtn {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        #nextBtn:hover:not(:disabled) {
+            background: var(--primary-dark);
+        }
+
+        .slide-counter {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            font-weight: 600;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        /* Module Navigation (top) */
+        .module-navigation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--primary-dark);
+            color: var(--white);
+            padding: 10px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            font-size: 0.9rem;
+        }
+
+        .module-navigation a {
+            color: var(--white);
+            text-decoration: none;
+            opacity: 0.85;
+            transition: opacity 0.3s;
+        }
+
+        .module-navigation a:hover {
+            opacity: 1;
+        }
+
+        .module-navigation .module-title {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .module-navigation .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        strong { color: var(--primary-dark); }
+    </style>
+</head>
+<body>
+
+    <!-- Module Navigation (top) -->
+    <div class="module-navigation">
+        <div class="nav-links">
+            <a href="module3_tests_construction.html"><i class="fas fa-arrow-left"></i> Module 3</a>
+        </div>
+        <span class="module-title">Module 4 : Patterns Avances &amp; Conclusion</span>
+        <div class="nav-links">
+            <a href="index.html"><i class="fas fa-home"></i> Accueil</a>
+        </div>
+    </div>
+
+    <!-- Slides Container -->
+    <div class="slide-container">
+
+        <!-- Slide 1: Title -->
+        <div class="slide title-slide active">
+            <div class="module-number">Architecture Hexagonale</div>
+            <h1><i class="fas fa-puzzle-piece"></i> Module 4 : Patterns Avances &amp; Conclusion</h1>
+            <div class="subtitle">Patterns avances, documentation vivante et strategies de scaling</div>
+            <div class="objectives">
+                <h3><i class="fas fa-bullseye"></i> Objectifs</h3>
+                <ul>
+                    <li>Comprendre les principes et l'implementation de l'Event Sourcing</li>
+                    <li>Maitriser le pattern CQRS et savoir quand le combiner avec l'Event Sourcing</li>
+                    <li>Decouvrir la documentation vivante comme outil de perennisation</li>
+                    <li>Evaluer le cout de la dette d'architecture et les strategies de scaling</li>
+                    <li>Savoir quand NE PAS utiliser l'architecture hexagonale</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 2: Event Sourcing - Principes -->
+        <div class="slide">
+            <h2><i class="fas fa-history"></i> 4.1 Event Sourcing - Principes fondamentaux</h2>
+            <p>Dans une approche classique (CRUD), on stocke l'<strong>etat courant</strong> d'une entite. Avec l'<strong>Event Sourcing</strong>, on stocke <strong>tous les evenements</strong> qui ont conduit a cet etat. L'etat courant est <strong>recalcule</strong> en rejouant les evenements.</p>
+            <div class="grid-2">
+                <div class="content-box">
+                    <h3><i class="fas fa-database"></i> Approche CRUD</h3>
+                    <div class="code-box lang-text">orders
+id=42  status=SHIPPED  total=150EUR
+
+On ne sait pas QUAND ni COMMENT
+on est arrive la.</div>
+                </div>
+                <div class="content-box">
+                    <h3><i class="fas fa-stream"></i> Approche Event Sourcing</h3>
+                    <div class="code-box lang-text">event_store
+1. OrderCreated    {id=42, client="Dupont"}
+2. ItemAdded       {id=42, item="Laptop"}
+3. OrderValidated  {id=42}
+4. PaymentReceived {id=42, amount=150EUR}
+5. OrderShipped    {id=42, tracking="XY123"}
+
+On sait TOUT ce qui s'est passe.</div>
+                </div>
+            </div>
+            <table>
+                <tr><th>Propriete</th><th>Description</th></tr>
+                <tr><td><strong>Immuabilite</strong></td><td>Les evenements ne sont jamais modifies ni supprimes</td></tr>
+                <tr><td><strong>Append-only</strong></td><td>On ne fait qu'ajouter des evenements au journal</td></tr>
+                <tr><td><strong>Source de verite</strong></td><td>Le journal d'evenements EST la source de verite</td></tr>
+                <tr><td><strong>Rejouabilite</strong></td><td>L'etat courant se reconstruit en rejouant tous les evenements</td></tr>
+                <tr><td><strong>Temporalite</strong></td><td>On peut reconstruire l'etat a n'importe quel instant passe</td></tr>
+            </table>
+        </div>
+
+        <!-- Slide 3: Quand utiliser / ne pas utiliser Event Sourcing -->
+        <div class="slide">
+            <h2><i class="fas fa-balance-scale"></i> 4.1.2 Quand utiliser l'Event Sourcing</h2>
+            <div class="grid-2">
+                <div class="content-box">
+                    <h3><i class="fas fa-check-circle" style="color: var(--accent-green);"></i> Cas d'usage favorables</h3>
+                    <ul>
+                        <li><strong>Exigences d'audit</strong> : systemes financiers, bancaires, conformite reglementaire</li>
+                        <li><strong>Nombreuses transitions d'etat</strong> : gestion de commandes, workflows complexes</li>
+                        <li><strong>Reconstruire des etats passes</strong> : "Quel etait l'etat du portefeuille au 15 janvier ?"</li>
+                        <li><strong>Systemes distribues</strong> : se marie naturellement avec les architectures asynchrones</li>
+                        <li><strong>Detection d'anomalies</strong> : pouvoir rejouer et analyser</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h3><i class="fas fa-times-circle" style="color: var(--accent-orange);"></i> Quand NE PAS utiliser</h3>
+                    <ul>
+                        <li><strong>Applications CRUD simples</strong> : formulaire de contact, catalogue statique</li>
+                        <li><strong>Pas de besoin d'historique</strong> : personne ne demandera "comment on est arrive la"</li>
+                        <li><strong>Peu de transitions d'etat</strong> : brouillon vers publie ne justifie pas ES</li>
+                        <li><strong>Equipes non formees</strong> : complexite accidentelle peut surpasser les benefices</li>
+                        <li><strong>Lecture temps reel</strong> : le rejeu peut etre lent (d'ou CQRS)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="warning-box">
+                L'Event Sourcing ajoute de la complexite. Ne l'adoptez que si les benefices (audit, historique, rejouabilite) justifient le cout.
+            </div>
+        </div>
+
+        <!-- Slide 4: DomainEvent + Evenements concrets -->
+        <div class="slide">
+            <h2><i class="fas fa-code"></i> 4.1.4 Implementation - DomainEvent &amp; Evenements</h2>
+            <p>Tout evenement du domaine implemente l'interface <strong>DomainEvent</strong>. Chaque evenement est un <strong>record</strong> Java (immuable par nature).</p>
+            <div class="code-box">public interface DomainEvent {
+    UUID eventId();
+    UUID aggregateId();
+    Instant occurredOn();
+    String eventType();
+}</div>
+            <div class="code-box">public record OrderCreated(
+        UUID eventId, UUID aggregateId, Instant occurredOn,
+        String clientName, String clientEmail
+) implements DomainEvent {
+
+    public OrderCreated(UUID orderId, String clientName, String clientEmail) {
+        this(UUID.randomUUID(), orderId, Instant.now(), clientName, clientEmail);
+    }
+
+    @Override
+    public String eventType() { return "OrderCreated"; }
+}
+
+public record ItemAdded(
+        UUID eventId, UUID aggregateId, Instant occurredOn,
+        String itemName, int quantity, BigDecimal unitPrice
+) implements DomainEvent {
+
+    public ItemAdded(UUID orderId, String itemName, int qty, BigDecimal price) {
+        this(UUID.randomUUID(), orderId, Instant.now(), itemName, qty, price);
+    }
+
+    @Override
+    public String eventType() { return "ItemAdded"; }
+}</div>
+        </div>
+
+        <!-- Slide 5: EventStore Port -->
+        <div class="slide">
+            <h2><i class="fas fa-plug"></i> 4.1.4 Le port EventStore (port secondaire)</h2>
+            <p>L'EventStore est un <strong>port secondaire</strong> dans l'architecture hexagonale. Le domaine definit le contrat, l'infrastructure fournit l'implementation.</p>
+            <div class="code-box">package com.example.domain.port.out;
+
+/**
+ * Port secondaire (driven) pour le stockage des evenements.
+ * L'implementation concrete (PostgreSQL, EventStoreDB, Kafka...)
+ * se trouve dans la couche infrastructure.
+ */
+public interface EventStore {
+
+    /**
+     * Persiste une liste d'evenements pour un agregat donne.
+     * @param expectedVersion controle de concurrence optimiste
+     */
+    void append(UUID aggregateId, List&lt;DomainEvent&gt; events,
+                long expectedVersion);
+
+    /**
+     * Recupere tous les evenements d'un agregat (ordre chrono).
+     */
+    List&lt;DomainEvent&gt; loadEvents(UUID aggregateId);
+
+    /**
+     * Recupere les evenements a partir d'une version (snapshots).
+     */
+    List&lt;DomainEvent&gt; loadEventsFrom(UUID aggregateId, long fromVersion);
+}</div>
+            <div class="info-box">
+                Le port EventStore est defini dans le domaine. Les implementations (PostgreSQL, InMemory pour les tests, Kafka...) vivent dans l'infrastructure.
+            </div>
+        </div>
+
+        <!-- Slide 6: Aggregat Event-Sourced -->
+        <div class="slide">
+            <h2><i class="fas fa-cubes"></i> 4.1.4 L'agregat qui se reconstruit</h2>
+            <p>L'agregat <strong>Order</strong> maintient une liste d'evenements non persistes et expose des methodes qui <strong>emettent des evenements</strong> au lieu de modifier l'etat directement.</p>
+            <div class="code-box">public class Order {
+    private UUID orderId;
+    private String clientName;
+    private OrderStatus status;
+    private List&lt;OrderLine&gt; lines;
+    private BigDecimal totalAmount;
+    private long version;
+    private final List&lt;DomainEvent&gt; uncommittedEvents = new ArrayList&lt;&gt;();
+
+    // Factory : creer une nouvelle commande
+    public static Order create(UUID orderId, String name, String email) {
+        Order order = new Order();
+        order.applyNew(new OrderCreated(orderId, name, email));
+        return order;
+    }
+
+    // Factory : reconstruire depuis l'historique
+    public static Order reconstitute(List&lt;DomainEvent&gt; history) {
+        Order order = new Order();
+        for (DomainEvent event : history) {
+            order.apply(event);
+            order.version++;
+        }
+        return order;
+    }
+
+    // Methode metier
+    public void addItem(String name, int qty, BigDecimal price) {
+        if (status != OrderStatus.CREATED)
+            throw new IllegalStateException("Impossible d'ajouter");
+        applyNew(new ItemAdded(orderId, name, qty, price));
+    }
+
+    // Application d'evenement (rejeu)
+    private void apply(DomainEvent event) {
+        switch (event) {
+            case OrderCreated e -&gt; { this.orderId = e.aggregateId();
+                this.status = OrderStatus.CREATED; }
+            case ItemAdded e -&gt; { this.totalAmount = totalAmount
+                .add(e.unitPrice().multiply(BigDecimal.valueOf(e.quantity()))); }
+            case OrderShipped e -&gt; { this.status = OrderStatus.SHIPPED; }
+            default -&gt; throw new IllegalArgumentException("Inconnu");
+        }
+    }
+}</div>
+        </div>
+
+        <!-- Slide 7: Service applicatif + Lien hexagonal -->
+        <div class="slide">
+            <h2><i class="fas fa-cogs"></i> 4.1.4 Service applicatif &amp; lien hexagonal</h2>
+            <p>Le service applicatif orchestre le chargement, l'execution de la logique metier et la persistance des evenements.</p>
+            <div class="code-box">public class OrderCommandService {
+    private final EventStore eventStore;
+
+    public UUID createOrder(String clientName, String clientEmail) {
+        UUID orderId = UUID.randomUUID();
+        Order order = Order.create(orderId, clientName, clientEmail);
+        List&lt;DomainEvent&gt; newEvents = order.getUncommittedEvents();
+        eventStore.append(orderId, newEvents, 0);
+        return orderId;
+    }
+
+    public void addItem(UUID orderId, String itemName,
+                        int quantity, BigDecimal unitPrice) {
+        List&lt;DomainEvent&gt; history = eventStore.loadEvents(orderId);
+        Order order = Order.reconstitute(history);
+        order.addItem(itemName, quantity, unitPrice);
+        eventStore.append(orderId, order.getUncommittedEvents(),
+                          order.getVersion());
+    }
+}</div>
+            <div class="success-box">
+                L'Event Sourcing s'integre parfaitement dans l'hexagonale : l'<strong>EventStore</strong> est un port secondaire, les <strong>evenements</strong> vivent dans le domaine, la <strong>publication</strong> (Kafka, RabbitMQ) est un adapteur driven.
+            </div>
+        </div>
+
+        <!-- Slide 8: CQRS Principes -->
+        <div class="slide">
+            <h2><i class="fas fa-columns"></i> 4.2 CQRS - Principes</h2>
+            <p>CQRS est un pattern architectural qui <strong>separe</strong> le modele d'ecriture (commandes) du modele de lecture (requetes).</p>
+            <div class="grid-2">
+                <div class="content-box">
+                    <h3>Approche classique</h3>
+                    <div class="code-box lang-text">Client -- Service -- Repository -- DB
+          (read + write)
+          (un seul modele)</div>
+                </div>
+                <div class="content-box">
+                    <h3>Approche CQRS</h3>
+                    <div class="code-box lang-text">         CommandHandler -- WriteModel -- DB W
+Client
+         QueryHandler  -- ReadModel  -- DB R
+
+Ecriture et lecture ont des modeles differents.</div>
+                </div>
+            </div>
+            <table>
+                <tr><th>Aspect</th><th>Command (Ecriture)</th><th>Query (Lecture)</th></tr>
+                <tr><td><strong>But</strong></td><td>Modifier l'etat du systeme</td><td>Retourner des donnees</td></tr>
+                <tr><td><strong>Retour</strong></td><td><code>void</code> ou identifiant cree</td><td>DTO / projection</td></tr>
+                <tr><td><strong>Validation</strong></td><td>Regles metier completes</td><td>Aucune (donnees deja validees)</td></tr>
+                <tr><td><strong>Modele</strong></td><td>Riche (agregats, entites, VO)</td><td>Plat (optimise pour l'affichage)</td></tr>
+                <tr><td><strong>Frequence</strong></td><td>Moins frequent</td><td>Tres frequent (souvent 90% du trafic)</td></tr>
+            </table>
+        </div>
+
+        <!-- Slide 9: CQRS - Commandes -->
+        <div class="slide">
+            <h2><i class="fas fa-terminal"></i> 4.2.2 CQRS - Commandes et CommandHandler</h2>
+            <p>Chaque commande est un <strong>record</strong> immuable. Chaque commande a exactement <strong>un handler</strong>.</p>
+            <div class="code-box">// Interface marker pour les commandes
+public interface Command {}
+
+// Commande concrete
+public record PlaceOrderCommand(
+        String clientName, String clientEmail,
+        String itemName, int quantity, BigDecimal unitPrice
+) implements Command {}
+
+// Handler generique
+public interface CommandHandler&lt;C extends Command, R&gt; {
+    R handle(C command);
+}
+
+// Handler concret
+public class PlaceOrderCommandHandler
+        implements CommandHandler&lt;PlaceOrderCommand, UUID&gt; {
+
+    private final EventStore eventStore;
+
+    @Override
+    public UUID handle(PlaceOrderCommand cmd) {
+        UUID orderId = UUID.randomUUID();
+        Order order = Order.create(orderId, cmd.clientName(), cmd.clientEmail());
+        order.addItem(cmd.itemName(), cmd.quantity(), cmd.unitPrice());
+        eventStore.append(orderId, order.getUncommittedEvents(), 0);
+        return orderId;
+    }
+}</div>
+        </div>
+
+        <!-- Slide 10: CQRS - Queries -->
+        <div class="slide">
+            <h2><i class="fas fa-search"></i> 4.2.2 CQRS - Requetes et QueryHandler</h2>
+            <p>Le DTO de lecture est <strong>plat, optimise pour l'affichage</strong>. Pas d'agregat, pas de logique metier, juste des donnees.</p>
+            <div class="code-box">// Interface marker pour les requetes
+public interface Query&lt;R&gt; {}
+
+// Requete concrete
+public record GetOrderSummaryQuery(UUID orderId)
+    implements Query&lt;OrderSummaryDTO&gt; {}
+
+// DTO de lecture : plat, optimise pour l'affichage
+public record OrderSummaryDTO(
+        UUID orderId, String clientName, String status,
+        int itemCount, BigDecimal totalAmount, Instant lastUpdated
+) {}
+
+// Handler de lecture
+public class GetOrderSummaryQueryHandler
+        implements QueryHandler&lt;GetOrderSummaryQuery, OrderSummaryDTO&gt; {
+
+    private final OrderReadRepository readRepository;
+
+    @Override
+    public OrderSummaryDTO handle(GetOrderSummaryQuery query) {
+        return readRepository.findById(query.orderId())
+                .orElseThrow(() -&gt; new OrderNotFoundException(query.orderId()));
+    }
+}</div>
+            <div class="info-box">
+                Le modele de lecture n'a <strong>aucune logique metier</strong>. Il est optimise pour les requetes d'affichage et peut utiliser des technologies differentes (Elasticsearch, MongoDB, vues materialisees SQL).
+            </div>
+        </div>
+
+        <!-- Slide 11: CommandBus / QueryBus -->
+        <div class="slide">
+            <h2><i class="fas fa-bus"></i> 4.2.2 CommandBus &amp; QueryBus</h2>
+            <p>Les bus routent chaque commande/requete vers son handler. En production, on utiliserait un framework (Axon, MediatR-like).</p>
+            <div class="grid-2">
+                <div class="content-box">
+                    <h3>CommandBus</h3>
+                    <div class="code-box">public class CommandBus {
+    private final Map&lt;Class&lt;? extends Command&gt;,
+        CommandHandler&lt;?, ?&gt;&gt; handlers
+            = new HashMap&lt;&gt;();
+
+    public &lt;C extends Command, R&gt; void register(
+        Class&lt;C&gt; type,
+        CommandHandler&lt;C, R&gt; handler) {
+        handlers.put(type, handler);
+    }
+
+    @SuppressWarnings("unchecked")
+    public &lt;C extends Command, R&gt; R dispatch(C cmd) {
+        CommandHandler&lt;C, R&gt; h =
+            (CommandHandler&lt;C, R&gt;)
+            handlers.get(cmd.getClass());
+        return h.handle(cmd);
+    }
+}</div>
+                </div>
+                <div class="content-box">
+                    <h3>QueryBus</h3>
+                    <div class="code-box">public class QueryBus {
+    private final Map&lt;Class&lt;? extends Query&lt;?&gt;&gt;,
+        QueryHandler&lt;?, ?&gt;&gt; handlers
+            = new HashMap&lt;&gt;();
+
+    public &lt;Q extends Query&lt;R&gt;, R&gt; void register(
+        Class&lt;Q&gt; type,
+        QueryHandler&lt;Q, R&gt; handler) {
+        handlers.put(type, handler);
+    }
+
+    @SuppressWarnings("unchecked")
+    public &lt;Q extends Query&lt;R&gt;, R&gt; R dispatch(Q q) {
+        QueryHandler&lt;Q, R&gt; h =
+            (QueryHandler&lt;Q, R&gt;)
+            handlers.get(q.getClass());
+        return h.handle(q);
+    }
+}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: CQRS sans Event Sourcing -->
+        <div class="slide">
+            <h2><i class="fas fa-layer-group"></i> 4.2.3 CQRS sans Event Sourcing</h2>
+            <p>On peut utiliser CQRS <strong>sans</strong> Event Sourcing. Trois niveaux de separation :</p>
+            <div class="content-box">
+                <h3><span class="badge badge-primary">Niveau 1</span> Meme base, modeles differents</h3>
+                <p>Les commandes passent par l'agregat riche (JPA), les requetes par du SQL optimise (JdbcTemplate).</p>
+            </div>
+            <div class="content-box">
+                <h3><span class="badge badge-orange">Niveau 2</span> Meme base, projections / vues materialisees</h3>
+                <div class="code-box lang-sql">CREATE MATERIALIZED VIEW order_summaries AS
+SELECT o.id AS order_id, o.client_name, o.status,
+       COUNT(l.id) AS item_count,
+       COALESCE(SUM(l.quantity * l.unit_price), 0) AS total_amount
+FROM orders o
+LEFT JOIN order_lines l ON l.order_id = o.id
+GROUP BY o.id, o.client_name, o.status;</div>
+            </div>
+            <div class="content-box">
+                <h3><span class="badge badge-green">Niveau 3</span> Bases de donnees separees</h3>
+                <p>Ecriture dans PostgreSQL (normalise), lecture dans Elasticsearch/MongoDB (denormalise). Synchronisation par Change Data Capture ou Domain Events.</p>
+            </div>
+        </div>
+
+        <!-- Slide 13: CQRS + Event Sourcing -->
+        <div class="slide">
+            <h2><i class="fas fa-project-diagram"></i> 4.2.4 CQRS avec Event Sourcing</h2>
+            <p>La combinaison CQRS + ES est la plus puissante. Les evenements servent de modele d'ecriture, et des <strong>projections</strong> construisent les modeles de lecture.</p>
+            <div class="code-box lang-text">Command --> CommandHandler --> Agregat --> EventStore (append-only)
+                                                        |
+                                                   evenements
+                                                        v
+                                                   Projection (Event Handler)
+                                                        |
+                                                        v
+Query &lt;-- QueryHandler &lt;-- ReadModel &lt;-- Read Database (denormalise)</div>
+            <div class="code-box">public class OrderSummaryProjection {
+    private final OrderReadRepository readRepository;
+
+    public void on(DomainEvent event) {
+        switch (event) {
+            case OrderCreated e -&gt; onOrderCreated(e);
+            case ItemAdded e -&gt; onItemAdded(e);
+            case OrderShipped e -&gt; onOrderShipped(e);
+            default -&gt; { /* non gere par cette projection */ }
+        }
+    }
+
+    private void onOrderCreated(OrderCreated event) {
+        readRepository.save(new OrderSummaryDTO(
+            event.aggregateId(), event.clientName(),
+            "CREATED", 0, BigDecimal.ZERO, event.occurredOn()));
+    }
+}</div>
+            <div class="warning-box">
+                <strong>Coherence eventuelle (eventual consistency)</strong> : le modele de lecture peut avoir quelques millisecondes de retard sur le modele d'ecriture. Acceptable dans la plupart des cas.
+            </div>
+        </div>
+
+        <!-- Slide 14: Documentation vivante -->
+        <div class="slide">
+            <h2><i class="fas fa-book-open"></i> 4.3 Documentation vivante</h2>
+            <h3>4.3.1 Le probleme de la documentation classique</h3>
+            <div class="code-box lang-text">Semaine 1 :  Documentation redigee        --> Precise et a jour
+Semaine 4 :  Quelques ecarts              --> Globalement correcte
+Mois 3    :  Documentation obsolete       --> Trompeuse
+Mois 6    :  Plus personne ne la lit      --> Inutile
+Annee 1   :  Document Word de 200 pages   --> Dangereux (fausses certitudes)</div>
+            <h3>Pourquoi elle echoue :</h3>
+            <ul>
+                <li>Elle est <strong>deconnectee du code</strong> : elle vit dans un wiki ou un document separe</li>
+                <li>Elle n'a <strong>pas de feedback</strong> : rien ne previent quand elle devient obsolete</li>
+                <li>Sa <strong>maintenance est manuelle</strong> et percue comme une corvee</li>
+                <li>Elle est souvent <strong>trop volumineuse</strong> pour etre lue</li>
+                <li>Personne n'a la <strong>responsabilite</strong> de la maintenir</li>
+            </ul>
+            <div class="success-box">
+                <strong>Documentation vivante</strong> (Cyrille Martraire) : la meilleure documentation est celle qui <strong>ne peut pas devenir obsolete</strong>, parce qu'elle est generee ou verifiee automatiquement depuis le code.
+            </div>
+        </div>
+
+        <!-- Slide 15: Tests BDD comme documentation -->
+        <div class="slide">
+            <h2><i class="fas fa-vial"></i> 4.3.2 Les tests comme documentation vivante</h2>
+            <p>Les tests BDD avec <strong>Cucumber</strong> sont un excellent exemple de documentation vivante. Les scenarios Gherkin sont lisibles par les non-developpeurs et verifies a chaque build.</p>
+            <div class="code-box lang-gherkin"># order_management.feature
+# Ce fichier EST la documentation des regles metier.
+# S'il passe au CI, il est forcement a jour.
+
+Fonctionnalite: Gestion des commandes
+  En tant que gestionnaire de commandes
+  Je veux pouvoir gerer le cycle de vie des commandes
+  Afin d'assurer un traitement fiable des achats
+
+  Scenario: Creer une commande avec un article
+    Etant donne un client "Jean Dupont" avec l'email "jean@example.com"
+    Quand il cree une commande avec l'article "Laptop" a 1500.00EUR (quantite: 1)
+    Alors la commande est creee avec le statut "CREATED"
+    Et le montant total est de 1500.00EUR
+
+  Scenario: Impossible d'expedier une commande non validee
+    Etant donne une commande en statut "CREATED"
+    Quand on tente de l'expedier
+    Alors une erreur est levee avec le message
+         "Impossible d'expedier une commande non validee"</div>
+            <div class="info-box">
+                Si le test passe au CI, la documentation est <strong>forcement a jour</strong>. Si le comportement change, le test casse et force la mise a jour.
+            </div>
+        </div>
+
+        <!-- Slide 16: ArchUnit comme documentation -->
+        <div class="slide">
+            <h2><i class="fas fa-shield-alt"></i> 4.3.2 ArchUnit - Tests d'architecture</h2>
+            <p><strong>ArchUnit</strong> permet d'ecrire des tests d'architecture. S'ils sont verts, l'architecture est conforme. S'ils cassent, quelqu'un a viole une regle.</p>
+            <div class="code-box">class HexagonalArchitectureTest {
+    private static JavaClasses classes;
+
+    @BeforeAll
+    static void setUp() {
+        classes = new ClassFileImporter().importPackages("com.example");
+    }
+
+    @Test
+    @DisplayName("Le domaine ne doit dependre d'aucun framework")
+    void domain_should_not_depend_on_frameworks() {
+        noClasses().that().resideInAPackage("..domain..")
+            .should().dependOnClassesThat()
+            .resideInAnyPackage("org.springframework..",
+                "javax.persistence..", "jakarta.persistence..")
+            .check(classes);
+    }
+
+    @Test
+    @DisplayName("Architecture hexagonale en couches respectee")
+    void hexagonal_layers_are_respected() {
+        layeredArchitecture().consideringAllDependencies()
+            .layer("Domain").definedBy("..domain..")
+            .layer("Application").definedBy("..application..")
+            .layer("Infrastructure").definedBy("..infrastructure..")
+            .whereLayer("Domain").mayOnlyBeAccessedByLayers(
+                "Application", "Infrastructure")
+            .whereLayer("Application").mayOnlyBeAccessedByLayers(
+                "Infrastructure")
+            .whereLayer("Infrastructure").mayNotBeAccessedByAnyLayer()
+            .check(classes);
+    }
+}</div>
+        </div>
+
+        <!-- Slide 17: ADR + Outils -->
+        <div class="slide">
+            <h2><i class="fas fa-file-alt"></i> 4.3.2 ADR &amp; Outils recommandes</h2>
+            <p>Un <strong>ADR</strong> (Architecture Decision Record) capture <strong>une</strong> decision architecturale : contexte, decision, consequences.</p>
+            <div class="code-box lang-markdown"># ADR-001 : Adoption de l'architecture hexagonale
+## Date : 2024-06-15  |  Statut : Accepte
+
+## Contexte
+Notre application est un monolithe en architecture couches classique.
+Les tests sont lents, le domaine est noye dans Spring.
+
+## Decision
+Adopter l'architecture hexagonale pour le module de gestion de commandes.
+- Package domain : aucune dependance framework
+- Package application : use cases, depend uniquement du domaine
+- Package infrastructure : Spring, JPA, REST, implementations des ports
+
+## Consequences
++ Le domaine est testable unitairement sans framework
++ L'infrastructure est interchangeable
+- Plus de code (interfaces port, mappers, DTOs)
+- Courbe d'apprentissage pour l'equipe</div>
+            <h3>Outils recommandes</h3>
+            <table>
+                <tr><th>Outil</th><th>Usage</th><th>Type</th></tr>
+                <tr><td><strong>ArchUnit</strong></td><td>Tests d'architecture Java</td><td>Tests automatises</td></tr>
+                <tr><td><strong>Cucumber</strong></td><td>Scenarios BDD lisibles</td><td>Documentation vivante</td></tr>
+                <tr><td><strong>Structurizr</strong></td><td>Diagrammes C4 as code</td><td>Documentation vivante</td></tr>
+                <tr><td><strong>adr-tools</strong></td><td>CLI pour gerer les ADR</td><td>Doc manuelle structuree</td></tr>
+                <tr><td><strong>Swagger/OpenAPI</strong></td><td>Documentation API</td><td>Documentation vivante</td></tr>
+            </table>
+        </div>
+
+        <!-- Slide 18: Dette d'architecture -->
+        <div class="slide">
+            <h2><i class="fas fa-exclamation-triangle"></i> 4.4.1 Le cout de la dette d'architecture</h2>
+            <p>La <strong>dette d'architecture</strong> est bien plus dangereuse que la dette technique classique : invisible, couteuse, et tres difficile a rembourser.</p>
+            <table>
+                <tr><th>Symptome</th><th>Description</th><th>Impact</th></tr>
+                <tr><td><strong>Effet shotgun</strong></td><td>Chaque changement touche de nombreux modules</td><td>Risque de regression</td></tr>
+                <tr><td><strong>Tests lents et fragiles</strong></td><td>Tests d'integration partout</td><td>CI lent, peur de refactorer</td></tr>
+                <tr><td><strong>Onboarding long</strong></td><td>Semaines a comprendre le code</td><td>Cout de recrutement</td></tr>
+                <tr><td><strong>Peur du refactoring</strong></td><td>"On ne touche pas, ca marche"</td><td>Code se degrade</td></tr>
+                <tr><td><strong>Couplage framework</strong></td><td>Metier noye dans Spring/JPA</td><td>Migration impossible</td></tr>
+                <tr><td><strong>Big Ball of Mud</strong></td><td>Tout depend de tout</td><td>Architecture non maitrisee</td></tr>
+            </table>
+            <div class="warning-box">
+                Une equipe qui passe 40% de son temps a "travailler autour" d'une mauvaise architecture perd <strong>l'equivalent de 2 developpeurs</strong> sur une equipe de 5.
+            </div>
+        </div>
+
+        <!-- Slide 19: Scaling -->
+        <div class="slide">
+            <h2><i class="fas fa-expand-arrows-alt"></i> 4.4.2 Scaler un SI avec l'hexagonale</h2>
+            <div class="grid-2">
+                <div class="content-box">
+                    <h3><span class="badge badge-primary">Strategie 1</span> Scaling vertical</h3>
+                    <p>Optimiser l'interieur d'un hexagone <strong>sans changer l'architecture</strong>.</p>
+                    <div class="code-box">// Avant : adapteur simple
+public class JpaOrderRepositoryAdapter
+    implements OrderRepository {
+    public Optional&lt;Order&gt; findById(UUID id) {
+        return jpa.findById(id)
+            .map(OrderMapper::toDomain);
+    }
+}
+
+// Apres : adapteur avec cache
+// Le port n'a pas change !
+public class CachedOrderRepositoryAdapter
+    implements OrderRepository {
+    public Optional&lt;Order&gt; findById(UUID id) {
+        Order cached = cache.get("order:" + id);
+        if (cached != null) return Optional.of(cached);
+        return jpa.findById(id)
+            .map(OrderMapper::toDomain)
+            .map(o -&gt; { cache.set("order:" + id, o,
+                Duration.ofMinutes(10)); return o; });
+    }
+}</div>
+                </div>
+                <div class="content-box">
+                    <h3><span class="badge badge-orange">Strategie 2</span> Scaling horizontal</h3>
+                    <p>Deployer plusieurs instances derriere un <strong>load balancer</strong>.</p>
+                    <p>Grace au CQRS, on peut scaler independamment :</p>
+                    <ul>
+                        <li>1 instance en ecriture (commandes)</li>
+                        <li>10 instances en lecture (requetes) avec replicas</li>
+                    </ul>
+                    <h3><span class="badge badge-green">Strategie 3</span> Decomposition</h3>
+                    <p>Chaque <strong>bounded context</strong> est deja un hexagone isole. L'extraction en microservice est naturelle.</p>
+                    <div class="code-box lang-text">Monolithe hexagonal :
+[Orders] [Payments] [Notifications]
+        dans un seul deploiement
+
+Microservices :
+[Orders Service] --&gt; [Payments Service]
+                 --&gt; [Notifications Service]
+  (chacun est un hexagone avec sa propre DB)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 20: Strangler Fig -->
+        <div class="slide">
+            <h2><i class="fas fa-seedling"></i> 4.4.2 Le Strangler Fig Pattern</h2>
+            <p>Pour migrer progressivement d'un monolithe vers une architecture hexagonale, on utilise le <strong>Strangler Fig Pattern</strong>.</p>
+            <div class="code-box lang-text">Phase 1 : Le monolithe gere tout
+[Monolithe : Orders + Payments + Notif]
+
+Phase 2 : On extrait un module (facade devant)
+[Gateway] --&gt; Nouveau service Orders (hexagonal)
+          --&gt; Monolithe (Payments + Notif)
+
+Phase 3 : On continue l'extraction
+[Gateway] --&gt; Service Orders (hexagonal)
+          --&gt; Service Payments (hexagonal)
+          --&gt; Monolithe (Notif seulement)
+
+Phase 4 : Le monolithe a disparu
+[Gateway] --&gt; Service Orders
+          --&gt; Service Payments
+          --&gt; Service Notifications</div>
+            <div class="success-box">
+                <strong>Avantages du Strangler Fig :</strong> Migration progressive et sans risque (pas de big bang). On peut s'arreter a tout moment. Chaque nouveau module beneficie immediatement de la bonne architecture.
+            </div>
+        </div>
+
+        <!-- Slide 21: Quand NE PAS utiliser l'hexagonale -->
+        <div class="slide">
+            <h2><i class="fas fa-ban"></i> 4.4.3 Quand NE PAS utiliser l'hexagonale</h2>
+            <p>L'architecture hexagonale n'est <strong>pas</strong> une solution universelle.</p>
+            <table>
+                <tr><th>Situation</th><th>Pourquoi pas l'hexagonale</th><th>Alternative</th></tr>
+                <tr><td><strong>Application CRUD simple</strong></td><td>L'overhead des ports/adapteurs ne se justifie pas</td><td>Architecture en couches classique</td></tr>
+                <tr><td><strong>Prototype / MVP</strong></td><td>L'objectif est de valider une idee rapidement</td><td>Framework RAD (Rails, Django)</td></tr>
+                <tr><td><strong>Tres petite equipe</strong> (1-2 devs)</td><td>Le couplage framework ne pose pas de probleme a cette echelle</td><td>Architecture simple, "clean enough"</td></tr>
+                <tr><td><strong>Scripts et utilitaires</strong></td><td>Un script de migration n'a pas besoin de ports</td><td>Script procedural classique</td></tr>
+                <tr><td><strong>Domaine anemique</strong></td><td>Si la logique se resume a de la validation, l'hexagone sera vide</td><td>Architecture en couches</td></tr>
+                <tr><td><strong>Contraintes de delai extremes</strong></td><td>L'investissement initial ne sera pas amorti</td><td>Architecture la plus simple possible</td></tr>
+            </table>
+            <div class="warning-box">
+                <strong>Regle d'or :</strong> Commencez simple. Si le domaine se complexifie et que vous sentez la douleur du couplage, c'est le moment de refactorer vers l'hexagonale.
+            </div>
+        </div>
+
+        <!-- Slide 22: Recapitulatif + Arbre de decision -->
+        <div class="slide">
+            <h2><i class="fas fa-sitemap"></i> 4.4.4 Recapitulatif &amp; Arbre de decision</h2>
+            <table>
+                <tr><th>Jour</th><th>Module</th><th>Concepts cles</th></tr>
+                <tr><td><strong>J1 matin</strong></td><td>Module 1</td><td>L'hexagonale isole le domaine au centre, dependances vers l'interieur</td></tr>
+                <tr><td><strong>J1 apres-midi</strong></td><td>Module 2.1-2.2</td><td>Agregats, Entites, Value Objects et Domain Events</td></tr>
+                <tr><td><strong>J2 matin</strong></td><td>Module 2.3</td><td>Les ports sont des interfaces dans le domaine, adapteurs dans l'infra</td></tr>
+                <tr><td><strong>J2 apres-midi</strong></td><td>Module 3.1</td><td>Domaine = tests unitaires, Application = BDD, Infra = integration</td></tr>
+                <tr><td><strong>J3 matin</strong></td><td>Module 3.2</td><td>BDD/TDD en double boucle, infra en dernier</td></tr>
+                <tr><td><strong>J3</strong></td><td>Module 4</td><td>Event Sourcing, CQRS, documentation vivante, dette d'architecture</td></tr>
+            </table>
+            <div class="code-box lang-text">                    Nouveau projet ?
+                          |
+                  Oui           Non (existant)
+                   |                |
+           Domaine complexe ?   Douleur ressentie ?
+                   |                |
+             Oui      Non      Oui      Non
+              |        |        |        |
+         Hexagonale  CRUD   Strangler   Ne rien
+                   classique   Fig      changer
+              |                 |
+         Besoin audit ?    Refactoring progressif
+              |
+         Oui      Non
+          |        |
+     ES + CQRS   Hexagonale classique</div>
+        </div>
+
+        <!-- Slide 23: 10 Regles d'or + Ressources -->
+        <div class="slide">
+            <h2><i class="fas fa-star"></i> Les 10 regles d'or &amp; Ressources</h2>
+            <div class="grid-2">
+                <div class="content-box">
+                    <h3><i class="fas fa-trophy" style="color: var(--accent-yellow);"></i> Les 10 regles d'or</h3>
+                    <ol>
+                        <li><strong>Le domaine ne depend de rien</strong></li>
+                        <li><strong>Les dependances pointent vers l'interieur</strong></li>
+                        <li><strong>Les ports sont dans le domaine</strong></li>
+                        <li><strong>Les adapteurs sont dans l'infrastructure</strong></li>
+                        <li><strong>Le domaine est riche</strong> : logique dans les agregats</li>
+                        <li><strong>Testez le domaine sans framework</strong></li>
+                        <li><strong>Retardez les decisions d'infrastructure</strong></li>
+                        <li><strong>Utilisez ArchUnit</strong> pour verifier les regles</li>
+                        <li><strong>Ne sur-ingenieriez pas</strong> : sachez dire "CRUD suffit"</li>
+                        <li><strong>Documentez vivant</strong> : tests BDD, ArchUnit, ADR</li>
+                    </ol>
+                </div>
+                <div class="content-box">
+                    <h3><i class="fas fa-book" style="color: var(--primary);"></i> Livres essentiels</h3>
+                    <ul>
+                        <li><strong>Domain-Driven Design</strong> - Eric Evans</li>
+                        <li><strong>Implementing DDD</strong> - Vaughn Vernon</li>
+                        <li><strong>Clean Architecture</strong> - Robert C. Martin</li>
+                        <li><strong>Get Your Hands Dirty on Clean Architecture</strong> - Tom Hombergs</li>
+                        <li><strong>Living Documentation</strong> - Cyrille Martraire</li>
+                    </ul>
+                    <h3 style="margin-top: 15px;"><i class="fas fa-link" style="color: var(--accent-orange);"></i> Ressources en ligne</h3>
+                    <ul>
+                        <li>Alistair Cockburn - Hexagonal Architecture</li>
+                        <li>Martin Fowler - CQRS &amp; Event Sourcing</li>
+                        <li>Netflix Tech Blog - Architecture a grande echelle</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="success-box">
+                <strong>Merci d'avoir suivi cette formation !</strong> L'architecture hexagonale est un outil puissant, mais comme tout outil, elle doit etre utilisee a bon escient. Le meilleur architecte choisit le bon pattern pour le bon probleme.
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="slide-nav">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">
+            <i class="fas fa-arrow-left"></i> Precedent
+        </button>
+        <span class="slide-counter">
+            <span id="currentSlide">1</span> / <span id="totalSlides"></span>
+        </span>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">
+            Suivant <i class="fas fa-arrow-right"></i>
+        </button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('currentSlide').textContent = currentSlide + 1;
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function changeSlide(n) { showSlide(currentSlide + n); }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        showSlide(0);
+    </script>
+
+</body>
+</html>

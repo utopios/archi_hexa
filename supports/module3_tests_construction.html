@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 3 : Pyramide des Tests & Construction Itérative</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6a1b9a;
+            --primary-dark: #4a148c;
+            --primary-light: #9c4dcc;
+            --accent-orange: #ff6b35;
+            --accent-green: #00d084;
+            --accent-yellow: #ffd93d;
+            --bg-light: #f8f9fa;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .slide-container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            padding: 80px 60px 100px;
+            overflow-y: auto;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Title Slide */
+        .slide.title-slide {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: var(--white);
+        }
+
+        .slide.title-slide.active {
+            display: flex;
+        }
+
+        .title-slide h1 {
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .title-slide .subtitle {
+            font-size: 1.4em;
+            opacity: 0.9;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .objective-box {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: left;
+            transition: transform 0.3s;
+        }
+
+        .objective-box:hover {
+            transform: translateY(-3px);
+        }
+
+        .objective-box i {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            display: block;
+            color: var(--accent-yellow);
+        }
+
+        .objective-box h3 {
+            font-size: 1em;
+            margin-bottom: 5px;
+        }
+
+        .objective-box p {
+            font-size: 0.85em;
+            opacity: 0.85;
+        }
+
+        /* Content Slides */
+        .slide h2 {
+            color: var(--primary);
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .slide h2 i {
+            color: var(--primary-light);
+        }
+
+        h3 {
+            color: var(--primary-dark);
+            font-size: 1.3em;
+            margin: 20px 0 12px;
+        }
+
+        p {
+            line-height: 1.8;
+            margin-bottom: 12px;
+            font-size: 1.05em;
+        }
+
+        ul, ol {
+            margin: 10px 0 15px 25px;
+            line-height: 1.8;
+        }
+
+        li {
+            margin-bottom: 6px;
+            font-size: 1.02em;
+        }
+
+        /* Code Box */
+        .code-box {
+            background: #1a1d23;
+            color: #22d3ee;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.82em;
+            line-height: 1.5;
+            position: relative;
+            white-space: pre;
+            box-shadow: var(--shadow);
+        }
+
+        .code-box::before {
+            content: 'Java';
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            background: var(--primary);
+            color: var(--white);
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .code-box.gherkin::before { content: 'Gherkin'; background: var(--accent-green); color: #1a1d23; }
+        .code-box.xml::before { content: 'XML'; background: var(--accent-orange); }
+        .code-box.text::before { content: ''; background: transparent; }
+        .code-box.config::before { content: 'Config'; background: var(--accent-yellow); color: #1a1d23; }
+
+        .code-box .keyword { color: #c792ea; }
+        .code-box .string { color: #c3e88d; }
+        .code-box .comment { color: #546e7a; font-style: italic; }
+        .code-box .annotation { color: #ffcb6b; }
+
+        /* Info/Warning/Success Boxes */
+        .info-box {
+            background: linear-gradient(135deg, #e8eaf6, #e3f2fd);
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 15px 0;
+            font-size: 0.98em;
+        }
+
+        .info-box i { color: var(--primary); margin-right: 8px; }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fff3e0, #fce4ec);
+            border-left: 4px solid var(--accent-orange);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 15px 0;
+            font-size: 0.98em;
+        }
+
+        .warning-box i { color: var(--accent-orange); margin-right: 8px; }
+
+        .success-box {
+            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+            border-left: 4px solid var(--accent-green);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 15px 0;
+            font-size: 0.98em;
+        }
+
+        .success-box i { color: var(--accent-green); margin-right: 8px; }
+
+        /* Content Box */
+        .content-box {
+            background: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: var(--shadow);
+        }
+
+        /* Grid */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 15px 0;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin: 2px;
+        }
+
+        .badge-purple { background: #f3e5f5; color: var(--primary); }
+        .badge-green { background: #e8f5e9; color: #2e7d32; }
+        .badge-orange { background: #fff3e0; color: #e65100; }
+        .badge-blue { background: #e3f2fd; color: #1565c0; }
+
+        /* Navigation Bottom */
+        .slide-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            font-size: 1em;
+            color: var(--text-light);
+            font-weight: 600;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        /* Module Navigation Top */
+        .module-navigation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--primary-dark);
+            color: var(--white);
+            padding: 10px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            font-size: 0.9em;
+        }
+
+        .module-navigation .module-title {
+            font-weight: 600;
+        }
+
+        .module-navigation a {
+            color: var(--white);
+            text-decoration: none;
+            opacity: 0.85;
+            transition: opacity 0.3s;
+            margin: 0 10px;
+        }
+
+        .module-navigation a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.95em;
+        }
+
+        th {
+            background: var(--primary);
+            color: var(--white);
+            padding: 10px 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:nth-child(even) { background: #f7fafc; }
+
+        strong { color: var(--primary-dark); }
+
+        /* Pyramid visual */
+        .pyramid {
+            text-align: center;
+            margin: 15px 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Module Navigation -->
+<div class="module-navigation">
+    <div>
+        <a href="module2_architecture_hexagonale_detail.html"><i class="fas fa-arrow-left"></i> Module 2</a>
+    </div>
+    <div class="module-title">Module 3 : Pyramide des Tests & Construction Itérative</div>
+    <div>
+        <a href="module4_patterns_avances_conclusion.html">Module 4 <i class="fas fa-arrow-right"></i></a>
+        <a href="index.html"><i class="fas fa-home"></i> Accueil</a>
+    </div>
+</div>
+
+<div class="slide-container">
+
+    <!-- Slide 1: Title -->
+    <div class="slide title-slide active">
+        <h1><i class="fas fa-vial"></i> Module 3</h1>
+        <div class="subtitle">Pyramide des Tests & Construction Itérative</div>
+        <div class="objectives-grid">
+            <div class="objective-box">
+                <i class="fas fa-layer-group"></i>
+                <h3>Pyramide des Tests</h3>
+                <p>Maîtriser les 3 niveaux de tests alignés sur les couches hexagonales</p>
+            </div>
+            <div class="objective-box">
+                <i class="fas fa-sync-alt"></i>
+                <h3>Double Boucle BDD/TDD</h3>
+                <p>Construire incrémentalement avec la boucle externe et interne</p>
+            </div>
+            <div class="objective-box">
+                <i class="fas fa-shield-alt"></i>
+                <h3>ArchUnit & ACL</h3>
+                <p>Valider automatiquement l'architecture et protéger le domaine</p>
+            </div>
+            <div class="objective-box">
+                <i class="fas fa-rocket"></i>
+                <h3>Construction Itérative</h3>
+                <p>Retarder les décisions technologiques grâce aux ports</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 2: La pyramide des tests -->
+    <div class="slide">
+        <h2><i class="fas fa-layer-group"></i> 3.1 La pyramide des tests hexagonale</h2>
+        <p>L'architecture hexagonale rend la <strong>stratégie de test naturelle et évidente</strong>. Chaque couche correspond à un type de test.</p>
+
+        <div class="content-box pyramid">
+<pre style="text-align:center; font-family:monospace; font-size:0.95em; line-height:1.5;">
+            /\
+           /  \
+          / IT  \          Tests d'Intégration
+         /--------\        (Infrastructure)
+        / BDD/Acc. \       Tests d'Acceptance
+       /------------\      (Application)
+      /   Unitaires   \    Tests Unitaires
+     /___________________\  (Domaine)
+</pre>
+        </div>
+
+        <div class="grid-2">
+            <div class="content-box">
+                <h3><i class="fas fa-tachometer-alt"></i> Vitesse & Volume</h3>
+                <ul>
+                    <li><strong>Unitaires</strong> >> BDD >> Intégration</li>
+                    <li>Les plus nombreux à la base</li>
+                    <li>Ultra-rapides (pas de contexte)</li>
+                </ul>
+            </div>
+            <div class="content-box">
+                <h3><i class="fas fa-coins"></i> Coût</h3>
+                <ul>
+                    <li><strong>Unitaires</strong> << BDD << Intégration</li>
+                    <li>Les moins coûteux à la base</li>
+                    <li>Intégration = plus complexe</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="success-box">
+            <i class="fas fa-check-circle"></i>
+            <strong>L'inversion de dépendances</strong> permet : domaine sans mock, application avec mocks simples, infrastructure avec outils d'intégration.
+        </div>
+    </div>
+
+    <!-- Slide 3: Tests unitaires du domaine - Intro -->
+    <div class="slide">
+        <h2><i class="fas fa-atom"></i> 3.1.1 Tests couche domaine : Tests Unitaires</h2>
+        <p>La couche domaine ne contient <strong>aucune dépendance externe</strong> : pas de Spring, pas de JPA, pas de framework HTTP. C'est du Java pur.</p>
+
+        <div class="grid-2">
+            <div class="content-box">
+                <h3>Conséquences directes</h3>
+                <ul>
+                    <li><span class="badge badge-green">Ultra-rapides</span> pas de démarrage de contexte</li>
+                    <li><span class="badge badge-green">Déterministes</span> pas d'I/O, pas de BDD</li>
+                    <li><span class="badge badge-green">Sans mocks</span> pas de dépendances à simuler</li>
+                    <li><span class="badge badge-green">Les plus nombreux</span> base de la pyramide</li>
+                </ul>
+            </div>
+            <div class="content-box">
+                <h3>Quoi tester ?</h3>
+                <ul>
+                    <li><strong>Value Objects</strong> : égalité, validation, opérations</li>
+                    <li><strong>Entités</strong> : transitions d'état, règles métier</li>
+                    <li><strong>Domain Services</strong> : logique transverse</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="warning-box">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>Règle d'or</strong> : si vous avez besoin de mocks pour tester votre domaine, c'est que votre domaine a trop de dépendances. Refactorisez.
+        </div>
+    </div>
+
+    <!-- Slide 4: Test Value Object - Money -->
+    <div class="slide">
+        <h2><i class="fas fa-gem"></i> Tester un Value Object : Money</h2>
+        <p>Les Value Objects sont immutables et définis par leurs attributs. Voici le record <code>Money</code> :</p>
+
+        <div class="code-box">public record Money(BigDecimal amount, Currency currency) {
+
+    public Money {
+        Objects.requireNonNull(amount, "Le montant ne peut pas etre null");
+        Objects.requireNonNull(currency, "La devise ne peut pas etre null");
+        amount = amount.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    public static Money of(double amount, String currencyCode) {
+        return new Money(BigDecimal.valueOf(amount),
+            Currency.getInstance(currencyCode));
+    }
+
+    public Money add(Money other) {
+        assertSameCurrency(other);
+        return new Money(this.amount.add(other.amount), this.currency);
+    }
+
+    public Money subtract(Money other) {
+        assertSameCurrency(other);
+        if (this.amount.compareTo(other.amount) < 0)
+            throw new IllegalArgumentException("Le montant ne peut pas etre negatif");
+        return new Money(this.amount.subtract(other.amount), this.currency);
+    }
+}</div>
+    </div>
+
+    <!-- Slide 5: Test Value Object - MoneyTest -->
+    <div class="slide">
+        <h2><i class="fas fa-check-double"></i> Tests du Value Object Money</h2>
+
+        <div class="code-box">class MoneyTest {
+
+    @Nested @DisplayName("Creation")
+    class Creation {
+        @Test @DisplayName("cree un Money avec montant et devise")
+        void shouldCreateMoney() {
+            Money money = Money.of(10.50, "EUR");
+            assertThat(money.amount()).isEqualByComparingTo("10.50");
+            assertThat(money.currency().getCurrencyCode()).isEqualTo("EUR");
+        }
+
+        @Test @DisplayName("refuse un montant null")
+        void shouldRejectNullAmount() {
+            assertThatNullPointerException()
+                .isThrownBy(() -> new Money(null, Currency.getInstance("EUR")))
+                .withMessage("Le montant ne peut pas etre null");
+        }
+    }
+
+    @Nested @DisplayName("Operations arithmetiques")
+    class Arithmetic {
+        @Test @DisplayName("additionne deux montants de meme devise")
+        void shouldAddSameCurrency() {
+            Money a = Money.of(10.00, "EUR");
+            Money b = Money.of(5.50, "EUR");
+            Money result = a.add(b);
+            assertThat(result.amount()).isEqualByComparingTo("15.50");
+        }
+
+        @Test @DisplayName("refuse l'addition de devises differentes")
+        void shouldRejectDifferentCurrencies() {
+            Money eur = Money.of(10.00, "EUR");
+            Money usd = Money.of(5.00, "USD");
+            assertThatIllegalArgumentException()
+                .isThrownBy(() -> eur.add(usd))
+                .withMessageContaining("devises differentes");
+        }
+    }
+}</div>
+
+        <div class="info-box">
+            <i class="fas fa-info-circle"></i>
+            <strong>Aucun mock</strong>, aucun framework autre que JUnit + AssertJ. <code>@Nested</code> structure les tests par responsabilité.
+        </div>
+    </div>
+
+    <!-- Slide 6: Test Entity - Order -->
+    <div class="slide">
+        <h2><i class="fas fa-shopping-cart"></i> Tester une Entité : Order (transitions d'état)</h2>
+
+        <div class="code-box">class OrderTest {
+    private Order order;
+    private Product laptop;
+
+    @BeforeEach void setUp() {
+        order = new Order(new OrderId(UUID.randomUUID()),
+            new CustomerId(UUID.randomUUID()));
+        laptop = new Product(new ProductId(UUID.randomUUID()),
+            "MacBook Pro", Money.of(2499.99, "EUR"));
+    }
+
+    @Nested @DisplayName("Cycle de vie d'une commande")
+    class Lifecycle {
+        @Test @DisplayName("DRAFT -> CONFIRMED -> SHIPPED -> DELIVERED")
+        void happyPath() {
+            order.addLine(laptop, 1);
+            order.confirm();
+            assertThat(order.getStatus()).isEqualTo(Order.Status.CONFIRMED);
+            order.ship();
+            assertThat(order.getStatus()).isEqualTo(Order.Status.SHIPPED);
+            order.deliver();
+            assertThat(order.getStatus()).isEqualTo(Order.Status.DELIVERED);
+        }
+
+        @Test @DisplayName("une commande DELIVERED ne peut PAS etre annulee")
+        void cannotCancelDelivered() {
+            order.addLine(laptop, 1);
+            order.confirm(); order.ship(); order.deliver();
+            assertThatIllegalStateException()
+                .isThrownBy(() -> order.cancel())
+                .withMessageContaining("deja livree");
+        }
+    }
+
+    @Nested @DisplayName("Regles metier de confirmation")
+    class ConfirmationRules {
+        @Test @DisplayName("refuse de confirmer une commande vide")
+        void cannotConfirmEmptyOrder() {
+            assertThatIllegalStateException()
+                .isThrownBy(() -> order.confirm())
+                .withMessageContaining("sans lignes");
+        }
+    }
+}</div>
+    </div>
+
+    <!-- Slide 7: Test Domain Service -->
+    <div class="slide">
+        <h2><i class="fas fa-calculator"></i> Tester un Domain Service : PricingService</h2>
+        <p>Les services de domaine contiennent de la logique métier transverse. <strong>Pas de mock !</strong></p>
+
+        <div class="code-box">class PricingServiceTest {
+    private final PricingService pricingService = new PricingService();
+    // Pas de mock ! Le PricingService est du pur domaine.
+
+    @Nested @DisplayName("Frais de livraison")
+    class ShippingCost {
+        @Test @DisplayName("livraison gratuite au-dessus de 100 EUR")
+        void freeShippingAboveThreshold() {
+            Order order = createOrderWithTotal(150.00);
+            Money shipping = pricingService.calculateShippingCost(order);
+            assertThat(shipping.amount()).isEqualByComparingTo("0.00");
+        }
+
+        @Test @DisplayName("frais standard en dessous de 100 EUR")
+        void standardShippingBelowThreshold() {
+            Order order = createOrderWithTotal(50.00);
+            Money shipping = pricingService.calculateShippingCost(order);
+            assertThat(shipping.amount()).isEqualByComparingTo("5.99");
+        }
+    }
+
+    @Nested @DisplayName("Remises")
+    class Discounts {
+        @Test @DisplayName("10% de remise pour les clients premium")
+        void premiumDiscount() {
+            Money price = Money.of(100.00, "EUR");
+            Money discounted = pricingService.applyDiscount(
+                price, PricingService.CustomerType.PREMIUM);
+            assertThat(discounted.amount()).isEqualByComparingTo("90.00");
+        }
+    }
+}</div>
+
+        <div class="success-box">
+            <i class="fas fa-star"></i>
+            <strong>Bilan</strong> : zéro dépendance, ultra-rapides, documentation vivante, refactoring-friendly.
+        </div>
+    </div>
+
+    <!-- Slide 8: BDD - Introduction -->
+    <div class="slide">
+        <h2><i class="fas fa-comments"></i> 3.1.2 Tests couche application : BDD</h2>
+        <p>La couche application orchestre les cas d'utilisation via des <strong>ports</strong> (interfaces).</p>
+
+        <div class="grid-2">
+            <div class="content-box">
+                <h3><i class="fas fa-clipboard-list"></i> Stratégie de test</h3>
+                <ul>
+                    <li>Mocker les <strong>driven ports</strong> (repositories, services externes)</li>
+                    <li>Écrire les scénarios en <strong>Gherkin</strong> (lisibles par les métiers)</li>
+                    <li>Les step definitions appellent les <strong>services applicatifs</strong></li>
+                </ul>
+            </div>
+            <div class="content-box">
+                <h3><i class="fas fa-puzzle-piece"></i> Ce que le BDD apporte</h3>
+                <ul>
+                    <li>Scénarios lisibles par les non-développeurs</li>
+                    <li>Spécification exécutable</li>
+                    <li>Pont entre les métiers et les développeurs</li>
+                    <li>Passage direct du Gherkin au code</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <i class="fas fa-info-circle"></i>
+            <strong>Le BDD</strong> est le pont entre les experts métier et les développeurs. Les scénarios Gherkin constituent un langage commun.
+        </div>
+
+        <div class="code-box xml">&lt;!-- Dépendances Maven --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.cucumber&lt;/groupId&gt;
+    &lt;artifactId&gt;cucumber-java&lt;/artifactId&gt;
+    &lt;version&gt;7.15.0&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.cucumber&lt;/groupId&gt;
+    &lt;artifactId&gt;cucumber-junit-platform-engine&lt;/artifactId&gt;
+    &lt;version&gt;7.15.0&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</div>
+    </div>
+
+    <!-- Slide 9: BDD - Feature File -->
+    <div class="slide">
+        <h2><i class="fas fa-file-alt"></i> Feature file en Gherkin</h2>
+
+        <div class="code-box gherkin"># src/test/resources/features/place-order.feature
+
+Feature: Passer une commande
+  En tant que client
+  Je veux pouvoir passer une commande
+  Afin d'acheter des produits
+
+  Background:
+    Given un catalogue contenant les produits suivants:
+      | nom           | prix    |
+      | MacBook Pro   | 2499.99 |
+      | Magic Mouse   | 99.99   |
+      | USB-C Cable   | 19.99   |
+
+  Scenario: Commande simple avec livraison gratuite
+    Given je suis un client standard
+    When j'ajoute "MacBook Pro" avec une quantite de 1 a ma commande
+    And je confirme ma commande
+    Then la commande est confirmee
+    And le montant total est de 2499.99 EUR
+    And les frais de livraison sont de 0.00 EUR
+
+  Scenario: Client premium avec remise
+    Given je suis un client premium
+    When j'ajoute "MacBook Pro" avec une quantite de 1 a ma commande
+    And je confirme ma commande
+    Then la commande est confirmee
+    And le prix final avec remise est de 2249.99 EUR
+
+  Scenario: Impossible de confirmer une commande vide
+    Given je suis un client standard
+    When je tente de confirmer une commande vide
+    Then je recois une erreur "Impossible de confirmer une commande sans lignes"</div>
+    </div>
+
+    <!-- Slide 10: BDD - Step Definitions -->
+    <div class="slide">
+        <h2><i class="fas fa-code"></i> Step Definitions</h2>
+
+        <div class="code-box">public class PlaceOrderSteps {
+    // --- Driven ports (mockés) ---
+    private OrderRepository orderRepository;
+    private ProductCatalog productCatalog;
+    private PlaceOrderUseCase placeOrderUseCase;
+    private PricingService pricingService;
+
+    @Before
+    public void setUp() {
+        orderRepository = mock(OrderRepository.class);   // mock du port
+        productCatalog = mock(ProductCatalog.class);      // mock du port
+        pricingService = new PricingService();             // domaine pur
+        placeOrderUseCase = new PlaceOrderService(
+            orderRepository, productCatalog, pricingService);
+    }
+
+    @Given("un catalogue contenant les produits suivants:")
+    public void unCatalogueContenant(DataTable dataTable) {
+        dataTable.asMaps().forEach(row -> {
+            String name = row.get("nom");
+            double price = Double.parseDouble(row.get("prix"));
+            Product product = new Product(new ProductId(UUID.randomUUID()),
+                name, Money.of(price, "EUR"));
+            when(productCatalog.findByName(name))
+                .thenReturn(Optional.of(product));
+        });
+    }
+
+    @When("j'ajoute {string} avec une quantite de {int} a ma commande")
+    public void jAjouteAvecQuantite(String productName, int quantity) {
+        Product product = catalog.get(productName);
+        currentOrder.addLine(product, quantity);
+    }
+
+    @Then("la commande est confirmee")
+    public void laCommandeEstConfirmee() {
+        assertThat(currentOrder.getStatus())
+            .isEqualTo(Order.Status.CONFIRMED);
+    }
+}</div>
+    </div>
+
+    <!-- Slide 11: Tests d'intégration -->
+    <div class="slide">
+        <h2><i class="fas fa-database"></i> 3.1.3 Tests d'intégration (Infrastructure)</h2>
+        <p>Les tests d'intégration vérifient que les <strong>adapteurs</strong> fonctionnent avec les technologies réelles. Sommet de la pyramide : peu nombreux mais indispensables.</p>
+
+        <h3>Test JPA avec Testcontainers</h3>
+        <div class="code-box">@DataJpaTest
+@Testcontainers
+@AutoConfigureTestDatabase(replace = Replace.NONE)
+@Import(JpaOrderRepositoryAdapter.class)
+class JpaOrderRepositoryIT {
+
+    @Container
+    static PostgreSQLContainer&lt;?&gt; postgres =
+        new PostgreSQLContainer&lt;&gt;("postgres:16")
+            .withDatabaseName("testdb")
+            .withUsername("test").withPassword("test");
+
+    @DynamicPropertySource
+    static void configureProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgres::getJdbcUrl);
+        registry.add("spring.datasource.username", postgres::getUsername);
+        registry.add("spring.datasource.password", postgres::getPassword);
+    }
+
+    @Autowired
+    private JpaOrderRepositoryAdapter orderRepository;
+
+    @Test @DisplayName("sauvegarde et retrouve une commande par ID")
+    void saveAndFindById() {
+        Order order = new Order(new OrderId(UUID.randomUUID()),
+            new CustomerId(UUID.randomUUID()));
+        order.addLine(product, 1);
+        order.confirm();
+        orderRepository.save(order);
+
+        Optional&lt;Order&gt; found = orderRepository.findById(order.getId());
+        assertThat(found).isPresent();
+        assertThat(found.get().getStatus()).isEqualTo(Order.Status.CONFIRMED);
+    }
+}</div>
+    </div>
+
+    <!-- Slide 12: Test REST Controller -->
+    <div class="slide">
+        <h2><i class="fas fa-globe"></i> Test d'un contrôleur REST</h2>
+
+        <div class="code-box">@WebMvcTest(OrderController.class)
+class OrderControllerIT {
+
+    @Autowired private MockMvc mockMvc;
+    @Autowired private ObjectMapper objectMapper;
+    @MockBean private PlaceOrderUseCase placeOrderUseCase;
+    @MockBean private GetOrderUseCase getOrderUseCase;
+
+    @Test @DisplayName("GET /api/orders/{id} retourne 200")
+    void getOrderReturns200() throws Exception {
+        UUID orderId = UUID.randomUUID();
+        Order order = new Order(new OrderId(orderId),
+            new CustomerId(UUID.randomUUID()));
+        order.addLine(new Product(new ProductId(UUID.randomUUID()),
+            "MacBook", Money.of(2499.99, "EUR")), 1);
+        order.confirm();
+
+        when(getOrderUseCase.getOrder(any(OrderId.class)))
+            .thenReturn(Optional.of(order));
+
+        mockMvc.perform(get("/api/orders/{id}", orderId))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("CONFIRMED"))
+            .andExpect(jsonPath("$.totalAmount").value(2499.99));
+    }
+
+    @Test @DisplayName("GET /api/orders/{id} retourne 404 si introuvable")
+    void getOrderReturns404() throws Exception {
+        when(getOrderUseCase.getOrder(any(OrderId.class)))
+            .thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/orders/{id}", UUID.randomUUID()))
+            .andExpect(status().isNotFound());
+    }
+}</div>
+    </div>
+
+    <!-- Slide 13: ArchUnit -->
+    <div class="slide">
+        <h2><i class="fas fa-shield-alt"></i> 3.1.4 Tests d'architecture avec ArchUnit</h2>
+        <p>ArchUnit <strong>valide automatiquement</strong> que les règles de dépendances hexagonales sont respectées dans la CI/CD.</p>
+
+        <div class="code-box">@AnalyzeClasses(packages = "com.example",
+    importOptions = ImportOption.DoNotIncludeTests.class)
+class HexagonalArchitectureTest {
+
+    // Règle 1 : le domaine ne dépend de RIEN d'extérieur
+    @ArchTest static final ArchRule domain_not_depend_on_app =
+        noClasses().that().resideInAPackage("..domain..")
+            .should().dependOnClassesThat()
+            .resideInAPackage("..application..");
+
+    @ArchTest static final ArchRule domain_not_depend_on_infra =
+        noClasses().that().resideInAPackage("..domain..")
+            .should().dependOnClassesThat()
+            .resideInAPackage("..infrastructure..");
+
+    // Règle 2 : le domaine ne dépend d'aucun framework
+    @ArchTest static final ArchRule domain_not_use_spring =
+        noClasses().that().resideInAPackage("..domain..")
+            .should().dependOnClassesThat()
+            .resideInAPackage("org.springframework..");
+
+    // Règle 3 : les ports sont des interfaces
+    @ArchTest static final ArchRule ports_are_interfaces =
+        classes().that().resideInAPackage("..port..")
+            .should().beInterfaces();
+
+    // Règle 4 : architecture en oignon complète
+    @ArchTest static final ArchRule onion =
+        onionArchitecture()
+            .domainModels("..domain.model..")
+            .domainServices("..domain.service..")
+            .applicationServices("..application..")
+            .adapter("web", "..infrastructure.web..")
+            .adapter("persistence", "..infrastructure.persistence..")
+            .adapter("messaging", "..infrastructure.messaging..");
+}</div>
+
+        <div class="warning-box">
+            <i class="fas fa-exclamation-triangle"></i>
+            En cas de violation, le message indique <strong>exactement quelle classe enfreint quelle règle</strong>.
+        </div>
+    </div>
+
+    <!-- Slide 14: Section 3.2 - Construction Itérative -->
+    <div class="slide">
+        <h2><i class="fas fa-hammer"></i> 3.2 Construction Itérative</h2>
+        <h3>3.2.1 Retarder les décisions d'architecture</h3>
+        <p>Concevez vos ports d'abord, implémentez les adapteurs réels <strong>en dernier</strong>. Utilisez des adapteurs <strong>in-memory</strong> pendant le développement.</p>
+
+        <div class="content-box">
+            <table>
+                <tr><th>Jour</th><th>Phase</th><th>Détail</th></tr>
+                <tr><td><span class="badge badge-green">Jour 1-3</span></td><td>Domaine + Ports + InMemoryAdapters</td><td>Application fonctionnelle, testable, démontrable</td></tr>
+                <tr><td><span class="badge badge-blue">Jour 4-5</span></td><td>JpaAdapter (PostgreSQL)</td><td>Persistence réelle</td></tr>
+                <tr><td><span class="badge badge-orange">Jour 6</span></td><td>KafkaAdapter</td><td>Messaging réel</td></tr>
+                <tr><td><span class="badge badge-purple">Jour 7</span></td><td>RestAdapter + OpenAPI</td><td>Exposition REST</td></tr>
+            </table>
+        </div>
+
+        <div class="success-box">
+            <i class="fas fa-lightbulb"></i>
+            <strong>Avantage</strong> : pas besoin d'installer PostgreSQL, Kafka, etc. pour commencer. Les démos aux stakeholders sont possibles dès le jour 1.
+        </div>
+    </div>
+
+    <!-- Slide 15: Port + InMemory Adapter -->
+    <div class="slide">
+        <h2><i class="fas fa-plug"></i> Port et adapteur in-memory</h2>
+
+        <div class="grid-2">
+            <div>
+                <h3>Le port (interface)</h3>
+                <div class="code-box">// Port secondaire (driven)
+public interface OrderRepository {
+    Order save(Order order);
+    Optional&lt;Order&gt; findById(OrderId id);
+    List&lt;Order&gt; findByCustomerId(
+        CustomerId customerId);
+    void deleteById(OrderId id);
+}</div>
+            </div>
+            <div>
+                <h3>Adapteur in-memory</h3>
+                <div class="code-box">public class InMemoryOrderRepository
+    implements OrderRepository {
+
+    private final Map&lt;OrderId, Order&gt; store
+        = new ConcurrentHashMap&lt;&gt;();
+
+    @Override
+    public Order save(Order order) {
+        store.put(order.getId(), order);
+        return order;
+    }
+
+    @Override
+    public Optional&lt;Order&gt; findById(OrderId id) {
+        return Optional.ofNullable(store.get(id));
+    }
+
+    // ... autres méthodes
+}</div>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <i class="fas fa-info-circle"></i>
+            Le domaine et la couche application sont <strong>immédiatement fonctionnels</strong>. Le choix de la base de données peut être différé.
+        </div>
+    </div>
+
+    <!-- Slide 16: Double boucle BDD/TDD -->
+    <div class="slide">
+        <h2><i class="fas fa-sync-alt"></i> 3.2.2 Double boucle BDD/TDD</h2>
+        <p>La double boucle combine une <strong>boucle externe</strong> (BDD, comportement métier) et une <strong>boucle interne</strong> (TDD, implémentation).</p>
+
+        <div class="content-box pyramid">
+<pre style="text-align:left; font-family:monospace; font-size:0.85em; line-height:1.6;">
+  BOUCLE EXTERNE (BDD)                  BOUCLE INTERNE (TDD)
+  =====================                 =====================
+  1. Ecrire un scénario     --------->  2. Ecrire un test unitaire
+     Cucumber (RED)                        du domaine (RED)
+        |                                      |
+        |                                      v
+        |                                  3. Implémenter le code
+        |                                     minimal (GREEN)
+        |                                      |
+        |                                      v
+        |                                  4. Refactoriser (REFACTOR)
+        |                                      |
+        v                                      |
+  5. Le scénario            <---------  Boucle interne terminée
+     passe (GREEN)
+        |
+        v
+  6. Refactoriser si nécessaire
+  7. Ecrire le prochain scénario -> retour à 1
+</pre>
+        </div>
+    </div>
+
+    <!-- Slide 17: Double boucle - Feature Promo Code -->
+    <div class="slide">
+        <h2><i class="fas fa-tag"></i> Exemple : Appliquer un code promo (BDD)</h2>
+        <p><strong>Étape 1</strong> : Écrire le scénario BDD (boucle externe - RED)</p>
+
+        <div class="code-box gherkin">Feature: Appliquer un code promotionnel
+  En tant que client
+  Je veux appliquer un code promo a ma commande
+  Afin de bénéficier d'une réduction
+
+  Scenario: Appliquer un code promo valide de 20%
+    Given un code promo "SUMMER20" offrant 20% de réduction
+    And une commande avec un montant de 100.00 EUR
+    When j'applique le code promo "SUMMER20"
+    Then le montant après réduction est de 80.00 EUR
+
+  Scenario: Refuser un code promo expiré
+    Given un code promo "OLD10" expiré depuis le "2024-01-01"
+    And une commande avec un montant de 100.00 EUR
+    When je tente d'appliquer le code promo "OLD10"
+    Then je reçois une erreur "Code promo expiré"
+
+  Scenario: Cumul impossible de deux codes promo
+    Given un code promo "PROMO1" offrant 10% de réduction
+    And un code promo "PROMO2" offrant 15% de réduction
+    And une commande avec un montant de 100.00 EUR
+    And le code promo "PROMO1" est déjà appliqué à la commande
+    When je tente d'appliquer le code promo "PROMO2"
+    Then je reçois une erreur "Un seul code promo par commande"</div>
+
+        <div class="warning-box">
+            <i class="fas fa-times-circle"></i>
+            Ce scénario échoue (<strong>RED</strong>) car le concept de code promo n'existe pas encore.
+        </div>
+    </div>
+
+    <!-- Slide 18: Double boucle - TDD PromoCode -->
+    <div class="slide">
+        <h2><i class="fas fa-cog"></i> Boucle interne TDD : Value Object PromoCode</h2>
+        <p><strong>Étape 2</strong> : RED -> GREEN -> REFACTOR</p>
+
+        <div class="grid-2">
+            <div>
+                <h3>Test unitaire (RED)</h3>
+                <div class="code-box">class PromoCodeTest {
+    @Test
+    void shouldCreatePromoCode() {
+        PromoCode promo = PromoCode
+            .percentage("SUMMER20", 20,
+                LocalDate.of(2025, 12, 31));
+        assertThat(promo.code())
+            .isEqualTo("SUMMER20");
+        assertThat(promo.isExpired()).isFalse();
+    }
+
+    @Test
+    void shouldDetectExpiredCode() {
+        PromoCode promo = PromoCode
+            .percentage("OLD10", 10,
+                LocalDate.of(2024, 1, 1));
+        assertThat(promo.isExpired()).isTrue();
+    }
+
+    @Test
+    void shouldCalculateDiscount() {
+        PromoCode promo = PromoCode
+            .percentage("SUMMER20", 20,
+                LocalDate.of(2025, 12, 31));
+        Money discounted = promo
+            .applyTo(Money.of(100.00, "EUR"));
+        assertThat(discounted.amount())
+            .isEqualByComparingTo("80.00");
+    }
+}</div>
+            </div>
+            <div>
+                <h3>Implémentation (GREEN)</h3>
+                <div class="code-box">public record PromoCode(
+    String code,
+    int discountPercent,
+    LocalDate expirationDate,
+    boolean used
+) {
+    public PromoCode {
+        if (code == null || code.isBlank())
+            throw new IllegalArgumentException(
+                "Le code ne peut pas etre vide");
+        if (discountPercent <= 0
+                || discountPercent > 100)
+            throw new IllegalArgumentException(
+                "Pourcentage entre 1 et 100");
+    }
+
+    public static PromoCode percentage(
+            String code, int percent,
+            LocalDate expiration) {
+        return new PromoCode(code, percent,
+            expiration, false);
+    }
+
+    public boolean isExpired() {
+        return LocalDate.now()
+            .isAfter(expirationDate);
+    }
+
+    public Money applyTo(Money original) {
+        if (isExpired()) throw new
+            IllegalStateException("expire");
+        double factor = 1.0
+            - (discountPercent / 100.0);
+        double discounted = original.amount()
+            .doubleValue() * factor;
+        return Money.of(discounted,
+            original.currency()
+                .getCurrencyCode());
+    }
+}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 19: Double boucle - Service applicatif -->
+    <div class="slide">
+        <h2><i class="fas fa-project-diagram"></i> Port et service applicatif (code promo)</h2>
+        <p><strong>Étape 4</strong> : Le port secondaire et le service applicatif</p>
+
+        <div class="grid-2">
+            <div>
+                <h3>Ports</h3>
+                <div class="code-box">// Port secondaire
+public interface PromoCodeRepository {
+    Optional&lt;PromoCode&gt; findByCode(
+        String code);
+    PromoCode save(PromoCode promoCode);
+}
+
+// Use case (port primaire)
+public interface ApplyPromoCodeUseCase {
+    void applyPromoCode(
+        OrderId orderId, String promoCode);
+}</div>
+            </div>
+            <div>
+                <h3>Service applicatif</h3>
+                <div class="code-box">public class ApplyPromoCodeService
+    implements ApplyPromoCodeUseCase {
+
+    private final OrderRepository orderRepo;
+    private final PromoCodeRepository promoRepo;
+
+    @Override
+    public void applyPromoCode(
+            OrderId orderId, String code) {
+        Order order = orderRepo
+            .findById(orderId).orElseThrow(
+                () -> new OrderNotFoundException(
+                    orderId));
+
+        PromoCode promo = promoRepo
+            .findByCode(code).orElseThrow(
+                () -> new PromoCodeNotFound(code));
+
+        // Logique métier dans le domaine
+        order.applyPromoCode(promo);
+
+        // Marquer comme utilisé
+        promoRepo.save(promo.markAsUsed());
+        orderRepo.save(order);
+    }
+}</div>
+            </div>
+        </div>
+
+        <div class="success-box">
+            <i class="fas fa-check-circle"></i>
+            <strong>Résumé du cycle</strong> : Scénario BDD (RED) -> TDD PromoCode -> TDD Order -> TDD Service -> Scénarios passent (GREEN) -> Refactoriser
+        </div>
+    </div>
+
+    <!-- Slide 20: Infra en dernier -->
+    <div class="slide">
+        <h2><i class="fas fa-server"></i> 3.2.3 Infra en dernier : de l'intérieur vers l'extérieur</h2>
+
+        <div class="content-box">
+            <table>
+                <tr><th>Phase</th><th>Quoi</th><th>Quand</th></tr>
+                <tr><td><span class="badge badge-purple">Phase 1</span></td><td>Modèle de domaine (aucune dépendance) : records, entités, VOs</td><td>Jour 1-2</td></tr>
+                <tr><td><span class="badge badge-blue">Phase 2</span></td><td>Ports (toujours des interfaces) : driving & driven</td><td>Jour 2-3</td></tr>
+                <tr><td><span class="badge badge-green">Phase 3</span></td><td>Services applicatifs : injection via constructeur, pas de @Autowired</td><td>Jour 3-4</td></tr>
+                <tr><td><span class="badge badge-orange">Phase 4</span></td><td>Adapteurs in-memory : développement & tests</td><td>Jour 4</td></tr>
+                <tr><td><span class="badge badge-green">Phase 5</span></td><td>Tests BDD : scénarios Cucumber</td><td>Jour 4-5</td></tr>
+                <tr><td><span class="badge badge-purple">Phase 6</span></td><td>Infrastructure réelle : JPA, REST, Kafka + Configuration Spring</td><td>Jour 5-7</td></tr>
+            </table>
+        </div>
+
+        <div class="code-box">// Phase 6 : Configuration Spring (câblage)
+@Configuration
+public class OrderConfiguration {
+
+    @Bean
+    public PricingService pricingService() {
+        return new PricingService(); // domaine pur, pas de @Service
+    }
+
+    @Bean
+    public PlaceOrderUseCase placeOrderUseCase(
+            OrderRepository orderRepository,
+            ProductCatalog productCatalog,
+            OrderEventPublisher eventPublisher,
+            PricingService pricingService) {
+        return new PlaceOrderService(
+            orderRepository, productCatalog, eventPublisher, pricingService);
+    }
+    // Spring trouve JpaOrderRepositoryAdapter et KafkaOrderEventPublisher via @Component
+}</div>
+    </div>
+
+    <!-- Slide 21: ACL -->
+    <div class="slide">
+        <h2><i class="fas fa-shield-virus"></i> 3.2.4 Couches d'anti-corruption (ACL)</h2>
+        <p>Lorsque vous intégrez des systèmes externes, <strong>protégez votre domaine</strong> contre les concepts étrangers.</p>
+
+        <div class="content-box pyramid">
+<pre style="text-align:center; font-family:monospace; font-size:0.9em; line-height:1.6;">
+  Système externe              ACL              Votre hexagone
+  +--------------+        +---------+        +----------+
+  | CustomerDTO  |  --->  | Mapper  |  --->  | Customer |
+  | (XML, champs |  --->  | Adapter |  --->  | (Value   |
+  |  techniques) |  --->  |         |  --->  |  Objects)|
+  +--------------+        +---------+        +----------+
+</pre>
+        </div>
+
+        <div class="code-box">@Component
+public class LegacyBillingAntiCorruptionLayer {
+
+    private static final DateTimeFormatter LEGACY_DATE_FORMAT =
+        DateTimeFormatter.ofPattern("yyyyMMdd");
+
+    public Invoice toDomain(LegacyInvoiceResponse legacy) {
+        return new Invoice(
+            new InvoiceId(legacy.getInv_nbr()),
+            new CustomerId(legacy.getCust_ref()),
+            Money.of(legacy.getTtl_amt(), mapCurrency(legacy.getCurr_cd())),
+            Money.of(legacy.getTax_amt(), mapCurrency(legacy.getCurr_cd())),
+            mapStatus(legacy.getInv_sts()),
+            parseDate(legacy.getCrt_dt()),
+            parseDate(legacy.getDue_dt()),
+            mapLines(legacy.getLn_items(), legacy.getCurr_cd()));
+    }
+
+    private String mapCurrency(String legacyCurrency) {
+        return switch (legacyCurrency) {
+            case "E" -> "EUR";  case "D" -> "USD";  case "P" -> "GBP";
+            default -> legacyCurrency;
+        };
+    }
+}</div>
+
+        <div class="info-box">
+            <i class="fas fa-info-circle"></i>
+            L'ACL est <strong>toujours dans la couche infrastructure</strong>, jamais dans le domaine. Le domaine ne connaît pas les concepts du système externe.
+        </div>
+    </div>
+
+    <!-- Slide 22: Résumé -->
+    <div class="slide">
+        <h2><i class="fas fa-flag-checkered"></i> Résumé du Module 3</h2>
+
+        <div class="grid-2">
+            <div class="content-box">
+                <h3><i class="fas fa-layer-group"></i> Pyramide des Tests</h3>
+                <ul>
+                    <li><strong>Domaine</strong> : zéro mock, Java pur, ultra-rapide</li>
+                    <li><strong>Application</strong> : BDD/Cucumber, driven ports mockés</li>
+                    <li><strong>Infrastructure</strong> : Testcontainers, vrais adapteurs</li>
+                    <li><strong>Architecture</strong> : ArchUnit, validation automatique</li>
+                </ul>
+            </div>
+            <div class="content-box">
+                <h3><i class="fas fa-hammer"></i> Construction Itérative</h3>
+                <ul>
+                    <li><strong>Retarder</strong> les décisions technologiques</li>
+                    <li><strong>Double boucle</strong> : BDD (externe) + TDD (interne)</li>
+                    <li><strong>Infra en dernier</strong> : ports puis adapteurs</li>
+                    <li><strong>ACL</strong> : protéger le domaine des systèmes legacy</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="success-box">
+            <i class="fas fa-star"></i> <strong>Points clés</strong> :
+            <ol style="margin-top:10px;">
+                <li>L'architecture hexagonale rend les tests <strong>naturels</strong> : chaque couche a son type de test</li>
+                <li>Le domaine se teste <strong>sans aucun mock</strong> : preuve qu'il est bien isolé</li>
+                <li>Le BDD avec Cucumber est le <strong>pont entre les métiers et les développeurs</strong></li>
+                <li>Les adapteurs in-memory permettent de <strong>retarder les décisions technologiques</strong></li>
+                <li>La double boucle BDD/TDD est le <strong>workflow idéal</strong> pour construire incrémentalement</li>
+                <li>ArchUnit <strong>automatise</strong> la validation des règles architecturales</li>
+                <li>L'ACL <strong>protège</strong> votre domaine des concepts des systèmes externes</li>
+            </ol>
+        </div>
+    </div>
+
+</div>
+
+<!-- Bottom Navigation -->
+<div class="slide-nav">
+    <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" disabled>
+        <i class="fas fa-arrow-left"></i> Précédent
+    </button>
+    <div class="slide-counter">
+        <span id="currentSlide">1</span> / <span id="totalSlides"></span>
+    </div>
+    <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">
+        Suivant <i class="fas fa-arrow-right"></i>
+    </button>
+</div>
+
+<script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+
+    document.getElementById('totalSlides').textContent = totalSlides;
+
+    function showSlide(n) {
+        slides[currentSlide].classList.remove('active');
+        currentSlide = (n + totalSlides) % totalSlides;
+        slides[currentSlide].classList.add('active');
+        document.getElementById('currentSlide').textContent = currentSlide + 1;
+        document.getElementById('prevBtn').disabled = currentSlide === 0;
+        document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+    }
+
+    function changeSlide(n) { showSlide(currentSlide + n); }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') changeSlide(-1);
+        if (e.key === 'ArrowRight') changeSlide(1);
+    });
+
+    showSlide(0);
+</script>
+
+</body>
+</html>

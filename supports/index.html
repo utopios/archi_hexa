@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formation Architecture Hexagonale - Accueil</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6a1b9a;
+            --primary-dark: #4a148c;
+            --primary-light: #9c4dcc;
+            --accent-orange: #ff6b35;
+            --accent-green: #00d084;
+            --accent-yellow: #ffd93d;
+            --bg-color: #ffffff;
+            --bg-secondary: #f7f9fc;
+            --text-color: #232f3e;
+            --border-color: #d5dbdb;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem 2.5rem;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .header .subtitle {
+            font-size: 1.3rem;
+            color: var(--accent-yellow);
+            font-weight: 400;
+            margin-bottom: 1rem;
+        }
+
+        .header .meta {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .header .meta span i {
+            margin-right: 0.4rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            margin: 2rem 0 1.2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .module-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.8rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .module-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-light);
+        }
+
+        .module-card:hover::before {
+            width: 8px;
+        }
+
+        .module-card .module-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 36px;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .module-card h3 {
+            font-size: 1.2rem;
+            color: var(--primary-dark);
+            margin-bottom: 0.6rem;
+        }
+
+        .module-card p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 0.8rem;
+        }
+
+        .module-card .topics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .module-card .topic-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background: #f3e5f5;
+            color: var(--primary);
+        }
+
+        .module-card .slides-count {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 0.8rem;
+            color: #999;
+        }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .resource-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.4rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .resource-card h4 {
+            color: var(--primary);
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .resource-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .resource-card ul li {
+            padding: 0.3rem 0;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .resource-card ul li:last-child {
+            border-bottom: none;
+        }
+
+        .resource-card ul li i {
+            color: var(--primary-light);
+            margin-right: 0.5rem;
+            width: 16px;
+            text-align: center;
+        }
+
+        .info-banner {
+            background: #f3e5f5;
+            border-left: 4px solid var(--primary);
+            border-radius: 0 8px 8px 0;
+            padding: 1.2rem 1.5rem;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .info-banner strong {
+            color: var(--primary);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #888;
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2rem; }
+            .modules-grid { grid-template-columns: 1fr; }
+            .resources-grid { grid-template-columns: 1fr; }
+            .header .meta { flex-direction: column; gap: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-hexagon-check"></i> Architecture Hexagonale</h1>
+        <p class="subtitle">Ports & Adapters, DDD, Clean Architecture, Tests & CQRS</p>
+        <div class="meta">
+            <span><i class="fas fa-clock"></i> 3 jours (21h)</span>
+            <span><i class="fas fa-signal"></i> Intermédiaire - Avancé</span>
+            <span><i class="fas fa-code"></i> Java 17+ / Spring Boot 3.x</span>
+            <span><i class="fas fa-users"></i> 6-12 stagiaires</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="info-banner">
+            <strong><i class="fas fa-graduation-cap"></i> Objectif de la formation :</strong>
+            Maîtriser l'architecture hexagonale pour concevoir des applications Java maintenables, testables et évolutives.
+            Du domaine métier aux adapteurs d'infrastructure, en passant par la pyramide des tests et la construction itérative BDD/TDD.
+        </div>
+
+        <h2 class="section-title"><i class="fas fa-book-open"></i> Modules de cours</h2>
+
+        <div class="modules-grid">
+            <a href="module1_introduction_architectures.html" class="module-card">
+                <span class="slides-count"><i class="fas fa-layer-group"></i> ~24 slides</span>
+                <div class="module-number">1</div>
+                <h3>Introduction à l'Architecture Logicielle</h3>
+                <p>C'est quoi l'architecture logicielle ? Au-delà du CRUD. Architectures en couches DDD, hexagonale, en oignon et Clean Architecture comparées.</p>
+                <div class="topics">
+                    <span class="topic-badge">Définition</span>
+                    <span class="topic-badge">Layered DDD</span>
+                    <span class="topic-badge">Hexagonale</span>
+                    <span class="topic-badge">Oignon</span>
+                    <span class="topic-badge">Clean Architecture</span>
+                    <span class="topic-badge">Comparaison</span>
+                </div>
+            </a>
+
+            <a href="module2_architecture_hexagonale_detail.html" class="module-card">
+                <span class="slides-count"><i class="fas fa-layer-group"></i> ~27 slides</span>
+                <div class="module-number">2</div>
+                <h3>Architecture Hexagonale en détail</h3>
+                <p>Domaine (agrégats, entités, VO, events), couche application, infrastructure, ports & adapteurs, anti-corruption layer et dépendances.</p>
+                <div class="topics">
+                    <span class="topic-badge">Agrégats</span>
+                    <span class="topic-badge">Value Objects</span>
+                    <span class="topic-badge">Domain Events</span>
+                    <span class="topic-badge">Ports</span>
+                    <span class="topic-badge">Adapteurs</span>
+                    <span class="topic-badge">ACL</span>
+                </div>
+            </a>
+
+            <a href="module3_tests_construction.html" class="module-card">
+                <span class="slides-count"><i class="fas fa-layer-group"></i> ~22 slides</span>
+                <div class="module-number">3</div>
+                <h3>Pyramide des Tests & Construction Itérative</h3>
+                <p>Tests unitaires du domaine, BDD avec Cucumber, tests d'intégration, ArchUnit. Double boucle BDD/TDD, infra en dernier, anti-corruption.</p>
+                <div class="topics">
+                    <span class="topic-badge">Tests Unitaires</span>
+                    <span class="topic-badge">BDD / Cucumber</span>
+                    <span class="topic-badge">Testcontainers</span>
+                    <span class="topic-badge">ArchUnit</span>
+                    <span class="topic-badge">TDD</span>
+                    <span class="topic-badge">ACL</span>
+                </div>
+            </a>
+
+            <a href="module4_patterns_avances_conclusion.html" class="module-card">
+                <span class="slides-count"><i class="fas fa-layer-group"></i> ~23 slides</span>
+                <div class="module-number">4</div>
+                <h3>Patterns Avancés & Conclusion</h3>
+                <p>Event Sourcing, CQRS, documentation vivante, coût de la dette d'architecture, scaler un SI, quand ne pas utiliser l'hexagonale.</p>
+                <div class="topics">
+                    <span class="topic-badge">Event Sourcing</span>
+                    <span class="topic-badge">CQRS</span>
+                    <span class="topic-badge">ADR</span>
+                    <span class="topic-badge">Doc vivante</span>
+                    <span class="topic-badge">Dette archi</span>
+                    <span class="topic-badge">Scaling</span>
+                </div>
+            </a>
+        </div>
+
+        <h2 class="section-title"><i class="fas fa-laptop-code"></i> Travaux pratiques & Exercices</h2>
+
+        <div class="resources-grid">
+            <div class="resource-card">
+                <h4><i class="fas fa-pencil-alt"></i> Exercices (5)</h4>
+                <ul>
+                    <li><i class="fas fa-search"></i> Ex 1 : Identifier le domaine dans un monolithe</li>
+                    <li><i class="fas fa-cubes"></i> Ex 2 : Modéliser Value Objects & Entités</li>
+                    <li><i class="fas fa-plug"></i> Ex 3 : Créer des Ports & Adapteurs</li>
+                    <li><i class="fas fa-vial"></i> Ex 4 : Écrire des tests par couche</li>
+                    <li><i class="fas fa-clipboard-check"></i> Ex 5 : Évaluer une architecture existante</li>
+                </ul>
+            </div>
+
+            <div class="resource-card">
+                <h4><i class="fas fa-code"></i> TP 1 : Refactoring Hexagonal (2h30)</h4>
+                <ul>
+                    <li><i class="fas fa-book"></i> Système de gestion de bibliothèque</li>
+                    <li><i class="fas fa-arrow-right"></i> Monolithe CRUD → Architecture hexagonale</li>
+                    <li><i class="fas fa-layer-group"></i> Extraction domaine, ports, adapteurs</li>
+                    <li><i class="fas fa-vial"></i> Tests unitaires, BDD, intégration, ArchUnit</li>
+                </ul>
+            </div>
+
+            <div class="resource-card">
+                <h4><i class="fas fa-rocket"></i> TP 2 : Construction Itérative (2h15)</h4>
+                <ul>
+                    <li><i class="fas fa-file-invoice"></i> Microservice de facturation freelance</li>
+                    <li><i class="fas fa-sync-alt"></i> Double boucle BDD/TDD from scratch</li>
+                    <li><i class="fas fa-columns"></i> CQRS léger (commandes / requêtes)</li>
+                    <li><i class="fas fa-file-alt"></i> ADRs + validation ArchUnit</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 class="section-title"><i class="fas fa-play-circle"></i> Démos Java</h2>
+
+        <div class="resources-grid">
+            <div class="resource-card">
+                <h4><i class="fas fa-folder-open"></i> Module 1 (3 démos)</h4>
+                <ul>
+                    <li><i class="fas fa-file-code"></i> Demo 01 : Couplages d'un monolithe</li>
+                    <li><i class="fas fa-file-code"></i> Demo 02 : Layered vs Hexagonal</li>
+                    <li><i class="fas fa-file-code"></i> Demo 03 : Inversion de dépendances</li>
+                </ul>
+            </div>
+
+            <div class="resource-card">
+                <h4><i class="fas fa-folder-open"></i> Module 2 (5 démos)</h4>
+                <ul>
+                    <li><i class="fas fa-file-code"></i> Demo 04 : Entités, VO, Agrégats</li>
+                    <li><i class="fas fa-file-code"></i> Demo 05 : Domain Events</li>
+                    <li><i class="fas fa-file-code"></i> Demo 06 : Port primaire REST</li>
+                    <li><i class="fas fa-file-code"></i> Demo 07 : Port secondaire Repository</li>
+                    <li><i class="fas fa-file-code"></i> Demo 08 : Anti-corruption Layer</li>
+                </ul>
+            </div>
+
+            <div class="resource-card">
+                <h4><i class="fas fa-folder-open"></i> Module 3 (3 démos)</h4>
+                <ul>
+                    <li><i class="fas fa-file-code"></i> Demo 09 : Tests unitaires domaine</li>
+                    <li><i class="fas fa-file-code"></i> Demo 10 : Tests BDD Cucumber</li>
+                    <li><i class="fas fa-file-code"></i> Demo 11 : Tests d'intégration</li>
+                </ul>
+            </div>
+
+            <div class="resource-card">
+                <h4><i class="fas fa-folder-open"></i> Module 4 (3 démos)</h4>
+                <ul>
+                    <li><i class="fas fa-file-code"></i> Demo 12 : Event Sourcing</li>
+                    <li><i class="fas fa-file-code"></i> Demo 13 : CQRS</li>
+                    <li><i class="fas fa-file-code"></i> Demo 14 : Documentation vivante</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p><i class="fas fa-graduation-cap"></i> Formation Architecture Hexagonale - Java 17+ / Spring Boot 3.x</p>
+        <p>3 jours | 4 modules | 14 démos | 5 exercices | 2 TPs</p>
+    </div>
+</body>
+</html>

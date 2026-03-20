@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 1 : Introduction a l'Architecture Logicielle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/java.min.js"></script>
+    <style>
+        :root {
+            --primary: #6a1b9a;
+            --primary-dark: #4a148c;
+            --primary-light: #9c4dcc;
+            --accent-orange: #ff6b35;
+            --accent-green: #00d084;
+            --accent-yellow: #ffd93d;
+            --bg-light: #f8f9fa;
+            --text-dark: #2d3436;
+            --text-light: #636e72;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Module Navigation */
+        .module-nav {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 10px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+
+        .module-nav .module-title {
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .module-nav .nav-links a {
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 0.9em;
+            transition: color 0.3s;
+        }
+
+        .module-nav .nav-links a:hover {
+            color: white;
+        }
+
+        .module-nav .nav-links a.active {
+            color: var(--accent-yellow);
+            font-weight: 600;
+        }
+
+        /* Slide Container */
+        .slide-container {
+            position: fixed;
+            top: 50px;
+            bottom: 60px;
+            left: 0;
+            right: 0;
+            overflow-y: auto;
+        }
+
+        .slide {
+            display: none;
+            padding: 40px 60px;
+            min-height: 100%;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        .slide.active { display: block; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Title Slide */
+        .slide.title-slide {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%);
+            color: white;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .slide.title-slide.active {
+            display: flex;
+        }
+
+        .slide.title-slide h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .slide.title-slide .subtitle {
+            font-size: 1.3em;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .objective-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: left;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .objective-card i {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: var(--accent-yellow);
+        }
+
+        .objective-card h3 {
+            font-size: 0.95em;
+            margin-bottom: 5px;
+        }
+
+        .objective-card p {
+            font-size: 0.85em;
+            opacity: 0.85;
+        }
+
+        /* Content Slides */
+        .slide h2 {
+            color: var(--primary);
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--primary-light);
+        }
+
+        .slide h2 i {
+            margin-right: 10px;
+            color: var(--primary-light);
+        }
+
+        .slide h3 {
+            color: var(--primary-dark);
+            font-size: 1.3em;
+            margin: 20px 0 12px 0;
+        }
+
+        .slide h3 i {
+            margin-right: 8px;
+            color: var(--primary-light);
+        }
+
+        .slide p {
+            font-size: 1.05em;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .slide ul, .slide ol {
+            margin: 10px 0 15px 25px;
+            line-height: 1.8;
+        }
+
+        .slide li {
+            font-size: 1em;
+            margin-bottom: 5px;
+        }
+
+        /* Code Box */
+        .code-box {
+            background: #282c34;
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .code-box::before {
+            content: 'Java';
+            display: block;
+            background: var(--primary);
+            color: white;
+            padding: 6px 15px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .code-box.code-box-text::before { content: 'Structure'; }
+        .code-box.code-box-diagram::before { content: 'Diagramme'; }
+
+        .code-box pre {
+            margin: 0;
+            padding: 15px;
+            overflow-x: auto;
+        }
+
+        .code-box pre code {
+            font-family: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            line-height: 1.5;
+            color: #abb2bf;
+            white-space: pre;
+        }
+
+        /* Info / Warning / Success Boxes */
+        .info-box, .warning-box, .success-box, .content-box {
+            border-radius: 10px;
+            padding: 18px 22px;
+            margin: 15px 0;
+            font-size: 0.95em;
+        }
+
+        .info-box {
+            background: #e8f4f8;
+            border-left: 5px solid #0984e3;
+            color: #2d3436;
+        }
+
+        .info-box i { color: #0984e3; margin-right: 8px; }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 5px solid var(--accent-orange);
+            color: #2d3436;
+        }
+
+        .warning-box i { color: var(--accent-orange); margin-right: 8px; }
+
+        .success-box {
+            background: #e8f5e9;
+            border-left: 5px solid var(--accent-green);
+            color: #2d3436;
+        }
+
+        .success-box i { color: var(--accent-green); margin-right: 8px; }
+
+        .content-box {
+            background: white;
+            border: 2px solid #e0e0e0;
+            box-shadow: var(--shadow);
+        }
+
+        /* Grid Layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 15px 0;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin: 2px;
+        }
+
+        .badge-primary { background: var(--primary-light); color: white; }
+        .badge-orange { background: var(--accent-orange); color: white; }
+        .badge-green { background: var(--accent-green); color: white; }
+        .badge-yellow { background: var(--accent-yellow); color: #333; }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.9em;
+        }
+
+        table th {
+            background: var(--primary);
+            color: white;
+            padding: 10px 14px;
+            text-align: left;
+        }
+
+        table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        table tr:nth-child(even) { background: #f5f5f5; }
+        table tr:hover { background: #ede7f6; }
+
+        /* Blockquote */
+        blockquote {
+            border-left: 4px solid var(--primary-light);
+            background: #f3e5f5;
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        blockquote strong { color: var(--primary-dark); }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 2px solid #e0e0e0;
+            padding: 10px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .bottom-nav button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bottom-nav button:hover:not(:disabled) {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .bottom-nav button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            font-size: 0.95em;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        /* Highlight for key concepts */
+        .highlight {
+            background: linear-gradient(120deg, #f3e5f5 0%, #e1bee7 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .key-concept {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 15px 0;
+            text-align: center;
+            font-size: 1.1em;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .key-concept i { margin-right: 10px; color: var(--accent-yellow); }
+    </style>
+</head>
+<body>
+    <!-- Module Navigation -->
+    <nav class="module-nav">
+        <div class="module-title"><i class="fas fa-cubes"></i> Module 1 : Introduction a l'Architecture Logicielle</div>
+        <div class="nav-links">
+            <a href="index.html"><i class="fas fa-home"></i> Accueil</a>
+            <a href="#" class="active">Module 1</a>
+            <a href="module2_architecture_hexagonale_detail.html">Module 2 <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </nav>
+
+    <!-- Slides -->
+    <div class="slide-container">
+
+        <!-- SLIDE 1: Title Slide -->
+        <div class="slide title-slide active">
+            <h1><i class="fas fa-cubes"></i> Introduction a l'Architecture Logicielle</h1>
+            <p class="subtitle">Module 1 - Des fondamentaux aux architectures modernes</p>
+            <div class="objectives-grid">
+                <div class="objective-card">
+                    <i class="fas fa-drafting-compass"></i>
+                    <h3>Definir l'architecture</h3>
+                    <p>Comprendre ce qu'est l'architecture logicielle et pourquoi elle compte</p>
+                </div>
+                <div class="objective-card">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Limites du CRUD</h3>
+                    <p>Identifier les problemes de l'approche CRUD traditionnelle</p>
+                </div>
+                <div class="objective-card">
+                    <i class="fas fa-layer-group"></i>
+                    <h3>Comparer les architectures</h3>
+                    <p>Couches DDD, Hexagonale, Oignon, Clean Architecture</p>
+                </div>
+                <div class="objective-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Principe fondamental</h3>
+                    <p>Proteger le domaine metier des details techniques</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: C'est quoi l'architecture logicielle ? -->
+        <div class="slide">
+            <h2><i class="fas fa-drafting-compass"></i> 1.1 C'est quoi l'architecture logicielle ?</h2>
+
+            <h3><i class="fas fa-bullseye"></i> Une definition pragmatique</h3>
+            <p>L'architecture logicielle, ce n'est <strong>pas</strong> un diagramme PowerPoint qu'on dessine en debut de projet et qu'on oublie ensuite. Ce n'est pas non plus le choix entre "monolithe" et "microservices".</p>
+
+            <blockquote>
+                <strong>L'architecture logicielle, c'est l'ensemble des decisions structurantes d'un systeme -- celles qui sont couteuses a changer une fois prises.</strong><br>
+                -- Ralph Johnson (co-auteur du GoF)
+            </blockquote>
+
+            <p>Ces decisions incluent :</p>
+            <ul>
+                <li>Comment le code est <strong>organise</strong> (modules, packages, couches)</li>
+                <li>Comment les composants <strong>communiquent</strong> entre eux</li>
+                <li>Ou se trouvent les <strong>frontieres</strong> entre ce qui change souvent et ce qui est stable</li>
+                <li>Comment les <strong>dependances</strong> circulent dans le systeme</li>
+            </ul>
+        </div>
+
+        <!-- SLIDE 3: Architecture vs Design + Pourquoi ca compte -->
+        <div class="slide">
+            <h2><i class="fas fa-balance-scale"></i> Architecture vs Design</h2>
+
+            <table>
+                <tr><th></th><th>Architecture</th><th>Design (conception)</th></tr>
+                <tr><td><strong>Portee</strong></td><td>Structure globale du systeme</td><td>Structure locale d'un composant</td></tr>
+                <tr><td><strong>Cout du changement</strong></td><td>Eleve</td><td>Modere a faible</td></tr>
+                <tr><td><strong>Exemples</strong></td><td>Choix des couches, communication inter-modules, strategie de persistance</td><td>Design patterns, nommage, structure d'une classe</td></tr>
+                <tr><td><strong>Qui decide</strong></td><td>Equipe / architecte</td><td>Developpeur</td></tr>
+            </table>
+
+            <blockquote>"Architecture is about the important stuff. Whatever that is." -- Martin Fowler</blockquote>
+
+            <h3><i class="fas fa-question-circle"></i> Pourquoi l'architecture compte</h3>
+            <div class="grid-2">
+                <div class="warning-box">
+                    <p><i class="fas fa-times-circle"></i> <strong>Equipe A</strong> (pas d'architecture) : chaque nouvelle fonctionnalite prend 3x plus de temps, bugs en cascade, personne n'ose toucher le code.</p>
+                </div>
+                <div class="success-box">
+                    <p><i class="fas fa-check-circle"></i> <strong>Equipe B</strong> (architecture pensee) : rythme constant, nouveaux devs productifs en quelques jours, tests fiables.</p>
+                </div>
+            </div>
+            <p>La difference tient a : <span class="badge badge-primary">Maintenabilite</span> <span class="badge badge-orange">Testabilite</span> <span class="badge badge-green">Evolutivite</span></p>
+        </div>
+
+        <!-- SLIDE 4: Idees recues -->
+        <div class="slide">
+            <h2><i class="fas fa-ban"></i> Idees recues a combattre</h2>
+
+            <table>
+                <tr><th>Idee recue</th><th>Realite</th></tr>
+                <tr><td>"L'architecture, c'est le framework"</td><td>Spring Boot, Quarkus, Micronaut sont des <strong>details d'implementation</strong>. L'architecture, c'est ce qui reste si on les retire.</td></tr>
+                <tr><td>"L'architecture, c'est l'infrastructure"</td><td>Kubernetes, Docker, AWS ne sont pas l'architecture de votre application. Ce sont des choix de deploiement.</td></tr>
+                <tr><td>"On fait d'abord les features, on architecturera plus tard"</td><td>Les decisions architecturales prises par defaut (ou par accident) sont les plus couteuses a corriger.</td></tr>
+                <tr><td>"L'architecture ralentit le developpement"</td><td>Une bonne architecture <strong>accelere</strong> le developpement a moyen et long terme. Le cout initial est un investissement.</td></tr>
+            </table>
+
+            <div class="info-box">
+                <i class="fas fa-lightbulb"></i> <strong>A retenir :</strong> Le framework est un detail. La base de donnees est un detail. Le domaine metier est la raison d'etre de l'application.
+            </div>
+        </div>
+
+        <!-- SLIDE 5: L'approche CRUD traditionnelle -->
+        <div class="slide">
+            <h2><i class="fas fa-database"></i> 1.2 Au-dela du CRUD traditionnel</h2>
+
+            <h3><i class="fas fa-folder-open"></i> La structure que tout developpeur Java connait</h3>
+            <div class="code-box code-box-text">
+                <pre><code>src/main/java/com/example/
+    controller/
+        OrderController.java
+    service/
+        OrderService.java
+    repository/
+        OrderRepository.java
+    model/
+        Order.java</code></pre>
+            </div>
+
+            <div class="code-box code-box-diagram">
+                <pre><code>HTTP Request  → Controller → Service → Repository → Database
+HTTP Response ← Controller ← Service ← Repository ← Database</code></pre>
+            </div>
+
+            <div class="info-box">
+                <i class="fas fa-info-circle"></i> Regardons un exemple concret : une application de gestion de commandes pour identifier les problemes de cette approche.
+            </div>
+        </div>
+
+        <!-- SLIDE 6: CRUD - L'entite et le repository -->
+        <div class="slide">
+            <h2><i class="fas fa-code"></i> CRUD : L'entite et le repository</h2>
+
+            <h3>L'entite (model)</h3>
+            <div class="code-box">
+                <pre><code class="language-java">@Entity
+@Table(name = "orders")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Order {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String customerEmail;
+    private String productName;
+    private int quantity;
+    private double unitPrice;
+    private double totalPrice;
+    private String status; // "PENDING", "CONFIRMED", "SHIPPED"
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+}</code></pre>
+            </div>
+
+            <h3>Le repository</h3>
+            <div class="code-box">
+                <pre><code class="language-java">@Repository
+public interface OrderRepository extends JpaRepository&lt;Order, Long&gt; {
+    List&lt;Order&gt; findByCustomerEmail(String email);
+    List&lt;Order&gt; findByStatus(String status);
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: CRUD - Le service -->
+        <div class="slide">
+            <h2><i class="fas fa-cogs"></i> CRUD : Le service</h2>
+
+            <div class="code-box">
+                <pre><code class="language-java">@Service
+@RequiredArgsConstructor
+public class OrderService {
+
+    private final OrderRepository orderRepository;
+    private final JavaMailSender mailSender;
+    private final RestTemplate restTemplate;
+
+    @Transactional
+    public Order createOrder(Order order) {
+        // "Logique metier" melangee avec l'infrastructure
+        order.setTotalPrice(order.getUnitPrice() * order.getQuantity());
+        order.setStatus("PENDING");
+        order.setCreatedAt(new Date());
+
+        // Verification du stock via API externe
+        StockResponse stock = restTemplate.getForObject(
+            "http://inventory-service/api/stock/" + order.getProductName(),
+            StockResponse.class
+        );
+
+        if (stock.getAvailable() &lt; order.getQuantity()) {
+            throw new RuntimeException("Stock insuffisant");
+        }
+
+        Order saved = orderRepository.save(order);
+
+        // Envoi d'email de confirmation
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(order.getCustomerEmail());
+        message.setSubject("Commande confirmee #" + saved.getId());
+        message.setText("Votre commande a ete enregistree.");
+        mailSender.send(message);
+
+        return saved;
+    }
+}</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <i class="fas fa-exclamation-triangle"></i> <strong>Probleme :</strong> Logique metier, appels HTTP, envoi d'emails, persistance -- tout est melange dans un seul service !
+            </div>
+        </div>
+
+        <!-- SLIDE 8: CRUD - Les problemes -->
+        <div class="slide">
+            <h2><i class="fas fa-bug"></i> Les 4 problemes du CRUD</h2>
+
+            <div class="grid-2">
+                <div class="warning-box">
+                    <h3><i class="fas fa-ghost"></i> 1. Domaine anemique</h3>
+                    <p>L'entite n'est qu'un <strong>sac de donnees</strong> -- des getters/setters, aucune logique. C'est l'anti-pattern <em>Anemic Domain Model</em> (Martin Fowler).</p>
+                </div>
+                <div class="warning-box">
+                    <h3><i class="fas fa-bomb"></i> 2. God Classes</h3>
+                    <p>Le service fait <strong>tout</strong> : calcul metier, appels HTTP, envoi d'emails, persistance. Apres un an : 2000 lignes. Personne ne veut y toucher.</p>
+                </div>
+                <div class="warning-box">
+                    <h3><i class="fas fa-link"></i> 3. Couplage fort</h3>
+                    <p>Pour tester la logique metier, il faut demarrer Spring, une BDD, un serveur SMTP, un service HTTP externe. On teste le <strong>cablage</strong>, pas la <strong>logique</strong>.</p>
+                </div>
+                <div class="warning-box">
+                    <h3><i class="fas fa-lock"></i> 4. Impossible de changer</h3>
+                    <p>Remplacer JPA par jOOQ ? L'email par Slack ? Ajouter gRPC ? Il faut <strong>reecrire le service</strong>. La logique est soudee a l'infrastructure.</p>
+                </div>
+            </div>
+
+            <div class="key-concept">
+                <i class="fas fa-lightbulb"></i> Il doit y avoir une meilleure facon de faire.
+            </div>
+        </div>
+
+        <!-- SLIDE 9: Architecture en couches DDD -->
+        <div class="slide">
+            <h2><i class="fas fa-layer-group"></i> 1.3 Architecture en couches DDD</h2>
+
+            <h3>Les 4 couches d'Eric Evans (2003)</h3>
+
+            <div class="code-box code-box-diagram">
+                <pre><code>┌─────────────────────────────────────────────┐
+│           PRESENTATION (UI / API)           │
+│  Controllers REST, CLI, pages web, GraphQL  │
+├─────────────────────────────────────────────┤
+│              APPLICATION                     │
+│  Cas d'utilisation, orchestration, DTOs     │
+│  Ne contient PAS de logique metier          │
+├─────────────────────────────────────────────┤
+│                DOMAINE                       │
+│  Entites, Value Objects, Domain Services    │
+│  Regles metier, invariants                  │
+│  C'est le COEUR de l'application            │
+├─────────────────────────────────────────────┤
+│            INFRASTRUCTURE                    │
+│  JPA, JDBC, SMTP, HTTP clients, fichiers   │
+│  Implementation des interfaces du domaine   │
+└─────────────────────────────────────────────┘
+
+         │        │        │
+         ▼        ▼        ▼
+    Dependances de haut en bas uniquement</code></pre>
+            </div>
+
+            <div class="info-box">
+                <i class="fas fa-arrow-down"></i> <strong>Regle fondamentale :</strong> Les dependances vont de haut en bas. Jamais de bas en haut.
+            </div>
+        </div>
+
+        <!-- SLIDE 10: DDD - L'entite riche -->
+        <div class="slide">
+            <h2><i class="fas fa-gem"></i> DDD : L'entite riche</h2>
+
+            <h3>Couche Domaine -- l'entite avec sa logique</h3>
+            <div class="code-box">
+                <pre><code class="language-java">// domain/model/Order.java
+public class Order {
+
+    private Long id;
+    private CustomerEmail customerEmail;  // Value Object
+    private ProductName productName;      // Value Object
+    private Quantity quantity;             // Value Object
+    private Money unitPrice;              // Value Object
+    private Money totalPrice;
+    private OrderStatus status;
+    private LocalDateTime createdAt;
+
+    private Order() {}
+
+    public static Order create(CustomerEmail email, ProductName product,
+                               Quantity qty, Money price) {
+        Order order = new Order();
+        order.customerEmail = email;
+        order.productName = product;
+        order.quantity = qty;
+        order.unitPrice = price;
+        order.totalPrice = price.multiply(qty.value());
+        order.status = OrderStatus.PENDING;
+        order.createdAt = LocalDateTime.now();
+        return order;
+    }
+
+    public void confirm() {
+        if (this.status != OrderStatus.PENDING) {
+            throw new IllegalStateException(
+                "Seule une commande PENDING peut etre confirmee. Status actuel : " + status
+            );
+        }
+        this.status = OrderStatus.CONFIRMED;
+    }
+
+    public void ship() {
+        if (this.status != OrderStatus.CONFIRMED) {
+            throw new IllegalStateException(
+                "Seule une commande CONFIRMED peut etre expediee."
+            );
+        }
+        this.status = OrderStatus.SHIPPED;
+    }
+    // Pas de setters publics !
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- SLIDE 11: DDD - Value Object + Repository -->
+        <div class="slide">
+            <h2><i class="fas fa-coins"></i> DDD : Value Object et Repository</h2>
+
+            <h3>Couche Domaine -- le Value Object Money</h3>
+            <div class="code-box">
+                <pre><code class="language-java">// domain/model/Money.java
+public record Money(BigDecimal amount, Currency currency) {
+
+    public Money {
+        if (amount.compareTo(BigDecimal.ZERO) &lt; 0) {
+            throw new IllegalArgumentException("Le montant ne peut pas etre negatif");
+        }
+        Objects.requireNonNull(currency, "La devise est obligatoire");
+    }
+
+    public static Money euros(double value) {
+        return new Money(BigDecimal.valueOf(value), Currency.getInstance("EUR"));
+    }
+
+    public Money multiply(int factor) {
+        return new Money(amount.multiply(BigDecimal.valueOf(factor)), currency);
+    }
+
+    public Money add(Money other) {
+        if (!this.currency.equals(other.currency)) {
+            throw new IllegalArgumentException("Impossible d'additionner des devises differentes");
+        }
+        return new Money(this.amount.add(other.amount), this.currency);
+    }
+}</code></pre>
+            </div>
+
+            <h3>Couche Domaine -- interface du repository</h3>
+            <div class="code-box">
+                <pre><code class="language-java">// domain/repository/OrderRepository.java
+public interface OrderRepository {
+    Order save(Order order);
+    Optional&lt;Order&gt; findById(Long id);
+    List&lt;Order&gt; findByCustomerEmail(CustomerEmail email);
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- SLIDE 12: DDD - Couche Application + Infrastructure -->
+        <div class="slide">
+            <h2><i class="fas fa-project-diagram"></i> DDD : Application et Infrastructure</h2>
+
+            <h3>Couche Application -- le cas d'utilisation</h3>
+            <div class="code-box">
+                <pre><code class="language-java">// application/CreateOrderUseCase.java
+@Service
+@RequiredArgsConstructor
+public class CreateOrderUseCase {
+
+    private final OrderRepository orderRepository;
+    private final StockChecker stockChecker;
+    private final NotificationSender notificationSender;
+
+    @Transactional
+    public OrderDto execute(CreateOrderCommand command) {
+        Order order = Order.create(
+            new CustomerEmail(command.email()),
+            new ProductName(command.product()),
+            new Quantity(command.quantity()),
+            Money.euros(command.unitPrice())
+        );
+
+        if (!stockChecker.isAvailable(order.getProductName(), order.getQuantity())) {
+            throw new InsufficientStockException(order.getProductName());
+        }
+
+        Order saved = orderRepository.save(order);
+        notificationSender.sendOrderConfirmation(saved);
+        return OrderDto.from(saved);
+    }
+}</code></pre>
+            </div>
+
+            <div class="grid-2">
+                <div class="success-box">
+                    <i class="fas fa-check"></i> L'entite protege ses invariants<br>
+                    <i class="fas fa-check"></i> La logique metier est testable sans infrastructure<br>
+                    <i class="fas fa-check"></i> Le service orchestre sans contenir de logique
+                </div>
+                <div class="warning-box">
+                    <i class="fas fa-exclamation-triangle"></i> <strong>Limitation :</strong> Le domaine depend encore de la couche infrastructure. Il faut un mecanisme qui <strong>force</strong> l'isolation du domaine.
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 13: Architecture Hexagonale - Concepts -->
+        <div class="slide">
+            <h2><i class="fas fa-hexagon-check fa-draw-polygon"></i> 1.4 Architecture Hexagonale (Ports &amp; Adapters)</h2>
+
+            <p>En 2005, <strong>Alistair Cockburn</strong> propose l'Architecture Hexagonale. L'hexagone met l'application <strong>au centre</strong> et tout le reste a l'exterieur.</p>
+
+            <blockquote>
+                "Permettre a une application d'etre pilotee indifferemment par des utilisateurs, des programmes, des tests automatises ou des scripts batch, et d'etre developpee et testee isolement de ses eventuels peripheriques et bases de donnees." -- Alistair Cockburn
+            </blockquote>
+
+            <h3><i class="fas fa-puzzle-piece"></i> Les concepts cles</h3>
+            <div class="grid-3">
+                <div class="content-box" style="padding: 15px;">
+                    <h3 style="color: var(--primary); margin-top:0;"><i class="fas fa-heart"></i> Le Domaine</h3>
+                    <p>Du <strong>Java pur</strong>. Ni Spring, ni JPA, ni HTTP. Rien du monde exterieur.</p>
+                </div>
+                <div class="content-box" style="padding: 15px;">
+                    <h3 style="color: var(--primary); margin-top:0;"><i class="fas fa-plug"></i> Les Ports</h3>
+                    <p><strong>Interfaces Java</strong> definies dans le domaine. Contrats de communication.</p>
+                </div>
+                <div class="content-box" style="padding: 15px;">
+                    <h3 style="color: var(--primary); margin-top:0;"><i class="fas fa-exchange-alt"></i> Les Adapters</h3>
+                    <p>Implementations concretes qui connectent les ports au monde reel.</p>
+                </div>
+            </div>
+
+            <table>
+                <tr><th></th><th>Port Entrant (Driving)</th><th>Port Sortant (Driven)</th></tr>
+                <tr><td><strong>Direction</strong></td><td>L'exterieur appelle l'application</td><td>L'application appelle l'exterieur</td></tr>
+                <tr><td><strong>Qui definit le contrat ?</strong></td><td>Le domaine</td><td>Le domaine</td></tr>
+                <tr><td><strong>Qui implemente ?</strong></td><td>Le domaine (use case)</td><td>L'infrastructure (adapter)</td></tr>
+                <tr><td><strong>Exemples</strong></td><td><code>CreateOrderUseCase</code></td><td><code>OrderRepository</code>, <code>NotificationSender</code></td></tr>
+            </table>
+        </div>
+
+        <!-- SLIDE 14: Hexagonale - Inversion de dependance -->
+        <div class="slide">
+            <h2><i class="fas fa-sync-alt"></i> L'inversion de dependance en action</h2>
+
+            <h3>Architecture classique (dependance directe)</h3>
+            <div class="code-box code-box-diagram">
+                <pre><code>Service ──depends──▶ JpaRepository ──depends──▶ JPA/Hibernate
+
+Le service connait JPA. Pour tester, il faut JPA.</code></pre>
+            </div>
+
+            <h3>Architecture hexagonale (dependance inversee)</h3>
+            <div class="code-box code-box-diagram">
+                <pre><code>                    ┌──────────────────────────┐
+                    │       DOMAINE            │
+                    │                          │
+JpaOrderRepository  │   OrderRepository        │  CreateOrderUseCase
+(Infrastructure)   ─┤─▶ (Interface/Port)  ◀────├── (Use Case)
+                    │                          │
+                    └──────────────────────────┘
+
+L'infrastructure depend du domaine. PAS l'inverse.
+C'est le Dependency Inversion Principle (le D de SOLID).</code></pre>
+            </div>
+
+            <h3><i class="fas fa-folder-tree"></i> Structure de packages</h3>
+            <div class="code-box code-box-text">
+                <pre><code>com.example.order/
+├── domain/                          # ZERO dependance externe
+│   ├── model/                       # Entites, Value Objects, Enums
+│   ├── port/
+│   │   ├── in/                      # Ports entrants (CreateOrderUseCase...)
+│   │   └── out/                     # Ports sortants (OrderRepository...)
+│   ├── service/                     # Implementation des ports entrants
+│   └── exception/
+├── adapter/                         # TOUTE l'infrastructure
+│   ├── in/rest/                     # Controllers REST
+│   └── out/persistence/             # JPA, SMTP, HTTP clients
+└── config/                          # Configuration Spring (injection)</code></pre>
+            </div>
+        </div>
+
+        <!-- SLIDE 15: Hexagonale - Ports (code) -->
+        <div class="slide">
+            <h2><i class="fas fa-plug"></i> Hexagonale : Les Ports</h2>
+
+            <h3>Port entrant (interface)</h3>
+            <div class="code-box">
+                <pre><code class="language-java">// domain/port/in/CreateOrderUseCase.java
+public interface CreateOrderUseCase {
+    OrderResult execute(CreateOrderCommand command);
+}
+
+public record CreateOrderCommand(
+    String customerEmail,
+    String productName,
+    int quantity,
+    double unitPrice
+) {}
+
+public record OrderResult(
+    Long id,
+    String status,
+    BigDecimal totalPrice
+) {}</code></pre>
+            </div>
+
+            <h3>Ports sortants (interfaces)</h3>
+            <div class="code-box">
+                <pre><code class="language-java">// domain/port/out/OrderRepository.java
+public interface OrderRepository {
+    Order save(Order order);
+    Optional&lt;Order&gt; findById(Long id);
+}
+
+// domain/port/out/StockChecker.java
+public interface StockChecker {
+    boolean isAvailable(ProductName product, Quantity quantity);
+}
+
+// domain/port/out/NotificationSender.java
+public interface NotificationSender {
+    void sendOrderConfirmation(Order order);
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- SLIDE 16: Hexagonale - Service domaine -->
+        <div class="slide">
+            <h2><i class="fas fa-cog"></i> Hexagonale : Le service domaine</h2>
+
+            <div class="info-box">
+                <i class="fas fa-info-circle"></i> <strong>AUCUN import Spring, JPA, HTTP, ou quoi que ce soit d'infrastructure</strong>
+            </div>
+
+            <div class="code-box">
+                <pre><code class="language-java">// domain/service/CreateOrderService.java
+public class CreateOrderService implements CreateOrderUseCase {
+
+    private final OrderRepository orderRepository;
+    private final StockChecker stockChecker;
+    private final NotificationSender notificationSender;
+
+    public CreateOrderService(OrderRepository orderRepository,
+                              StockChecker stockChecker,
+                              NotificationSender notificationSender) {
+        this.orderRepository = orderRepository;
+        this.stockChecker = stockChecker;
+        this.notificationSender = notificationSender;
+    }
+
+    @Override
+    public OrderResult execute(CreateOrderCommand command) {
+        // 1. Creer l'entite domaine
+        Order order = Order.create(
+            new CustomerEmail(command.customerEmail()),
+            new ProductName(command.productName()),
+            new Quantity(command.quantity()),
+            Money.euros(command.unitPrice())
+        );
+
+        // 2. Verifier le stock via le PORT (pas via RestTemplate !)
+        if (!stockChecker.isAvailable(order.getProductName(), order.getQuantity())) {
+            throw new InsufficientStockException(order.getProductName());
+        }
+
+        // 3. Persister via le PORT (pas via JPA !)
+        Order saved = orderRepository.save(order);
+
+        // 4. Notifier via le PORT (pas via SMTP !)
+        notificationSender.sendOrderConfirmation(saved);
+
+        // 5. Retourner le resultat
+        return new OrderResult(
+            saved.getId(), saved.getStatus().name(), saved.getTotalPrice().amount()
+        );
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- SLIDE 17: Hexagonale - Adapters -->
+        <div class="slide">
+            <h2><i class="fas fa-exchange-alt"></i> Hexagonale : Les Adapters</h2>
+
+            <h3>Adapter entrant (REST Controller)</h3>
+            <div class="code-box">
+                <pre><code class="language-java">// adapter/in/rest/OrderRestController.java
+@RestController
+@RequestMapping("/api/orders")
+@RequiredArgsConstructor
+public class OrderRestController {
+
+    private final CreateOrderUseCase createOrderUseCase; // Interface, pas impl !
+
+    @PostMapping
+    public ResponseEntity&lt;OrderResponse&gt; createOrder(@RequestBody CreateOrderRequest request) {
+        CreateOrderCommand command = new CreateOrderCommand(
+            request.email(), request.product(), request.quantity(), request.unitPrice()
+        );
+        OrderResult result = createOrderUseCase.execute(command);
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(new OrderResponse(result.id(), result.status(), result.totalPrice()));
+    }
+}</code></pre>
+            </div>
+
+            <h3>Adapter sortant (Persistance JPA)</h3>
+            <div class="code-box">
+                <pre><code class="language-java">// adapter/out/persistence/JpaOrderRepository.java
+@Repository
+@RequiredArgsConstructor
+public class JpaOrderRepository implements OrderRepository {
+
+    private final SpringDataOrderRepository springDataRepo;
+    private final OrderPersistenceMapper mapper;
+
+    @Override
+    public Order save(Order domainOrder) {
+        OrderJpaEntity jpaEntity = mapper.toJpaEntity(domainOrder);
+        OrderJpaEntity savedEntity = springDataRepo.save(jpaEntity);
+        return mapper.toDomainEntity(savedEntity);
+    }
+
+    @Override
+    public Optional&lt;Order&gt; findById(Long id) {
+        return springDataRepo.findById(id).map(mapper::toDomainEntity);
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- SLIDE 18: Hexagonale - Config + Test -->
+        <div class="slide">
+            <h2><i class="fas fa-flask"></i> Hexagonale : Configuration et Test</h2>
+
+            <h3>Configuration Spring (le cablage)</h3>
+            <div class="code-box">
+                <pre><code class="language-java">// config/BeanConfiguration.java
+@Configuration
+public class BeanConfiguration {
+
+    @Bean
+    public CreateOrderUseCase createOrderUseCase(
+            OrderRepository orderRepository,
+            StockChecker stockChecker,
+            NotificationSender notificationSender) {
+        return new CreateOrderService(orderRepository, stockChecker, notificationSender);
+    }
+}</code></pre>
+            </div>
+
+            <h3><i class="fas fa-bolt"></i> Le test : du Java pur, sans Spring !</h3>
+            <div class="code-box">
+                <pre><code class="language-java">class CreateOrderServiceTest {
+    // Pas de @SpringBootTest ! Pas de @MockBean ! Pas de contexte Spring !
+
+    private CreateOrderService service;
+
+    @BeforeEach
+    void setUp() {
+        var orderRepository = new InMemoryOrderRepository();
+        var stockChecker = (StockChecker) (product, qty) -&gt; true;
+        var notificationSender = (NotificationSender) order -&gt; {};
+        service = new CreateOrderService(orderRepository, stockChecker, notificationSender);
+    }
+
+    @Test
+    void should_create_order_with_correct_total() {
+        var command = new CreateOrderCommand("client@test.com", "Laptop", 3, 999.99);
+        OrderResult result = service.execute(command);
+        assertThat(result.totalPrice()).isEqualByComparingTo(new BigDecimal("2999.97"));
+        assertThat(result.status()).isEqualTo("PENDING");
+    }
+
+    @Test
+    void should_reject_order_when_stock_insufficient() {
+        stockChecker = (product, qty) -&gt; false;
+        service = new CreateOrderService(orderRepository, stockChecker, notificationSender);
+        var command = new CreateOrderCommand("client@test.com", "Laptop", 100, 999.99);
+        assertThatThrownBy(() -&gt; service.execute(command))
+            .isInstanceOf(InsufficientStockException.class);
+    }
+}</code></pre>
+            </div>
+
+            <div class="success-box">
+                <i class="fas fa-rocket"></i> Ce test s'execute en <strong>millisecondes</strong>, sans aucune infrastructure. C'est la puissance de l'architecture hexagonale.
+            </div>
+        </div>
+
+        <!-- SLIDE 19: Architecture en Oignon -->
+        <div class="slide">
+            <h2><i class="fas fa-circle-notch"></i> 1.5 Architecture en Oignon (Onion Architecture)</h2>
+
+            <p>En 2008, <strong>Jeffrey Palermo</strong> propose l'Onion Architecture : meme idee que l'hexagonale, mais en <strong>cercles concentriques</strong>.</p>
+
+            <div class="code-box code-box-diagram">
+                <pre><code>┌──────────────────────────────────────────────────────────────────┐
+│                        INFRASTRUCTURE                            │
+│   UI, Tests, Frameworks, DB, File System, External Services      │
+│                                                                  │
+│    ┌──────────────────────────────────────────────────────┐      │
+│    │                APPLICATION SERVICES                  │      │
+│    │        Use Cases, Workflow Orchestration             │      │
+│    │                                                      │      │
+│    │    ┌──────────────────────────────────────────┐      │      │
+│    │    │           DOMAIN SERVICES                │      │      │
+│    │    │     Logique metier multi-entites        │      │      │
+│    │    │                                          │      │      │
+│    │    │    ┌──────────────────────────────┐      │      │      │
+│    │    │    │        DOMAIN MODEL          │      │      │      │
+│    │    │    │   Entities, Value Objects    │      │      │      │
+│    │    │    └──────────────────────────────┘      │      │      │
+│    │    └──────────────────────────────────────────┘      │      │
+│    └──────────────────────────────────────────────────────┘      │
+└──────────────────────────────────────────────────────────────────┘
+
+◄──────────────────── Les dependances pointent ────────────────────►
+                      TOUJOURS vers le centre</code></pre>
+            </div>
+
+            <h3>Difference avec l'hexagonale</h3>
+            <table>
+                <tr><th>Hexagonale</th><th>Oignon</th></tr>
+                <tr><td>Domaine = un seul bloc</td><td>Domaine = Model + Services</td></tr>
+                <tr><td>Ports (in/out)</td><td>Interfaces dans Domain Services</td></tr>
+                <tr><td>Adapters (in/out)</td><td>Infrastructure (couche externe)</td></tr>
+            </table>
+
+            <div class="info-box">
+                <i class="fas fa-info-circle"></i> En pratique, les deux architectures menent a un code tres similaire. L'oignon offre simplement une <strong>granularite plus fine</strong> dans l'organisation du domaine.
+            </div>
+        </div>
+
+        <!-- SLIDE 20: Clean Architecture -->
+        <div class="slide">
+            <h2><i class="fas fa-broom"></i> 1.6 Clean Architecture</h2>
+
+            <p>En 2012, <strong>Robert C. Martin</strong> (Uncle Bob) synthetise les idees de l'hexagonale, de l'oignon et d'autres architectures en un modele unifie.</p>
+
+            <div class="code-box code-box-diagram">
+                <pre><code>┌──────────────────────────────────────────────────────────────────┐
+│                  FRAMEWORKS & DRIVERS                            │
+│              Web, DB, Devices, External APIs                     │
+│                                                                  │
+│    ┌──────────────────────────────────────────────────────┐      │
+│    │              INTERFACE ADAPTERS                       │      │
+│    │        Controllers, Gateways, Presenters            │      │
+│    │                                                      │      │
+│    │    ┌──────────────────────────────────────────┐      │      │
+│    │    │             USE CASES                     │      │      │
+│    │    │     Application Business Rules           │      │      │
+│    │    │                                          │      │      │
+│    │    │    ┌──────────────────────────────┐      │      │      │
+│    │    │    │          ENTITIES             │      │      │      │
+│    │    │    │  Enterprise Business Rules   │      │      │      │
+│    │    │    └──────────────────────────────┘      │      │      │
+│    │    └──────────────────────────────────────────┘      │      │
+│    └──────────────────────────────────────────────────────┘      │
+└──────────────────────────────────────────────────────────────────┘
+
+         ═══════▶  The Dependency Rule  ◀═══════
+         Le code source pointe TOUJOURS vers l'interieur</code></pre>
+            </div>
+
+            <div class="key-concept">
+                <i class="fas fa-gavel"></i> <strong>The Dependency Rule :</strong> Rien dans un cercle interieur ne peut connaitre quoi que ce soit d'un cercle exterieur. Cela inclut : les noms de fonctions, les classes, les variables.
+            </div>
+        </div>
+
+        <!-- SLIDE 21: Clean Architecture - Code -->
+        <div class="slide">
+            <h2><i class="fas fa-code"></i> Clean Architecture : Le code</h2>
+
+            <div class="code-box">
+                <pre><code class="language-java">// ENTITIES (cercle interieur) - Aucune annotation Spring, JPA, Jackson...
+public class Order {
+    private OrderId id;
+    private Money total;
+    private OrderStatus status;
+
+    public void confirm() {
+        if (status != OrderStatus.PENDING) {
+            throw new OrderAlreadyConfirmedException(id);
+        }
+        this.status = OrderStatus.CONFIRMED;
+    }
+}
+
+// USE CASES - Depend uniquement des Entities et des interfaces de sortie
+public class CreateOrderInteractor implements CreateOrderInputBoundary {
+
+    private final OrderGateway orderGateway;
+    private final CreateOrderOutputBoundary presenter;
+
+    @Override
+    public void execute(CreateOrderRequest request) {
+        Order order = Order.create(/* ... */);
+        orderGateway.save(order);
+        presenter.present(new CreateOrderResponse(order.getId()));
+    }
+}
+
+// INTERFACE ADAPTERS - Traduction HTTP &lt;-&gt; Use Case
+@RestController
+public class OrderController {
+    private final CreateOrderInputBoundary useCase;
+
+    @PostMapping("/orders")
+    public ResponseEntity&lt;?&gt; create(@RequestBody OrderApiModel apiModel) {
+        CreateOrderRequest request = new CreateOrderRequest(
+            apiModel.getEmail(), apiModel.getProduct()
+        );
+        useCase.execute(request);
+        return ResponseEntity.created(/* ... */).build();
+    }
+}</code></pre>
+            </div>
+
+            <h3><i class="fas fa-arrows-alt-h"></i> Input/Output Boundaries</h3>
+            <div class="code-box code-box-diagram">
+                <pre><code>Controller ──▶ InputBoundary ──▶ Use Case Interactor ──▶ OutputBoundary ──▶ Presenter
+               (interface)         (implementation)       (interface)       (implementation)</code></pre>
+            </div>
+        </div>
+
+        <!-- SLIDE 22: Comparaison -->
+        <div class="slide">
+            <h2><i class="fas fa-columns"></i> 1.7 Comparaison et points communs</h2>
+
+            <table>
+                <tr>
+                    <th>Critere</th><th>Couches DDD</th><th>Hexagonale</th><th>Oignon</th><th>Clean Arch.</th>
+                </tr>
+                <tr><td><strong>Auteur</strong></td><td>Evans (2003)</td><td>Cockburn (2005)</td><td>Palermo (2008)</td><td>Martin (2012)</td></tr>
+                <tr><td><strong>Representation</strong></td><td>Couches empilees</td><td>Hexagone</td><td>Cercles</td><td>Cercles</td></tr>
+                <tr><td><strong>Centre</strong></td><td>Domaine</td><td>Application</td><td>Domain Model</td><td>Entities</td></tr>
+                <tr><td><strong>Interfaces</strong></td><td>Repositories</td><td>Ports (in/out)</td><td>Domain Services</td><td>Boundaries</td></tr>
+                <tr><td><strong>Dep. direction</strong></td><td>Haut vers bas</td><td>Ext. vers int.</td><td>Ext. vers int.</td><td>Ext. vers int.</td></tr>
+                <tr><td><strong>Isolation domaine</strong></td><td>Partielle</td><td>Totale</td><td>Totale</td><td>Totale</td></tr>
+                <tr><td><strong>Complexite</strong></td><td>Faible</td><td>Moderee</td><td>Moderee</td><td>Elevee</td></tr>
+            </table>
+
+            <h3><i class="fas fa-compass"></i> Quelle architecture choisir ?</h3>
+            <table>
+                <tr><th>Situation</th><th>Recommandation</th></tr>
+                <tr><td>Prototype / MVP rapide</td><td>CRUD classique (et c'est OK !)</td></tr>
+                <tr><td>Application metier avec logique moderee</td><td>Architecture en couches DDD</td></tr>
+                <tr><td>Application metier complexe, longue duree de vie</td><td><strong>Architecture Hexagonale</strong></td></tr>
+                <tr><td>Equipe experimentee, domaine tres complexe</td><td>Clean Architecture</td></tr>
+            </table>
+        </div>
+
+        <!-- SLIDE 23: Principes communs -->
+        <div class="slide">
+            <h2><i class="fas fa-handshake"></i> Ce qu'elles partagent toutes</h2>
+
+            <div class="grid-2">
+                <div class="content-box" style="padding: 20px;">
+                    <h3><i class="fas fa-shield-alt" style="color: var(--primary);"></i> 1. Isoler le domaine metier</h3>
+                    <p>Le domaine ne depend de RIEN d'exterieur. Pas d'import <code>javax.persistence.*</code>, pas d'import <code>org.springframework.*</code></p>
+                </div>
+                <div class="content-box" style="padding: 20px;">
+                    <h3><i class="fas fa-sync-alt" style="color: var(--primary);"></i> 2. Inverser les dependances</h3>
+                    <p>L'infrastructure depend du domaine grace a des interfaces, pas l'inverse. C'est le <strong>DIP</strong> (SOLID).</p>
+                </div>
+                <div class="content-box" style="padding: 20px;">
+                    <h3><i class="fas fa-puzzle-piece" style="color: var(--primary);"></i> 3. Separer "quoi" et "comment"</h3>
+                    <p>Le domaine dit <strong>quoi</strong> faire. L'infrastructure dit <strong>comment</strong> le faire.</p>
+                </div>
+                <div class="content-box" style="padding: 20px;">
+                    <h3><i class="fas fa-vial" style="color: var(--primary);"></i> 4. Testabilite sans infrastructure</h3>
+                    <p>La logique metier se teste en &lt; 1ms, sans Spring, sans BDD, sans rien.</p>
+                </div>
+            </div>
+
+            <div class="code-box">
+                <pre><code class="language-java">// CE TEST FONCTIONNE avec les 4 architectures
+@Test
+void une_commande_de_3_articles_a_10_euros_coute_30_euros() {
+    Order order = Order.create(
+        new CustomerEmail("test@test.com"),
+        new ProductName("Widget"),
+        new Quantity(3),
+        Money.euros(10.0)
+    );
+    assertThat(order.getTotalPrice()).isEqualTo(Money.euros(30.0));
+}
+// Temps d'execution : &lt; 1ms. Zero infrastructure.</code></pre>
+            </div>
+        </div>
+
+        <!-- SLIDE 24: Recapitulatif -->
+        <div class="slide">
+            <h2><i class="fas fa-clipboard-list"></i> Recapitulatif</h2>
+
+            <table>
+                <tr><th>Section</th><th>Point cle</th></tr>
+                <tr><td>1.1</td><td>L'architecture = les decisions structurantes couteuses a changer</td></tr>
+                <tr><td>1.2</td><td>Le CRUD traditionnel cree du couplage fort et un domaine anemique</td></tr>
+                <tr><td>1.3</td><td>L'architecture en couches DDD separe UI / Application / Domaine / Infrastructure</td></tr>
+                <tr><td>1.4</td><td>L'hexagonale inverse les dependances avec les Ports &amp; Adapters</td></tr>
+                <tr><td>1.5</td><td>L'oignon ajoute une granularite fine dans le domaine</td></tr>
+                <tr><td>1.6</td><td>Clean Architecture formalise les boundaries Input/Output</td></tr>
+                <tr><td>1.7</td><td>Toutes partagent un principe : <strong>proteger le domaine des details techniques</strong></td></tr>
+            </table>
+
+            <div class="key-concept">
+                <i class="fas fa-star"></i> <strong>Le message cle :</strong> Le framework est un detail. La base de donnees est un detail. Le protocole HTTP est un detail. Le domaine metier est la RAISON D'ETRE de l'application.
+            </div>
+
+            <div class="info-box" style="margin-top: 20px;">
+                <i class="fas fa-arrow-right"></i> <strong>Prochain module :</strong> Module 2 -- Implementer l'Architecture Hexagonale en Java : mise en place complete d'un projet avec domain, ports, adapters, et tests.
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <button id="prevBtn" onclick="changeSlide(-1)" disabled>
+            <i class="fas fa-chevron-left"></i> Precedent
+        </button>
+        <span class="slide-counter">
+            Slide <span id="currentSlide">1</span> / <span id="totalSlides"></span>
+        </span>
+        <button id="nextBtn" onclick="changeSlide(1)">
+            Suivant <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+
+    <script>
+        hljs.highlightAll();
+
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('currentSlide').textContent = currentSlide + 1;
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function changeSlide(n) { showSlide(currentSlide + n); }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        showSlide(0);
+    </script>
+</body>
+</html>
